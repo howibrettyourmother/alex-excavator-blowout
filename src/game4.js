@@ -48,7 +48,7 @@ var flying=[];
 function blowout(cb){if(!debris.length&&!statics.length&&!movers.length){cb();return}exStart();
  act({d:.5,ex:1120,tx:900,ty:TOP-230,ba:.3});
  act({d:.2,tx:880,ty:FLOOR-90,ba:1.5,end:function(){SFX.boom();shake(26);banner('BLOWOUT!');dust(880,FLOOR,14);
-  debris.forEach(function(b){if(b.isStatic)Body.setStatic(b,false);b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);Body.setVelocity(b,{x:(rnd()-.5)*16,y:-24-rnd()*14});Body.setAngularVelocity(b,(rnd()-.5)*.6);b.gone=gt;flying.push(b)});debris=[];
+  debris.forEach(function(b){if(b.isStatic)Body.setStatic(b,false);b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);Body.setVelocity(b,{x:(rnd()-.5)*10,y:-32-rnd()*10});Body.setAngularVelocity(b,(rnd()-.5)*.6);b.gone=gt;flying.push(b)});debris=[];
   statics.concat(movers).forEach(function(b){dust(b.position.x,b.position.y,5)})}});
  act({d:.4,tx:900,ty:TOP-230,ba:.6,end:cb})}
 function dumpLevel(cb){var defs=(LV.deb||[]).slice().sort(function(a,b){return a[1]-b[1]});exStart();var groups=[];for(var i=0;i<defs.length;i+=3)groups.push(defs.slice(i,i+3));
@@ -106,7 +106,7 @@ Events.on(engine,'collisionStart',function(ev){var ps=ev.pairs;for(var i=0;i<ps.
 function popBubble(b,sp){if(!sp)return;var c=Math.cos(-b.angle),s=Math.sin(-b.angle),lx=(sp.x-b.position.x)*c-(sp.y-b.position.y)*s+b.ww/2,ly=(sp.x-b.position.x)*s+(sp.y-b.position.y)*c+b.wh/2;
  var ix=clamp(Math.round((lx-10)/20),0,Math.floor((b.ww-10)/20)),iy=clamp(Math.round((ly-10)/20),0,Math.floor((b.wh-10)/20)),key=ix+','+iy;if(b.pops.indexOf(key)<0){b.pops.push(key);b.dirty=1;SFX.pop();sparks(sp.x,sp.y,4,'#dff4ff')}}
 function physStep(){gt+=FIXED/1000;moveMovers();Engine.update(engine,FIXED);
- for(var i=flying.length-1;i>=0;i--){var f=flying[i];if(f.position.y<-300||gt-f.gone>2.5){Composite.remove(world,f);flying.splice(i,1)}}
+ for(var i=flying.length-1;i>=0;i--){var f=flying[i];if(f.position.y<-140||(f.velocity.y>0&&f.position.y>TABLE)||gt-f.gone>2.5){Composite.remove(world,f);flying.splice(i,1)}}
  for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3)}}}}
  if(state!=='fly'||!ball)return;var bp=ball.position;fly.t+=FIXED/1000;
  if(!SIM&&(trail.length===0||Math.hypot(trail[trail.length-1].x-bp.x,trail[trail.length-1].y-bp.y)>14)){trail.push({x:bp.x,y:bp.y});if(trail.length>10)trail.shift()}
