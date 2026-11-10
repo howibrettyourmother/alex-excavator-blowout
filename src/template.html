@@ -1,0 +1,123 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Excavator Blowout</title><meta name="theme-color" content="#1f3a6e">
+<meta name="description" content="Excavator Blowout, by Alex and friends - throw the ball through the box, past the junk, into the prize hole!">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120.png"><link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152.png"><link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167.png"><link rel="icon" href="favicon-32.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Excavator Blowout">
+<style>
+@font-face{font-family:PM;src:url(data:font/woff2;base64,/*FONT*/) format('woff2');font-display:block}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#5a0c14;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#2b1a0a}
+canvas#c{position:fixed;left:0;top:0;touch-action:none;display:block}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation}
+.cb{background:var(--cbtex) #c9975e;background-size:180px}
+.mk{font-family:PM,"Marker Felt","Chalkboard SE","Comic Sans MS",cursive;font-weight:400}
+/* HUD */
+#hud{position:fixed;left:0;right:0;top:0;display:flex;align-items:flex-start;gap:10px;pointer-events:none;z-index:5;
+ padding:calc(8px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) 0 calc(56px + env(safe-area-inset-left))}
+#hud>*{pointer-events:auto}
+.tag{border-radius:12px;padding:6px 12px;box-shadow:0 3px 0 #6b4520,0 4px 10px #0005;font-size:20px;line-height:1.1;color:#21571f;white-space:nowrap;transform:rotate(-1deg)}
+#lvl{flex:0 1 auto;overflow:hidden;text-overflow:ellipsis}
+#balls{display:flex;gap:6px;align-items:center;padding:6px 10px;margin:0 auto}
+#balls i{width:26px;height:26px;border-radius:50%;display:block;background:radial-gradient(circle at 35% 30%,#fff6c0,#ffcf2e 45%,#d99a00);box-shadow:inset 0 -3px 0 #0002,0 2px 4px #0006;transition:transform .3s,opacity .3s}
+#balls i.used{opacity:.25;transform:scale(.7)}
+#tix,#pbtn,#mute{font-size:20px}
+#tix b,#pbtn b{font-family:PM,"Marker Felt",cursive;font-weight:400;color:#b3261e;font-size:22px}
+#mute{width:44px;text-align:center;padding:6px 0}
+#banner{position:fixed;left:0;right:0;top:34%;text-align:center;z-index:6;pointer-events:none;font-size:min(13vmin,96px);color:#ffde3b;
+ -webkit-text-stroke:3px #3a1d00;text-shadow:0 6px 0 #3a1d00,0 10px 24px #000a;opacity:0;transform:scale(.4)}
+#banner.on{animation:ban 1.6s ease-out forwards}
+#banner.small{font-size:min(7vmin,52px);top:20%}
+@keyframes ban{0%{opacity:0;transform:scale(.3) rotate(-8deg)}15%{opacity:1;transform:scale(1.15) rotate(3deg)}25%{transform:scale(1) rotate(-2deg)}80%{opacity:1}100%{opacity:0;transform:scale(1.05) rotate(-2deg)}}
+#skip{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));z-index:6;font-size:22px;padding:10px 16px;border-radius:14px;display:none;box-shadow:0 3px 0 #6b4520,0 4px 10px #0005}
+#rot{position:fixed;left:0;right:0;top:calc(60px + env(safe-area-inset-top));text-align:center;z-index:7;pointer-events:none;display:none;color:#fff;font-size:22px;text-shadow:0 2px 4px #000}
+@media (orientation:portrait){#rot{display:block}}
+/* overlays */
+.ov{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;background:#0008}
+.ov.on{display:flex}
+.card{position:relative;border-radius:18px;padding:20px 26px;max-width:min(92vw,760px);max-height:92vh;overflow:auto;box-shadow:0 8px 0 #6b4520,0 18px 40px #000a;text-align:center;
+ clip-path:polygon(0 2%,3% 0,30% 1%,55% 0,80% 1.5%,100% 0,99% 30%,100% 60%,99% 100%,70% 99%,40% 100%,10% 99%,0 100%,1% 60%)}
+.card h2{margin:0 0 6px;font-size:44px;color:#21571f;line-height:1.05}
+.btn{display:inline-block;border-radius:16px;padding:12px 22px;margin:6px;font-size:26px;background:#2f8a3a;color:#fff;box-shadow:0 5px 0 #1d5a25,0 8px 14px #0005;font-family:PM,"Marker Felt",cursive;transform:rotate(-1deg)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #1d5a25}
+.btn.alt{background:#f3e3c4;color:#21571f;box-shadow:0 5px 0 #a4875a,0 8px 14px #0004}
+#prizeBig{font-size:110px;line-height:1.1;animation:pz 1s cubic-bezier(.2,1.8,.4,1)}
+@keyframes pz{0%{transform:scale(0) rotate(-200deg)}100%{transform:none}}
+#prizeName{font-size:34px;color:#b3261e;margin-bottom:6px}
+#tkRows{font-size:20px;line-height:1.5;margin:6px 0}
+#math{margin:8px auto 4px;padding:10px 14px;border-radius:14px;background:#fff7e3aa;border:3px dashed #8a6a3a;max-width:520px}
+#math .q{font-size:26px;color:#1f3a6e}
+#math .ch{display:inline-block;min-width:76px;margin:6px;padding:8px 14px;border-radius:14px;font-size:30px;background:#1f3a6e;color:#fff;box-shadow:0 4px 0 #0e1f3f}
+#math .ch.ok{background:#2f8a3a}#math .ch.no{background:#b3261e;opacity:.7}
+#math .r{font-size:24px;min-height:30px;color:#21571f}
+#shelfGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px 8px;margin:10px 0;padding:12px;border-radius:12px;
+ background:repeating-linear-gradient(#0000 0 86px,#7a4e24 86px 98px,#0000 98px 108px),#e8cfa2}
+.pz{height:86px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:44px;position:relative}
+.pz small{font-size:12px;line-height:1.1;color:#4a2e10;font-weight:700;max-width:100px;height:28px;overflow:hidden}
+.pz.no{filter:grayscale(1) brightness(.4);opacity:.45}
+.pz b{position:absolute;top:0;right:4px;font-size:16px;background:#b3261e;color:#fff;border-radius:10px;padding:0 6px;font-family:system-ui;font-weight:800}
+#grand{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:6px 0}
+.gp{padding:8px 12px;border-radius:12px;background:#fff7e3;min-width:170px;font-size:16px}
+.gp .e{font-size:40px}.gp .bar{height:10px;border-radius:5px;background:#0002;overflow:hidden;margin-top:4px}.gp .bar i{display:block;height:100%;background:#f2b705}
+.gp.no .e{filter:grayscale(1);opacity:.5}
+#stats{font-size:18px;color:#4a2e10}
+/* title */
+#title{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ background:repeating-linear-gradient(90deg,#6e0d18 0 3vw,#8d1622 3vw 5vw,#5e0a14 5vw 8vw);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#title.off{display:none}
+#sign{position:relative;padding:2.2vmin 8vmin 2.6vmin 5vmin;transform:rotate(-1.5deg);animation:sway 4s ease-in-out infinite;box-shadow:0 1.4vmin 2.4vmin #0008;
+ clip-path:polygon(0 8%,6% 2%,14% 7%,26% 0,38% 5%,52% 1%,63% 6%,77% 0,88% 5%,100% 2%,99% 40%,100% 97%,80% 100%,55% 98%,30% 100%,4% 98%,1% 60%)}
+@keyframes sway{50%{transform:rotate(-.4deg) translateY(-.6vmin)}}
+#tt{margin:0;text-align:center;color:#2f8a3a;line-height:1.02;filter:url(#rough);font-size:min(11vmin,96px);letter-spacing:.02em;-webkit-text-stroke:.6px #1d6127}
+#tt .l2{display:block;font-size:.55em;color:#5b3f9e;margin-top:.15em}
+#tt .l1{display:block}
+#tt .w{display:inline-block;white-space:nowrap}
+#tt .ch{display:inline-block;animation:boil .42s steps(1) infinite}
+@keyframes boil{0%{transform:translate(0,var(--y1)) rotate(var(--r1))}33%{transform:translate(0,var(--y2)) rotate(var(--r2))}66%{transform:translate(0,var(--y3)) rotate(var(--r3))}}
+#scrib{position:absolute;right:1.2%;top:4%;width:6%;height:34%;opacity:.75;pointer-events:none}
+#tbox{width:min(70vmin,620px);height:min(36vmin,320px);margin-top:-1vmin;display:block}
+#title .row{display:flex;gap:2vmin;align-items:center;justify-content:center;margin-top:1.4vmin;flex-wrap:wrap}
+#play{font-size:min(7vmin,52px);padding:1.2vmin 5vmin}
+#title .small .btn{font-size:min(3.6vmin,24px);padding:1vmin 2.4vmin}
+#how{color:#ffe9b8;font-size:min(3vmin,20px);margin-top:1vmin;text-shadow:0 2px 3px #000;text-align:center;padding:0 4vmin}
+#ld{color:#ffe9b8;font-size:14px;opacity:.6;position:absolute;bottom:calc(6px + env(safe-area-inset-bottom));right:calc(10px + env(safe-area-inset-right))}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter></svg>
+<canvas id="c"></canvas>
+<div id="hud">
+ <div id="lvl" class="tag cb mk">Level 1</div>
+ <div id="balls" class="tag cb"><i></i><i></i><i></i></div>
+ <div id="tix" class="tag cb">🎟️ <b id="tk">0</b></div>
+ <button id="pbtn" class="tag cb" aria-label="Prize shelf">🏆 <b id="pc">0</b></button>
+ <button id="mute" class="tag cb" aria-label="Sound on or off">🔊</button>
+</div>
+<div id="banner" class="mk"></div>
+<button id="skip" class="cb mk">⏩ Faster</button>
+<div id="rot" class="mk">↻ Turn your iPad sideways for the best fun!</div>
+<div id="win" class="ov"><div class="card cb">
+ <h2 class="mk">You did it!</h2>
+ <div id="prizeBig">🌭</div><div id="prizeName" class="mk">Prize</div>
+ <div id="tkRows"></div>
+ <div id="math"></div>
+ <div id="grandMsg" class="mk" style="font-size:26px;color:#b3261e"></div>
+ <button id="next" class="btn">Next level ▶</button><button id="wshelf" class="btn alt">🏆 Prize shelf</button>
+</div></div>
+<div id="shelf" class="ov"><div class="card cb">
+ <h2 class="mk">Alex's Prize Shelf</h2>
+ <div id="stats"></div>
+ <div id="shelfGrid"></div>
+ <div id="grand"></div>
+ <button id="sclose" class="btn">Back to the game</button>
+</div></div>
+<div id="title">
+ <div id="sign" class="cb"><h1 id="tt" class="mk" aria-label="Excavator Blowout, by Alex and friends"><span class="l1">Excavator Blowout,</span> <span class="l2">by Alex and friends</span></h1><svg id="scrib" viewBox="0 0 100 100"><path d="M10 80 L60 10 M18 88 L74 14 M28 90 L86 22 M40 92 L94 34 M56 94 L96 52" stroke="#7a4bc4" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div>
+ <canvas id="tbox"></canvas>
+ <div class="row"><button id="play" class="btn mk">▶ Play!</button></div>
+ <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button></div>
+ <div id="how">Pull the ball back and let go (or flick it!) to throw it through the blue hole, past the junk, into the prize hole.</div>
+ <div id="ld">v/*VER*/</div>
+</div>
+<script>/*MATTER*/</script>
+<script>/*GAME*/</script>
+</body></html>
