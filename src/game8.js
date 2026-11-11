@@ -25,5 +25,5 @@ var SLOW={t:0,used:false};
 function squashHit(b,n,rv){if(!b||rv<4)return;b.sq=Math.min(1,rv/14);b.sqT=gt;b.sqN=Math.atan2(n.y,n.x)}
 function squashXf(g,b){if(!b||!b.sq)return;var k=b.sq*Math.exp(-(gt-b.sqT)*16);if(k<.02){b.sq=0;return}g.rotate(b.sqN);g.scale(1-.28*k,1+.16*k);g.rotate(-b.sqN)}
 function slowTS(dt){if(state!=='fly'||!ball||SIM){SLOW.t=0;return 1}if(SLOW.t>0){SLOW.t-=dt;return SLOW.t>0?.38:1}
- if(!SLOW.used){var p=ball.position,v=ball.velocity,cy=(HOLE.y0+HOLE.y1)/2;if(v.x>2&&p.x>BX0-190&&p.x<BX0-30&&Math.abs(p.y-cy)<(HOLE.y1-HOLE.y0)/2+30){SLOW.used=true;SLOW.t=.55;tone(520,.5,{to:260,type:'sine',vol:.08});return .38}}return 1}
+ if(!SLOW.used){var p=ball.position,v=ball.velocity,cy=(HOLE.y0+HOLE.y1)/2;if(v.x>.8&&p.x>BX0-190&&p.x<BX0-30&&Math.abs(p.y-cy)<(HOLE.y1-HOLE.y0)/2+30){SLOW.used=true;SLOW.t=.55;if(!SIM){ftext(p.x,p.y-60,'Ooooh…!','#fff6a0');CSND.ooh()}tone(520,.5,{to:260,type:'sine',vol:.08});return .38}}return 1}
 function drawSlow(g){if(!(SLOW.t>0))return;var a=Math.min(1,SLOW.t*3)*.35;var gr=g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.85);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(20,10,0,'+a+')');g.fillStyle=gr;g.fillRect(-200,-200,W+400,H+400)}
