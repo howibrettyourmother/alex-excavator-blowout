@@ -31,6 +31,14 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #banner.small{font-size:min(7vmin,52px);top:20%}
 @keyframes ban{0%{opacity:0;transform:scale(.3) rotate(-8deg)}15%{opacity:1;transform:scale(1.15) rotate(3deg)}25%{transform:scale(1) rotate(-2deg)}80%{opacity:1}100%{opacity:0;transform:scale(1.05) rotate(-2deg)}}
 #skip{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));z-index:6;font-size:22px;padding:10px 16px;border-radius:14px;display:none;box-shadow:0 3px 0 #6b4520,0 4px 10px #0005}
+#help{position:fixed;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));z-index:6;font-size:24px;padding:12px 18px;border-radius:16px;display:none;align-items:center;color:#21571f;box-shadow:0 4px 0 #6b4520,0 6px 14px #0006;animation:hb 1s ease-in-out infinite}
+@keyframes hb{50%{transform:translateY(-6px) scale(1.06) rotate(-2deg)}}
+#stk img,#stickers img{width:54px;height:62px;vertical-align:middle}#stk{font-size:22px;color:#21571f;margin:4px 0}#stickers{font-size:18px;margin:6px 0;color:#4a2e10}
+#mbadge{font-size:18px;max-width:30vw;overflow:hidden;text-overflow:ellipsis}#mbadge.on{box-shadow:0 3px 0 #0006,0 0 0 3px #fff8,0 4px 10px #0005;animation:mbp 2s ease-in-out infinite}@keyframes mbp{50%{transform:rotate(1deg) scale(1.04)}}
+#modes{z-index:30}#mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0}
+.mt{background:#fff8e8;border-radius:14px;padding:8px 6px;box-shadow:0 4px 0 #a4875a;border:3px solid var(--mc);display:flex;flex-direction:column;align-items:center;gap:2px;color:#3a2414;font-family:inherit;min-height:150px}
+.mt.sel{background:var(--mc);box-shadow:0 4px 0 #6b4520,0 0 0 4px #fff}.mt img{width:64px;height:64px}.mt b{font-size:18px;line-height:1.05}.mt small{font-size:13px;line-height:1.15}.mt i{font-size:12px;font-style:normal;color:#6b4520}
+.sg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px}.sg span{font-size:13px;width:76px;line-height:1.1}.sg span.no img,.sg span.no em{filter:grayscale(1) brightness(1.3);opacity:.35}.sg em{font-size:40px;font-style:normal}.sg img{width:62px;height:66px}
 #rot{position:fixed;left:0;right:0;top:calc(60px + env(safe-area-inset-top));text-align:center;z-index:7;pointer-events:none;display:none;color:#fff;font-size:22px;text-shadow:0 2px 4px #000}
 @media (orientation:portrait){#rot{display:block}}
 /* overlays */
@@ -88,17 +96,20 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 <div id="hud">
  <div id="lvl" class="tag cb mk">Level 1</div>
  <div id="balls" class="tag cb"><i></i><i></i><i></i></div>
+ <button id="mbadge" class="tag cb mk" aria-label="Bonus modes">🎮 <span>Modes</span></button>
  <div id="tix" class="tag cb">🎟️ <b id="tk">0</b></div>
  <button id="pbtn" class="tag cb" aria-label="Prize shelf">🏆 <b id="pc">0</b></button>
  <button id="mute" class="tag cb" aria-label="Sound on or off">🔊</button>
 </div>
 <div id="banner" class="mk"></div>
 <button id="skip" class="cb mk">⏩ Faster</button>
+<button id="help" class="cb mk" aria-label="Need help? Meadow Brook Mouse">Need help? 🐭</button>
 <div id="rot" class="mk">↻ Turn your iPad sideways for the best fun!</div>
 <div id="win" class="ov"><div class="card cb">
  <h2 class="mk">You did it!</h2>
  <div id="prizeBig">🌭</div><div id="prizeName" class="mk">Prize</div>
  <div id="tkRows"></div>
+ <div id="stk" class="mk"></div>
  <div id="math"></div>
  <div id="grandMsg" class="mk" style="font-size:26px;color:#b3261e"></div>
  <button id="next" class="btn">Next level ▶</button><button id="wshelf" class="btn alt">🏆 Prize shelf</button>
@@ -108,13 +119,19 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
  <div id="stats"></div>
  <div id="shelfGrid"></div>
  <div id="grand"></div>
+ <div id="stickers"></div>
  <button id="sclose" class="btn">Back to the game</button>
+</div></div>
+<div id="modes" class="ov"><div class="card cb">
+ <h2 class="mk">🎮 Bonus Modes</h2>
+ <div id="mgrid"></div>
+ <button id="mclose" class="btn">Back</button>
 </div></div>
 <div id="title">
  <div id="sign" class="cb"><h1 id="tt" class="mk" aria-label="Excavator Blowout, by Alex and friends"><span class="l1">Excavator Blowout,</span> <span class="l2">by Alex and friends</span></h1><svg id="scrib" viewBox="0 0 100 100"><path d="M10 80 L60 10 M18 88 L74 14 M28 90 L86 22 M40 92 L94 34 M56 94 L96 52" stroke="#7a4bc4" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div>
  <canvas id="tbox"></canvas>
  <div class="row"><button id="play" class="btn mk">▶ Play!</button></div>
- <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button></div>
+ <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button><button id="tmodes" class="btn alt">🎮 Bonus Modes</button></div>
  <div id="how">Pull the ball back and let go (or flick it!) to throw it through the blue hole, past the junk, into the prize hole.</div>
  <div id="ld">v/*VER*/</div>
 </div>

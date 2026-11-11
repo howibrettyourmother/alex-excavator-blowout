@@ -33,10 +33,10 @@ var LEVELS=[
 var LVP=[
  {n:'Mitten Mountain'},{n:'Motor City Maze'},{n:'Great Lakes Splash'},{n:'Mackinac Mix-Up'},{n:'Up North Junk Pile'},{n:'Petoskey Pebble Party'},{n:'Coney Island Chaos'},{n:'Super Blowout'}];
 function genLevel(n){var r=rng(n*977+13),L={n:LVP[(n-LEVELS.length)%LVP.length].n+' '+(Math.floor((n-LEVELS.length)/LVP.length)+1>1?Math.floor((n-LEVELS.length)/LVP.length)+1:''),pv:.45,gems:[],deb:[],st:[],mov:[],shred:[]};
- var hs=clamp(96-(n-6)*3,74,96),raised=r()<.5;
+ var hs=clamp(96-(n-6)*2,82,96),raised=r()<.5;
  if(r()<.3)L.holeMv=[690,100,hs+4,4+r()*2];else if(raised){var y1=640+r()*120;L.hole=[y1-hs,y1];L.st.push(['ledge',1300,y1+10,120,18])}else L.hole=[FLOOR-hs,FLOOR];
  if(r()<.5)L.mov.push(['slide',1050+r()*150,720,28,140,80+r()*30,2.2+r()*1.2]);else if(r()<.6)L.mov.push(['pend',900+r()*250,TOP+10,405,42,2.4+r(),.35]);
- if(r()<.5)L.st.push(['wrapS',760+r()*200,820,160+r()*60,120]);
+ if(r()<.5)L.st.push(['wrapS',720+r()*140,840,140+r()*50,80]);
  var types=['plate','plate','cup','cup','scrap','edge','wrap'],cnt=7+Math.min(4,(n-6)>>1);
  for(var i=0;i<cnt;i++){var t=types[(r()*types.length)|0],x=600+r()*660;
   if(t==='plate')L.deb.push(['plate',x,740-r()*80,38+r()*8]);else if(t==='cup')L.deb.push(['cup',x,740,['r','g','b'][(r()*3)|0]]);else if(t==='scrap')L.deb.push(['scrap',x,740,50+r()*40,30+r()*20]);else if(t==='edge')L.deb.push(['edge',x,700,0]);else L.deb.push(['wrap',x,720,100+r()*60,40])}
@@ -56,7 +56,7 @@ function mkDeb(d,spawnDy){var t=d[0],x=d[1],y=d[2]-(spawnDy||0),b;
 function mkStatic(d){var t=d[0],b;
  if(t==='wrapS'){b=stat(d[1],d[2],d[3],d[4],{mat:'wrap',re:1.05,fr:.2});b.ww=d[3];b.wh=d[4];b.pops=[];b.kind='wrap'}
  else{b=stat(d[1],d[2],d[3],d[4],{mat:'card',re:.15,fr:.6,a:d[5]||0});b.sk=sprScrap(d[3]|0,d[4]|0,(d[1]*5)|0);b.sw=d[3]|0;b.sh=d[4]|0;b.kind='card'}
- b.pop0=gt;statics.push(b);return b}
+ b.isLedge=t==='ledge';b.pop0=gt;statics.push(b);return b}
 function mkMover(d){var b;if(d[0]==='pend'){b=Bodies.circle(d[1],d[2]+d[3],d[4],{isStatic:true,restitution:.4});b.mat='plate';b.sk=sprPlate(d[4],77);b.sw=d[4]*2;b.sh=d[4]*2;
   b.mf=function(t){var a=d[6]*Math.sin(t*2*PI/d[5]);return{x:d[1]+Math.sin(a)*d[3],y:d[2]+Math.cos(a)*d[3],a:a}};b.anchor={x:d[1],y:d[2]}}
  else{b=Bodies.rectangle(d[1],d[2],d[3],d[4],{isStatic:true,restitution:.3,chamfer:{radius:6}});b.mat='card';b.sk=sprScrap(d[3],d[4],91);b.sw=d[3];b.sh=d[4];b.mf=function(t){return{x:d[1],y:d[2]+d[5]*Math.sin(t*2*PI/d[6]),a:0}}}

@@ -2,7 +2,7 @@ import os,re,base64,sys
 D=os.path.dirname(os.path.abspath(__file__));R=os.path.dirname(D)
 VER=open(f'{R}/VERSION').read().strip()
 t=open(f'{D}/template.html').read()
-game=''.join(open(f'{D}/game{i}.js').read() for i in range(1,6)).replace('/*VER*/',VER)
+game=''.join(open(f'{D}/game{i}.js').read() for i in (1,2,3,4,6,7,5)).replace('/*VER*/',VER)
 t=t.replace('/*FONT*/',base64.b64encode(open(f'{D}/pm.woff2','rb').read()).decode()).replace('/*MATTER*/',open(f'{D}/matter.min.js').read()).replace('/*GAME*/',game).replace('/*VER*/',VER)
 KH='/workspace/kids-hubs'
 # idempotent: drop any shared blocks the kids-hubs scripts may have injected into the template, then inject fresh copies

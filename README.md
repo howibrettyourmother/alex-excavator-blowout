@@ -19,3 +19,8 @@ Play: https://howibrettyourmother.github.io/alex-excavator-blowout/  (also in Al
 
 Build: `python3 src/build.py` (inlines src/game1-5.js, matter.min.js and the font into index.html, injects the shared
 kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps sw.js to VERSION).
+
+## v1.2 additions
+- **Cheering crowd**: 10 code-drawn cartoon kids in a school cafeteria (no names), with an "Arcade Game Day" banner. They lean in during throws, groan on near misses, and cheer, wave and throw confetti on a score. Some kids do the occasional "6-7!" gesture (with an 18-second cooldown). All crowd sounds are synthesized with WebAudio and follow the mute button.
+- **Meadow Brook Mouse helper**: after 2 lost rounds or 6 misses on a level, an optional "Need help? 🐭" button appears. The mouse clears the junk, widens the hole and shows a gold aim guide. You still win the prize (3 tickets for the hole instead of 5) plus a Mouse Buddy sticker.
+- **Bonus Modes**: Water Balloon, Super Bouncy, Giant Bowling Ball, Slime Ball, Rocket Ball (tap in the air to boost), Moon Gravity and Triple Ball. All are unlocked from the start, and each has its own look, sound, HUD badge and sticker.

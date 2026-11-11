@@ -1,5 +1,5 @@
 /* ---------- background (pre-rendered on resize) ---------- */
-var BG=null,BGM=40,SIGN=null,CEIL=null,PANEL=null;
+var BG=null,BG1=null,BG1Y=0,BGM=40,SIGN=null,CEIL=null,PANEL=null;
 function worldView(){return{x0:-OX/S-BGM/S,x1:(CW-OX)/S+BGM/S,y0:-OY/S-BGM/S,y1:(CH-OY)/S+BGM/S}}
 function drawBG(){var c=mkc((CW+2*BGM)*DPR,(CH+2*BGM)*DPR),g=c.getContext('2d'),v=worldView(),r=rng(3);
  g.setTransform(DPR*S,0,0,DPR*S,DPR*(OX+BGM),DPR*(OY+BGM));
@@ -14,6 +14,10 @@ function drawBG(){var c=mkc((CW+2*BGM)*DPR,(CH+2*BGM)*DPR),g=c.getContext('2d'),
  var sg=g.createLinearGradient(cx1,0,cx1+60,0);sg.addColorStop(0,'rgba(0,0,0,.35)');sg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=sg;g.fillRect(cx1,v.y0,60,TABLE-v.y0);
  // navy flag with gold fringe (no emblem)
  g.fillStyle='#c9a227';g.fillRect(986,v.y0,6,330-v.y0);g.beginPath();g.moveTo(992,-20);g.quadraticCurveTo(1030,80,1010,250);g.lineTo(1040,240);g.quadraticCurveTo(1060,90,1035,-20);g.closePath();g.fillStyle='#1c2a6b';g.fill();g.strokeStyle='#e0b83a';g.lineWidth=5;g.beginPath();g.moveTo(1010,250);g.lineTo(1040,240);g.stroke();
+ drawBanner(g);BG=c;
+ // ---- front layer (table, box) drawn over the crowd ----
+ BG1Y=Math.max(0,Math.floor(DPR*(OY+BGM+(TOP-34)*S)));c=mkc((CW+2*BGM)*DPR,(CH+2*BGM)*DPR-BG1Y);g=c.getContext('2d');g.setTransform(DPR*S,0,0,DPR*S,DPR*(OX+BGM),DPR*(OY+BGM)-BG1Y);
+ drawLunch(g);
  // gym floor tiles + table
  g.fillStyle='#e9e4d6';g.fillRect(v.x0,TABLE,v.x1-v.x0,v.y1-TABLE);g.fillStyle='#22306e';
  for(x=Math.floor(v.x0/120)*120;x<v.x1;x+=120)for(y=TABLE+40;y<v.y1;y+=120){g.beginPath();g.moveTo(x+60,y);g.lineTo(x+120,y+40);g.lineTo(x+60,y+80);g.lineTo(x,y+40);g.closePath();g.fill()}
@@ -34,7 +38,7 @@ function drawBG(){var c=mkc((CW+2*BGM)*DPR,(CH+2*BGM)*DPR),g=c.getContext('2d'),
  g.strokeStyle='rgba(122,83,40,.6)';g.lineWidth=1.5;for(x=FX0;x<BX1;x+=8){g.beginPath();g.moveTo(x,TOP-14);g.quadraticCurveTo(x+4,TOP-4,x+8,TOP-14);g.stroke()}
  // dark inside of the oval opening (seen through the front panel)
  g.beginPath();g.ellipse(470,(GAP0+GAP1)/2,30,(GAP1-GAP0)/2+16,0,0,2*PI);g.fillStyle='#2a1808';g.fill();
- BG=c}
+ BG1=c;var bg=BG.getContext('2d');bg.setTransform(1,0,0,1,0,0);bg.drawImage(BG1,0,BG1Y)}
 /* front panel: dark blue painted, oval opening, rhinestones, pipe-cleaner ring */
 function panelPath(g){g.beginPath();g.moveTo(418,TOP-22);g.lineTo(FX1+2,TOP-8);g.lineTo(FX1+2,FLOOR+6);g.lineTo(412,FLOOR+22);g.closePath();
  g.moveTo(492,(GAP0+GAP1)/2);g.ellipse(470,(GAP0+GAP1)/2,30,(GAP1-GAP0)/2+16,0,0,2*PI,true)}
