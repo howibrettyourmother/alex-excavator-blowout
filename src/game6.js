@@ -38,9 +38,9 @@ function arm(g,sx,sy,tx,ty,side,s,col,skin,palm){var L1a=50*s,L2a=48*s,dx=tx-sx,
  var e1=a+b*side,ex=sx+Math.cos(e1)*L1a,ey=sy+Math.sin(e1)*L1a,hx=sx+Math.cos(a)*d,hy=sy+Math.sin(a)*d;
  g.lineCap='round';g.strokeStyle=col;g.lineWidth=17*s;g.beginPath();g.moveTo(sx,sy);g.lineTo(ex,ey);g.stroke();g.strokeStyle=skin;g.lineWidth=13*s;g.beginPath();g.moveTo(ex,ey);g.lineTo(hx,hy);g.stroke();
  g.fillStyle=skin;g.beginPath();if(palm)g.ellipse(hx,hy,14*s,6*s,0,0,2*PI);else g.arc(hx,hy,9*s,0,2*PI);g.fill()}
-function drawKids(g,t){var bx=ball?ball.position.x:null,by=ball?ball.position.y:0;
- for(var i=0;i<KIDS.length;i++){var k=KIDS[i],m=kidMode(k),s=k.s,R=48*s,bob=Math.sin(t*1.6+k.ph)*3*s,sway=Math.sin(t*.8+k.ph)*.035,lean=0,jy=0,ar;
-  if(m==='lean'){lean=.09*k.dir;bob*=.4}else if(m==='cheer'){jy=-Math.abs(Math.sin(t*7+k.ph))*26*s}else if(m==='excite'){jy=-Math.abs(Math.sin(t*9+k.ph))*14*s}else if(m==='groan'){jy=8*s;lean=-.04*k.dir}else if(m==='sad'){jy=6*s}else if(m==='67'){jy=-Math.abs(Math.sin(t*5.5))*6*s}
+function drawKids(g,t){var bx=ball?ball.position.x:null,by=ball?ball.position.y:0;if(FA.on&&FA.k)drawKid(g,FA.k,FA.tooted?'walkO':'walk',t,bx,by);for(var i=0;i<KIDS.length;i++)drawKid(g,KIDS[i],kidMode(KIDS[i]),t,bx,by)}
+function drawKid(g,k,m,t,bx,by){{var s=k.s,R=48*s,bob=Math.sin(t*1.6+k.ph)*3*s,sway=Math.sin(t*.8+k.ph)*.035,lean=0,jy=0,ar;
+  if(m==='lean'){lean=.09*k.dir;bob*=.4}else if(m==='cheer'){jy=-Math.abs(Math.sin(t*7+k.ph))*26*s}else if(m==='excite'){jy=-Math.abs(Math.sin(t*9+k.ph))*14*s}else if(m==='groan'){jy=8*s;lean=-.04*k.dir}else if(m==='sad'){jy=6*s}else if(m==='67'){jy=-Math.abs(Math.sin(t*5.5))*6*s}else if(m==='walk'||m==='walkO'){jy=-Math.abs(Math.sin(t*9))*7*s;bob=0;sway=0}else if(m==='stink'){jy=Math.sin(t*16+k.ph)*2*s}
   g.save();g.translate(Math.round((k.x+(sway+lean)*260*s)*4)/4,k.hy+bob+jy);
   var ts=spr(kidTorso(k)),hs=spr(kidHead(k));g.drawImage(ts.c,-70*s,R*.86,ts.w,ts.h);
   var shY=R+28*s,sx=48*s,hl,hr,pa=false;
@@ -48,17 +48,19 @@ function drawKids(g,t){var bx=ball?ball.position.x:null,by=ball?ball.position.y:
   else if(m==='excite'){var p2=Math.sin(t*12+k.ph)*18*s;hl=[-sx-22*s,shY-92*s+p2];hr=[sx+22*s,shY-92*s-p2]}
   else if(m==='groan'){hl=[-R*.55,-R*.78];hr=[R*.55,-R*.78]}
   else if(m==='lean'){hl=[-10*s,shY+52*s];hr=[10*s,shY+52*s]}
+  else if(m==='walk'||m==='walkO'){var sw3=Math.sin(t*9)*30*s;hl=[-sx-6*s+sw3,shY+86*s];hr=[sx+6*s-sw3,shY+86*s];if(m==='walkO')hr=[R*.3,-R*.1]}
+  else if(m==='stink'){hl=[-3*s,10*s];hr=[sx+36*s,shY-74*s+Math.sin(t*15+k.ph)*16*s]}
   else if(m==='67'){var u=Math.sin(t*11+k.ph)*22*s;hl=[-sx-26*s,shY+34*s+u];hr=[sx+26*s,shY+34*s-u];pa=true}
   else{var sw2=Math.sin(t*1.6+k.ph)*5*s;hl=[-sx-8*s+sw2,shY+92*s];hr=[sx+8*s-sw2,shY+92*s]}
-  var back=m==='groan';if(!back){arm(g,-sx,shY,hl[0],hl[1],-1,s,k.shirt,k.skin,pa);arm(g,sx,shY,hr[0],hr[1],1,s,k.shirt,k.skin,pa)}
+  var back=m==='groan'||m==='stink'||m==='walkO';if(!back){arm(g,-sx,shY,hl[0],hl[1],-1,s,k.shirt,k.skin,pa);arm(g,sx,shY,hr[0],hr[1],1,s,k.shirt,k.skin,pa)}
   g.save();if(m==='67')g.rotate(Math.sin(t*5.5)*.06);g.drawImage(hs.c,-R-25*s,-R-40*s,hs.w,hs.h);
   var blink=((t+k.ph*3)%k.bp)<.13,lx=bx==null?0:clamp((bx-k.x)/300,-1,1)*3*s,ly=bx==null?0:clamp((by-k.hy)/300,-1,1)*2*s;
   g.fillStyle='#fff';g.strokeStyle='#2a1a10';g.lineWidth=2*s;
-  if(blink||m==='groan'){g.beginPath();g.moveTo(-24*s,-2*s);g.lineTo(-10*s,m==='groan'?2*s:-2*s);g.moveTo(10*s,m==='groan'?2*s:-2*s);g.lineTo(24*s,-2*s);g.stroke()}
+  if(blink||m==='groan'||m==='stink'){g.beginPath();g.moveTo(-24*s,-2*s);g.lineTo(-10*s,m==='groan'?2*s:-2*s);g.moveTo(10*s,m==='groan'?2*s:-2*s);g.lineTo(24*s,-2*s);g.stroke()}
   else{g.beginPath();g.ellipse(-17*s,-3*s,8*s,9.5*s,0,0,2*PI);g.ellipse(17*s,-3*s,8*s,9.5*s,0,0,2*PI);g.fill();g.fillStyle='#2a1a10';g.beginPath();g.arc(-17*s+lx,-2*s+ly,4.2*s,0,2*PI);g.arc(17*s+lx,-2*s+ly,4.2*s,0,2*PI);g.fill()}
   g.fillStyle='#7a1e1e';g.strokeStyle='#2a1a10';g.lineWidth=2.5*s;g.beginPath();
-  if(m==='cheer'||m==='excite'||m==='67'){g.moveTo(-16*s,16*s);g.quadraticCurveTo(0,44*s,16*s,16*s);g.closePath();g.fill();g.fillStyle='#ff8a9a';g.beginPath();g.ellipse(0,29*s,6*s,4*s,0,0,2*PI);g.fill()}
-  else if(m==='lean'){g.ellipse(0,22*s,5*s,6.5*s,0,0,2*PI);g.fill()}
+  if(m==='cheer'||m==='excite'||m==='67'||m==='stink'){g.moveTo(-16*s,16*s);g.quadraticCurveTo(0,44*s,16*s,16*s);g.closePath();g.fill();g.fillStyle='#ff8a9a';g.beginPath();g.ellipse(0,29*s,6*s,4*s,0,0,2*PI);g.fill()}
+  else if(m==='lean'||m==='walkO'){g.ellipse(0,22*s,5*s,6.5*s,0,0,2*PI);g.fill()}
   else if(m==='groan'){g.ellipse(0,25*s,8*s,9*s,0,0,2*PI);g.fill()}
   else if(m==='sad'){g.moveTo(-10*s,27*s);g.quadraticCurveTo(0,17*s,10*s,27*s);g.stroke()}
   else{g.moveTo(-12*s,18*s);g.quadraticCurveTo(0,30*s,12*s,18*s);g.stroke()}
@@ -86,7 +88,7 @@ function drawCrowdFX(g,t){var b=CR.bub;if(!b)return;var k=clamp(b.t/.25,0,1),sc=
 var FGR=[[-60,640,540,400],[925,TOP-34,200,420],[1395,400,170,620]];
 function fgPatch(g,sx,sy){// re-draw only the front-layer pieces that overlap the crowd (cheap vs a full-screen blit)
  var ox=Math.round((-BGM+sx)*DPR),oy=Math.round((-BGM+sy)*DPR)+BG1Y,cw=BG1.width,ch=BG1.height;
- for(var i=0;i<FGR.length;i++){var r=FGR[i],x0=Math.max(0,Math.floor(DPR*(OX+BGM+r[0]*S))),y0=Math.max(0,Math.floor(DPR*(OY+BGM+r[1]*S))-BG1Y),x1=Math.min(cw,Math.ceil(DPR*(OX+BGM+(r[0]+r[2])*S))),y1=Math.min(ch,Math.ceil(DPR*(OY+BGM+(r[1]+r[3])*S))-BG1Y);
+ var L=FA.on&&FA.x>380&&FA.x<1500?FGR.concat([[Math.max(440,FA.x-70),TOP-34,140,330]]):FGR;for(var i=0;i<L.length;i++){var r=L[i],x0=Math.max(0,Math.floor(DPR*(OX+BGM+r[0]*S))),y0=Math.max(0,Math.floor(DPR*(OY+BGM+r[1]*S))-BG1Y),x1=Math.min(cw,Math.ceil(DPR*(OX+BGM+(r[0]+r[2])*S))),y1=Math.min(ch,Math.ceil(DPR*(OY+BGM+(r[1]+r[3])*S))-BG1Y);
   if(x1>x0&&y1>y0)g.drawImage(BG1,x0,y0,x1-x0,y1-y0,x0+ox,y0+oy,x1-x0,y1-y0)}}
 function drawLunch(g){// cafeteria lunch table + bench that hides the crowd's legs
  var y=652;g.fillStyle='rgba(0,0,0,.18)';g.fillRect(-60,y+30,525,10);

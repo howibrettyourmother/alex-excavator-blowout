@@ -98,7 +98,7 @@ function drawBallM(g,x,y,a,t,b){var s=spr(ballKey()),R=ballR();g.save();g.transl
  if(MODE==='water'){var w=Math.sin(t*15)*.09*(b?Math.min(1,Body.getSpeed(b)/8+.3):.4);g.scale(1+w,1-w)}
  else if(MODE==='slime'){var w2=Math.sin(t*9)*.06;g.scale(1+w2,1-w2)}
  if(MODE==='rocket'&&b&&fly&&fly.boostT>0){var v=b.velocity,an=Math.atan2(v.y,v.x);g.save();g.rotate(an);var L=30+Math.sin(t*60)*8;g.fillStyle='#ffd21a';g.beginPath();g.moveTo(-R+2,-9);g.lineTo(-R-L,0);g.lineTo(-R+2,9);g.fill();g.fillStyle='#ff5a1a';g.beginPath();g.moveTo(-R+2,-5);g.lineTo(-R-L*.6,0);g.lineTo(-R+2,5);g.fill();g.restore()}
- g.rotate(a);g.drawImage(s.c,-R-2/K,-R-2/K,s.w,s.h);g.restore()}
+ squashXf(g,b);g.rotate(a);g.drawImage(s.c,-R-2/K,-R-2/K,s.w,s.h);g.restore()}
 function drawXB(g,t){for(var i=0;i<XB.length;i++){var b=XB[i];drawBallM(g,b.position.x,b.position.y,b.angle,t,b)}}
 var STARS=null;
 function moonSky(g,t){if(MODE!=='moon')return;g.fillStyle='rgba(18,20,80,.42)';g.fillRect(-200,-200,W+400,H+400);

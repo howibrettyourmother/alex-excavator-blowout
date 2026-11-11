@@ -70,14 +70,14 @@ function newRound(){throwsLeft=3;roundTk=0;gems.forEach(function(g){g.got=false}
 function spawnAim(){state='aim';drag=null;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];hud()}
 function launch(deg,p){deg=clamp(deg,-25,75);p=clamp(p,0,1);var a=deg*PI/180,v=9+25*p;
  ball=mkBall(LX,LY);Composite.add(world,ball);
- Body.setVelocity(ball,{x:Math.cos(a)*v,y:-Math.sin(a)*v});Body.setAngularVelocity(ball,.15);fly={t:0,still:0,px:LX,ringed:false,minD:1e9};state='fly';modeLaunch();throwsLeft--;stats.throws++;save.th=(save.th||0)+1;
+ Body.setVelocity(ball,{x:Math.cos(a)*v,y:-Math.sin(a)*v});Body.setAngularVelocity(ball,.15);fly={t:0,still:0,px:LX,ringed:false,minD:1e9,bn:0};SLOW.used=false;SLOW.t=0;state='fly';modeLaunch();throwsLeft--;stats.throws++;save.th=(save.th||0)+1;
  if(!SIM){SFX.throw(p);hud()}}
 function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';lvMiss++;crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
  after(.35,function(){if(ball){Composite.remove(world,ball);ball=null}clearXB();if(throwsLeft>0){spawnAim();banner('Throw '+(4-throwsLeft)+' of 3',1)}else roundLost()})}
 function roundLost(){state='lost';lvLost++;SFX.aww();banner('So close!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
 var lastWin=null;
 function win(){if(SIM){simRes='win';state='simdone';return}state='won';stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
- SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
+ SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
  var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var before=save.tk;save.tk+=tot;
  save.st=save.st||{};var newMS=MODE!=='classic'&&!save.st['m_'+MODE];if(MODE!=='classic')save.st['m_'+MODE]=(save.st['m_'+MODE]||0)+1;var newSt=helped&&!(save.st&&save.st.mouse);if(helped){save.st=save.st||{};save.st.mouse=(save.st.mouse||0)+1}lvMiss=0;lvLost=0;
  var newG=GRAND.filter(function(gp){return !save.gp[gp.id]&&save.tk>=gp.at});newG.forEach(function(gp){save.gp[gp.id]=1});persist();
@@ -105,7 +105,7 @@ Events.on(engine,'collisionStart',function(ev){if(SIMB)return;var ps=ev.pairs;fo
  var va=A.isStatic?A.velocity:Body.getVelocity(A),vb=B.isStatic?B.velocity:Body.getVelocity(B),rv=Math.abs((va.x-vb.x)*n.x+(va.y-vb.y)*n.y);
  var isB=A===ball||B===ball;if(!isB&&rv<4)continue;var o=A===ball?B:A,sp=pr.collision.supports&&pr.collision.supports[0];
  if(isB&&modeHit(o,rv,sp,A===ball?A:B))continue;
- if(isB){stats.hits++;if(SIM)continue;if(rv>2.5)SFX.hit(o.mat||'card',rv);if(rv>7)shake(Math.min(12,rv*.7));if(sp&&rv>5)sparks(sp.x,sp.y,Math.min(8,(rv/2)|0),o.mat==='plate'?'#fff':'#ffe27a');
+ if(isB){squashHit(ball,n,rv);if(o.isStatic&&rv>3&&fly)fly.bn=(fly.bn||0)+1;stats.hits++;if(SIM)continue;if(rv>2.5)SFX.hit(o.mat||'card',rv);if(rv>7)shake(Math.min(12,rv*.7));if(sp&&rv>5)sparks(sp.x,sp.y,Math.min(8,(rv/2)|0),o.mat==='plate'?'#fff':'#ffe27a');
   if(o.kind==='wrap'&&rv>3)popBubble(o,sp)}else if(!SIM){SFX.hit((A.mat==='wall'||A.mat==='table')?B.mat:A.mat,rv*.6)}}});
 function popBubble(b,sp){if(!sp)return;var c=Math.cos(-b.angle),s=Math.sin(-b.angle),lx=(sp.x-b.position.x)*c-(sp.y-b.position.y)*s+b.ww/2,ly=(sp.x-b.position.x)*s+(sp.y-b.position.y)*c+b.wh/2;
  var ix=clamp(Math.round((lx-10)/20),0,Math.floor((b.ww-10)/20)),iy=clamp(Math.round((ly-10)/20),0,Math.floor((b.wh-10)/20)),key=ix+','+iy;if(b.pops.indexOf(key)<0){b.pops.push(key);b.dirty=1;SFX.pop();sparks(sp.x,sp.y,4,'#dff4ff')}}
