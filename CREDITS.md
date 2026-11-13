@@ -10,3 +10,4 @@
   - `sfx/fart4.mp3` is "Flatulence #3" by DenisChardonnet, BigSoundBank #241, https://bigsoundbank.com/flatulence-3-s0241.html
   - `sfx/fart5.mp3` is the first 1.5 s of "Gastric Distress" by LFA (OpenGameArt), https://opengameart.org/content/gastric-distress
 
+- v1.6.0/v1.6.1 builder piece sounds are all synthesized at runtime with WebAudio (no samples, nothing copyrighted): portal "vwoop", trampoline boing, rubber chicken squawk, banana-peel slide whistle, burp frog, clown horn honk, bouncy pad boing, leaf blower whoosh, and the screaming goat (a buzzy saw/square voice with a fast bleat wobble through "ehh" vowel filters, written for this game; not a recording or meme clip). The whoopie cushion reuses the CC0 toot recordings above.

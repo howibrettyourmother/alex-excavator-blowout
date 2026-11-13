@@ -56,3 +56,19 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - Swirl sparks, a flash, and a synthesized "vwoop" (respects mute).
 - Share codes: portals are char `t` + x + y + angle, blue first then orange. Old codes load unchanged; a code with only one portal drops it.
 - The shot solver and the helper mouse simulate the teleport.
+
+## v1.6.1: builder batch
+- **↶ Undo** (top bar): undoes adding, moving, turning, recoloring, deleting, hole size/moving, and **Clear**. A portal pair is one step (adding it, or deleting it, undoes both portals). Keeps 40 steps; resets when you open a different level.
+- **💥 Blow it up!**: runs the real excavator BLOWOUT on Alex's build (no screen shake), then puts his layout back exactly.
+- **Tray pages**: tap **More fun! ▶** for page 2 (silly pieces) and **◀ Back** for page 1. Buttons are full size (not shrunk).
+- New pieces (share-code letter): Trampoline `j`, Rubber chicken `r`, Banana peel `n`, Burp frog `f`, Clown horn `x`, Screaming goat `y`.
+  - Trampoline launches the ball up (first 3 bounces per ball get a boost, then it calms down); the shot solver and the helper mouse simulate it.
+  - Rubber chicken is loose junk: tumbles, squishes/stretches and hops, big BAWK.
+  - Banana peel has zero friction (ball slides; physics is simulated everywhere), plus a "Wheee!" slide whistle.
+  - Burp frog (throat puffs out), Clown horn (bulb squeeze, HONK HONK), Screaming goat (head tilts back and shakes, mouth open). Sound and visual only.
+- **Leaf blower** `v` (turnable): while the ball is inside its cone it gets a gentle push each physics step in the direction the fan faces (strongest near the fan, fading out by 340 px; upward push is weaker than gravity so a ball can never hover). Streaks and tumbling leaves show the airflow. Simulated by the solver and the helper mouse.
+- **Portals: up to 4 pairs** (blue/orange, green/purple, pink/yellow, red/cyan). Each portal only sends to its own partner. The Portals button adds the next free pair and greys out at 4. Deleting a portal removes its pair. Cooldown + "must leave the exit first" still apply, chains included. Share codes list pairs in order; old one-pair codes load as blue/orange.
+- **Bubble wrap vs bouncy pad** now look different: bubble wrap is see-through rainbow-tinted bubbles with a highlight and a moving shimmer; the builder's bouncy pad is solid hot-pink rubber on springs with BOING! on it (squishes and boings when hit). Visual/sound only; physics unchanged. Hand-built levels' bubble pads keep their bubble look.
+- **Caps**: whoopie, silly string, trampoline, chicken, banana, frog, horn, goat, leaf blower: 10 each. Portals: 4 pairs. Total pieces per level: 30 (was 20). Gems 8, ring 1.
+- Toy sounds: each piece 400 ms throttle, plus at most 4 toy sounds per 250 ms overall. Particles stay capped (220, 140 on slow devices; silly string 48 streamers).
+- **Beat my score**: when Alex beats his own level with ▶ Test it!, his best throw count is saved. Challenge Dad puts it in the link (`*N` after the name, e.g. `...Mega_Mess*3`), the challenge card shows "Alex did it in N throws", and Dad's win screen says whether he beat, tied, or lost to Alex. Editing the level clears the old best. Old codes still load.
