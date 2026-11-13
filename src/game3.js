@@ -42,7 +42,7 @@ function genLevel(n){var r=rng(n*977+13),L={n:LVP[(n-LEVELS.length)%LVP.length].
   if(t==='plate')L.deb.push(['plate',x,740-r()*80,38+r()*8]);else if(t==='cup')L.deb.push(['cup',x,740,['r','g','b'][(r()*3)|0]]);else if(t==='scrap')L.deb.push(['scrap',x,740,50+r()*40,30+r()*20]);else if(t==='edge')L.deb.push(['edge',x,700,0]);else L.deb.push(['wrap',x,720,100+r()*60,40])}
  L.shred.push([560+r()*500|0,0,24]);L.shred[0][1]=L.shred[0][0]+80+r()*40;
  for(i=0;i<4;i++)L.gems.push([620+r()*680,500+r()*220]);if(r()<.7)L.ring=[700+r()*500,560+r()*120];return L}
-function levelDef(n){return n<LEVELS.length?LEVELS[n]:genLevel(n)}
+function levelDef(n){if(CUS.on&&CUS.def)return CUS.def;return n<LEVELS.length?LEVELS[n]:genLevel(n)}
 /* ---------- level objects ---------- */
 var debris=[],statics=[],movers=[],gems=[],ring=null,shreds=[],gt=0,LV=null,lvN=0;
 function mkDeb(d,spawnDy){var t=d[0],x=d[1],y=d[2]-(spawnDy||0),b;

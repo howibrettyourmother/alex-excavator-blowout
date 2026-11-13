@@ -68,6 +68,7 @@ addEventListener('resize',function(){clearTimeout(resize.t);resize.t=setTimeout(
 var last=0,acc=0,FR=[],paused=false,titleOn=true;
 function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:16.7);last=ts;FR.push(dt);if(FR.length>120)FR.shift();
  if(titleOn){return}
+ if(state==='edit'){var se=dt/1000;gt+=se;updTM(se);updP(se);render(ts/1000);drawEdit(ctx,ts/1000);return}
  var sd=dt/1000;updTM(sd);runQ(sd*EX.speed);updP(sd);updCrowd(sd);updMouse(sd);updFart(sd);if(lim('help',250))updHelp();shk=Math.max(0,shk-sd*shk*7-sd*2);
  if(state==='settle'){settleT+=sd;var mv=debris.some(function(b){return !b.isSleeping&&b.speed>.5});if(settleT>.5&&(!mv||settleT>2.2))newRound()}
  if(dispTk!==save.tk){var df=save.tk-dispTk;dispTk+=df>0?Math.max(1,Math.round(df/12)):Math.min(-1,Math.round(df/12));if(lim('tkt',60))SFX.tick(dispTk);$('tk').textContent=dispTk}
@@ -75,11 +76,11 @@ function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:
  render(ts/1000);autoQ()}
 var qT=0;function autoQ(){if(++qT<240||qual<1||FR.length<120)return;var a=FR.reduce(function(s,v){return s+v},0)/FR.length;if(a>24){qual=.75;MAXP=140;resize()}qT=0}
 /* ---------- UI ---------- */
-function startGame(n){aInit();CSND.start();loadFarts();SFX.click();titleOn=false;$('title').classList.add('off');MUS.on=true;if(!AC)MUS.on=false;resize();goLevel(n,true);hud()}
+function startGame(n){CUS.on=false;resetPlay();showEd(false);edB.style.display='none';aInit();CSND.start();loadFarts();SFX.click();titleOn=false;$('title').classList.add('off');MUS.on=true;if(!AC)MUS.on=false;resize();goLevel(n,true);hud()}
 $('play').addEventListener('click',function(){startGame(save.lv||0)});$('lv1').addEventListener('click',function(){startGame(0)});
 $('tshelf').addEventListener('click',function(){aInit();SFX.click();showShelf()});$('pbtn').addEventListener('click',function(){SFX.click();showShelf()});
 $('sclose').addEventListener('click',function(){SFX.click();$('shelf').classList.remove('on')});$('wshelf').addEventListener('click',function(){SFX.click();showShelf()});
-$('next').addEventListener('click',function(){SFX.click();$('win').classList.remove('on');goLevel(lvN+1,false)});
+$('next').addEventListener('click',function(){SFX.click();$('win').classList.remove('on');goLevel(CUS.on?0:lvN+1,false)});
 $('mute').addEventListener('click',function(){aInit();setMute(!muted);if(!muted)MUS.on=true});
 $('skip').addEventListener('click',function(){EX.speed=3.5;SFX.click()});$('mbadge').addEventListener('click',openModes);$('tmodes').addEventListener('click',openModes);$('mclose').addEventListener('click',function(){SFX.click();$('modes').classList.remove('on')});$('help').addEventListener('click',function(){startMouse()});
 setMute(muted);if(save.lv>0)$('play').textContent='▶ Keep playing (Level '+(save.lv+1)+')';else $('lv1').style.display='none';
