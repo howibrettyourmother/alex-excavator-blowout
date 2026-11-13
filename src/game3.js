@@ -62,10 +62,10 @@ function mkMover(d){var b;if(d[0]==='pend'){b=Bodies.circle(d[1],d[2]+d[3],d[4],
   b.mf=function(t){var a=d[6]*Math.sin(t*2*PI/d[5]);return{x:d[1]+Math.sin(a)*d[3],y:d[2]+Math.cos(a)*d[3],a:a}};b.anchor={x:d[1],y:d[2]}}
  else{b=Bodies.rectangle(d[1],d[2],d[3],d[4],{isStatic:true,restitution:.3,chamfer:{radius:6}});b.mat='card';b.sk=sprScrap(d[3],d[4],91);b.sw=d[3];b.sh=d[4];b.mf=function(t){return{x:d[1],y:d[2]+d[5]*Math.sin(t*2*PI/d[6]),a:0}}}
  Composite.add(world,b);b.pop0=gt;movers.push(b);return b}
-function clearLevel(keepDeb){statics.concat(movers).forEach(function(b){Composite.remove(world,b)});statics=[];movers=[];if(!keepDeb){debris.forEach(function(b){Composite.remove(world,b)});debris=[]}gems=[];ring=null;shreds=[]}
+function clearLevel(keepDeb){statics.concat(movers).forEach(function(b){Composite.remove(world,b)});statics=[];movers=[];PORT=[];if(!keepDeb){debris.forEach(function(b){Composite.remove(world,b)});debris=[]}gems=[];ring=null;shreds=[]}
 function setupLevel(n,instant){lvN=n;LV=levelDef(n);clearLevel(!instant);
  if(LV.holeMv){HOLE.mv=LV.holeMv;var m=LV.holeMv;setHole(m[0]-m[2]/2,m[0]+m[2]/2)}else{HOLE.mv=null;setHole(LV.hole[0],LV.hole[1])}
- (LV.st||[]).forEach(mkStatic);(LV.mov||[]).forEach(mkMover);
+ (LV.st||[]).forEach(mkStatic);(LV.mov||[]).forEach(mkMover);PORT=LV.portals?LV.portals.map(function(p){return{x:p[0],y:p[1],a:p[2]||0}}):[];
  gems=(LV.gems||[]).map(function(p){return{x:p[0],y:p[1],got:false,ph:rnd()*6}});ring=LV.ring?{x:LV.ring[0],y:LV.ring[1],w:0}:null;
  shreds=(LV.shred||[]).map(function(s){return{x0:s[0],x1:s[1],h:s[2]+30,sk:sprShred(s[1]-s[0]+30,s[2]+30,s[0]|0)}});
  if(instant){(LV.deb||[]).forEach(function(d){mkDeb(d)})}}

@@ -48,3 +48,11 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
   - 🎈 **Whoopie cushion** (up to 3): when the ball or junk hits it, it squishes, puffs and plays a toot from the CC0 recordings (never the "Gastric Distress" clip).
   - 🎉 **Silly string can** (up to 3): sprays colorful streamers with a synthesized "pssht" (capped at 48 streamers).
   - Both can fire at most once every 400 ms, never shake the screen and follow the mute button. Their share-code letters are `u` and `k`, and old codes still load.
+
+## v1.6.0: portal pair
+- New builder piece **Portals**: one tap/drag adds a linked blue + orange pair (one pair per level, uses 2 of the 20 slots).
+- Each portal moves and rotates on its own; throwing either one away removes both. Clear removes them too.
+- Ball (and extra balls in other modes) that enters one portal pops out of the other with the same speed; direction turns by the difference in the two portals' tilt. ~0.3 s cooldown plus "must leave the exit portal first" stops ping-pong.
+- Swirl sparks, a flash, and a synthesized "vwoop" (respects mute).
+- Share codes: portals are char `t` + x + y + angle, blue first then orange. Old codes load unchanged; a code with only one portal drops it.
+- The shot solver and the helper mouse simulate the teleport.

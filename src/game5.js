@@ -21,6 +21,7 @@ function render(t){var sx=0,sy=0;if(shk>.3){sx=(rnd()-.5)*2*shk;sy=(rnd()-.5)*2*
  if(y1<FLOOR-10){g.fillStyle=CBP;g.beginPath();g.moveTo(BX1,y1);g.lineTo(BX1+70,Math.min(840,y1+60));g.lineTo(BX1+70,Math.min(852,y1+72));g.lineTo(BX1,y1+12);g.fill()}
  for(var i=0;i<shreds.length;i++){var sh=shreds[i],s=spr(sh.sk);if(s)g.drawImage(s.c,sh.x0-15,FLOOR-sh.h,s.w,s.h)}
  for(i=0;i<statics.length;i++)drawBody(g,statics[i],ease(clamp((gt-statics[i].pop0)/.4,0,1)));
+ drawPortals(g,t);
  for(i=0;i<movers.length;i++){var m=movers[i];if(m.anchor){g.strokeStyle='#5fd13a';g.lineWidth=5;g.beginPath();g.moveTo(m.anchor.x,m.anchor.y);g.lineTo(m.position.x,m.position.y);g.stroke()}drawBody(g,m,ease(clamp((gt-m.pop0)/.4,0,1)))}
  for(i=0;i<debris.length;i++)drawBody(g,debris[i]);for(i=0;i<flying.length;i++)drawBody(g,flying[i]);
  var gs=spr('gem');for(i=0;i<gems.length;i++){var gm=gems[i];if(gm.got)continue;var tw=Math.sin(t*3+gm.ph);g.save();g.translate(gm.x,gm.y+tw*4);g.rotate(tw*.15);g.drawImage(gs.c,-15,-15,gs.w,gs.h);

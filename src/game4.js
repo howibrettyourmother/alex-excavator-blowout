@@ -115,6 +115,7 @@ Events.on(engine,'collisionStart',function(ev){if(SIMB)return;var ps=ev.pairs;fo
 function popBubble(b,sp){if(!sp)return;var c=Math.cos(-b.angle),s=Math.sin(-b.angle),lx=(sp.x-b.position.x)*c-(sp.y-b.position.y)*s+b.ww/2,ly=(sp.x-b.position.x)*s+(sp.y-b.position.y)*c+b.wh/2;
  var ix=clamp(Math.round((lx-10)/20),0,Math.floor((b.ww-10)/20)),iy=clamp(Math.round((ly-10)/20),0,Math.floor((b.wh-10)/20)),key=ix+','+iy;if(b.pops.indexOf(key)<0){b.pops.push(key);b.dirty=1;SFX.pop();sparks(sp.x,sp.y,4,'#dff4ff')}}
 function physStep(){gt+=FIXED/1000;moveMovers();Engine.update(engine,FIXED);
+ if(PORT.length){if(ball&&portalTP(ball,SIM)&&fly)fly.px=ball.position.x;for(var xi=0;xi<XB.length;xi++)if(portalTP(XB[xi],SIM))XB[xi].px=XB[xi].position.x}
  for(var i=flying.length-1;i>=0;i--){var f=flying[i];if(f.position.y<-140||(f.velocity.y>0&&f.position.y>TABLE)||gt-f.gone>2.5){Composite.remove(world,f);flying.splice(i,1)}}
  for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3)}}}}
  if(modeStep())return;
