@@ -2,7 +2,7 @@
 'use strict';
 var M=window.Matter,Engine=M.Engine,Bodies=M.Bodies,Body=M.Body,Composite=M.Composite,Events=M.Events,Sleeping=M.Sleeping;
 var VER='/*VER*/';
-var W=1500,H=1000,FLOOR=880,TABLE=900,TOP=380,FX0=470,FX1=515,BX0=1360,BX1=1400,GAP0=572,GAP1=790,BR=21,LX=210,LY=724;
+var W=1500,H=1000,FLOOR=880,TABLE=900,TOP=380,FX0=470,FX1=515,BX0=1360,BX1=1400,GAP0=549,GAP1=813,BR=21,LX=210,LY=724;
 var L1=330,L2=290,EXMIN=840,EXMAX=1290,EXPARK=1235;
 function $(id){return document.getElementById(id)}
 var cv=$('c'),ctx=cv.getContext('2d',{alpha:false});

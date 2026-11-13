@@ -54,7 +54,8 @@ function mkDeb(d,spawnDy){var t=d[0],x=d[1],y=d[2]-(spawnDy||0),b;
  else if(t==='wrap'){b=Bodies.rectangle(x,y,d[3],d[4],{density:.0006,friction:.3,restitution:.8,frictionAir:.015});b.mat='wrap';b.ww=d[3];b.wh=d[4];b.pops=[]}
  b.kind=t;b.def=d;Composite.add(world,b);debris.push(b);return b}
 function mkStatic(d){var t=d[0],b;
- if(t==='wrapS'){b=stat(d[1],d[2],d[3],d[4],{mat:'wrap',re:1.05,fr:.2});b.ww=d[3];b.wh=d[4];b.pops=[];b.kind='wrap'}
+ if(t==='whoop'||t==='spray')b=mkToy(t,d);
+ else if(t==='wrapS'){b=stat(d[1],d[2],d[3],d[4],{mat:'wrap',re:1.05,fr:.2});b.ww=d[3];b.wh=d[4];b.pops=[];b.kind='wrap'}
  else{b=stat(d[1],d[2],d[3],d[4],{mat:'card',re:.15,fr:.6,a:d[5]||0});b.sk=sprScrap(d[3]|0,d[4]|0,(d[1]*5)|0);b.sw=d[3]|0;b.sh=d[4]|0;b.kind='card'}
  b.isLedge=t==='ledge';b.pop0=gt;statics.push(b);return b}
 function mkMover(d){var b;if(d[0]==='pend'){b=Bodies.circle(d[1],d[2]+d[3],d[4],{isStatic:true,restitution:.4});b.mat='plate';b.sk=sprPlate(d[4],77);b.sw=d[4]*2;b.sh=d[4]*2;

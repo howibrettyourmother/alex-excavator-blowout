@@ -1,6 +1,6 @@
 /* ===== walk-by toot event (real CC0 recordings) + juice polish ===== */
 var FA={on:false,t:0,x:0,dir:1,k:null,tooted:false,next:40+rnd()*30,clouds:[],wind:0,tt:0,buf:[],load:0,count:0};
-function loadFarts(){if(!AC||FA.load)return;FA.load=1;[1,2,3,4,5].forEach(function(i){try{fetch('sfx/fart'+i+'.mp3').then(function(r){return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){FA.buf.push(buf)},function(){})}).catch(function(){})}catch(e){}})}
+function loadFarts(){if(!AC||FA.load)return;FA.load=1;[1,2,3,4,5].forEach(function(i){try{fetch('sfx/fart'+i+'.mp3').then(function(r){return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){buf.__n=i;FA.buf.push(buf)},function(){})}).catch(function(){})}catch(e){}})}
 function playFart(){if(!aok())return;if(!FA.buf.length){noise(.35,{ft:'lowpass',f:260,fto:120,q:4,vol:.4});tone(90,.35,{to:60,type:'sawtooth',vol:.12});return}
  try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=FA.buf[(rnd()*FA.buf.length)|0];s.playbackRate.value=.88+rnd()*.24;g.gain.value=.9;s.connect(g);g.connect(sfxBus);s.start()}catch(e){}}
 function eww(){voices(7,540,360,.75,[[300,8],[2300,9]],.045);for(var i=0;i<10;i++)voices(1,620+rnd()*260,700+rnd()*200,.07,[[720,6],[1900,8]],.035,.75+i*.1+rnd()*.04)}

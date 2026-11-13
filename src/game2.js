@@ -54,7 +54,7 @@ function mkPanel(){var w=140,h=FLOOR-TOP+60,c=mkc(w*K,h*K),g=c.getContext('2d'),
  g.beginPath();g.ellipse(470,(GAP0+GAP1)/2,30,(GAP1-GAP0)/2+16,0,0,2*PI);g.strokeStyle='#0f1a36';g.lineWidth=4;g.stroke();
  g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=1.5;g.beginPath();g.moveTo(414,GAP1+40);g.quadraticCurveTo(470,GAP1+20,FX1,GAP1+44);g.stroke();
  // pipe-cleaner ring stuck on front
- var cols=['#ff7a1a','#3cc43c','#e8342a','#ffd21a'];for(i=0;i<24;i++){var a=i/24*2*PI;g.strokeStyle=cols[(i>>1)%4];g.lineWidth=7;g.lineCap='round';g.beginPath();g.ellipse(486,FLOOR-80,13,24,0,a,a+.3);g.stroke()}
+ var cols=['#ff7a1a','#3cc43c','#e8342a','#ffd21a'];for(i=0;i<24;i++){var a=i/24*2*PI;g.strokeStyle=cols[(i>>1)%4];g.lineWidth=7;g.lineCap='round';g.beginPath();g.ellipse(486,GAP1+10,13,24,0,a,a+.3);g.stroke()}
  // green pipe cleaner post
  g.strokeStyle='#5fd13a';g.lineWidth=6;g.beginPath();g.moveTo(496,TOP+4);g.lineTo(500,TOP-70);g.stroke();
  g.lineWidth=2;g.strokeStyle='#0d1a33';panelPath(g);g.stroke();

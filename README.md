@@ -40,3 +40,11 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - The back row stands on a cafeteria bench. Every figure is much shorter than the box.
 - The walk-by toot kid now walks along the front of the crowd, and the crowd pinches their noses.
 - Sprites are still cached per kid (head + body); only the arms, eyes and mouth are drawn each frame.
+
+## v1.5.1
+- **Fix:** tapping Clear in the builder no longer leaves the screen shaking. The shake now decays in every state; in the builder it stops completely after 0.3 s.
+- **Taller front opening** (all levels, including builder levels and share codes): the oval is 264 world units tall instead of 218. The ball has 177 units of clearance instead of 131 (+35%).
+- **New builder pieces:**
+  - 🎈 **Whoopie cushion** (up to 3): when the ball or junk hits it, it squishes, puffs and plays a toot from the CC0 recordings (never the "Gastric Distress" clip).
+  - 🎉 **Silly string can** (up to 3): sprays colorful streamers with a synthesized "pssht" (capped at 48 streamers).
+  - Both can fire at most once every 400 ms, never shake the screen and follow the mute button. Their share-code letters are `u` and `k`, and old codes still load.
