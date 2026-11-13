@@ -32,3 +32,11 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - **📣 Challenge Dad** turns a level into a share link (`#L=<code>`) or a short code. Opening the link shows a challenge screen, and beating it says "You beat Alex's level in N throws!". "Enter a code" also accepts a pasted link.
 - Custom levels never change the main level progress or best scores.
 - Source: `src/game9.js`. The build order is now game1,2,3,4,6,7,8,9,5.
+
+## v1.5: the crowd are little kids
+- All crowd figures were redrawn as 6–7-year-old first graders: big heads, chubby cheeks, big eyes, gap-tooth grins, short bodies.
+- They wear T-shirts or hoodies with a star, dino, rainbow, number, lightning bolt or soccer ball, or a Meadow Brook orange "MBE 1st grade" class shirt. Below that are shorts, jeans, leggings or a tutu, plus sneakers (some light up).
+- Hair styles: pigtails with bows, a ponytail, buzz cut, curly puffs, braids with beads, a bob with a headband, a backwards cap and a beanie. Props: backpacks and a lanyard.
+- The back row stands on a cafeteria bench. Every figure is much shorter than the box.
+- The walk-by toot kid now walks along the front of the crowd, and the crowd pinches their noses.
+- Sprites are still cached per kid (head + body); only the arms, eyes and mouth are drawn each frame.

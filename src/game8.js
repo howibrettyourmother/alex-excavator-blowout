@@ -8,14 +8,14 @@ defSpr('stink',130,96,function(g){var r=rng(3);g.translate(65,52);g.fillStyle='r
  [[-30,6,24],[-6,-10,30],[24,2,26],[4,16,24],[-22,-6,20]].forEach(function(c){g.moveTo(c[0]+c[2],c[1]);g.arc(c[0],c[1],c[2],0,2*PI)});g.fill();
  g.strokeStyle='rgba(90,140,30,.9)';g.lineWidth=3;g.lineCap='round';[-24,0,24].forEach(function(x){g.beginPath();g.moveTo(x,-34);g.bezierCurveTo(x+8,-40,x-8,-46,x,-52);g.stroke()});
  g.fillStyle='rgba(230,255,180,.6)';g.beginPath();g.ellipse(-10,-14,10,6,-.4,0,2*PI);g.fill()});
-function startFart(){if(FA.on)return;FA.on=true;FA.t=0;FA.tooted=false;FA.dir=rnd()<.5?1:-1;FA.x=FA.dir>0?-90:1590;FA.count++;
- var r=rng(500+FA.count);FA.k={i:'w'+(FA.count%4),x:FA.x,hy:TOP-64,s:.5,skin:SKIN[(r()*6)|0],hair:HAIR[(r()*7)|0],hs:(r()*6)|0,shirt:SHIRT[(r()*10)|0],gl:r()<.25,ph:0,dl:0,bp:3,deco:0,dir:FA.dir};FA.next=75+rnd()*60}
+function startFart(){if(FA.on)return;FA.on=true;FA.t=0;FA.tooted=false;FA.dir=rnd()<.5?1:-1;FA.x=FA.dir>0?-90:600;FA.count++;
+ var r=rng(500+FA.count);FA.k=mkKid('w'+(FA.count%4),FA.x,FRONT+4-224*.64,.64,WST[FA.count%4],FA.dir,r);FA.k.ph=0;FA.k.dl=0;FA.next=75+rnd()*60}
 function toot(){FA.tooted=true;playFart();after(.55,function(){if(rnd()<.5)playFart()});shake(4);banner('💨 Stinky wind! Wobbly aim!',1);after(.5,function(){crowd('stink',3.4);eww()});
- for(var i=0;i<6;i++){var c={x:FA.x-FA.dir*20+(rnd()-.5)*60,y:TOP-40-rnd()*60,vx:-(45+rnd()*55),vy:12+rnd()*14,sc:.6+rnd()*.5,a:0,l:0,ph:rnd()*6};if(i>=4){c.x=500+rnd()*700;c.y=430+rnd()*260;c.l=-.4*(i-3)}FA.clouds.push(c)}}
+ for(var i=0;i<6;i++){var c={x:FA.x-FA.dir*20+(rnd()-.5)*60,y:FRONT-110-rnd()*60,vx:-(45+rnd()*55),vy:12+rnd()*14,sc:.6+rnd()*.5,a:0,l:0,ph:rnd()*6};if(i>=4){c.x=500+rnd()*700;c.y=430+rnd()*260;c.l=-.4*(i-3)}FA.clouds.push(c)}}
 function updFart(dt){FA.tt+=dt;
  if(!FA.on){if(state==='aim'&&!AS.on&&!MS.on&&!titleOn&&!SIM&&!$('win').classList.contains('on'))FA.next-=dt}
  if(!FA.on&&FA.next<=0)startFart();
- if(FA.on){FA.t+=dt;FA.x+=FA.dir*250*dt;FA.k.x=FA.x;if(!FA.tooted&&(FA.dir>0?FA.x>720:FA.x<820))toot();if(FA.x<-120||FA.x>1620)FA.on=false}
+ if(FA.on){FA.t+=dt;FA.x+=FA.dir*250*dt;FA.k.x=FA.x;if(!FA.tooted&&(FA.dir>0?FA.x>215:FA.x<290))toot();if(FA.x<-120||FA.x>620)FA.on=false}
  var w=0;for(var i=FA.clouds.length-1;i>=0;i--){var c=FA.clouds[i];c.l+=dt;if(c.l<0)continue;c.x+=c.vx*dt;c.y+=c.vy*dt+Math.sin(c.l*2+c.ph)*12*dt;c.sc+=dt*.08;c.a=Math.min(1,c.l*2)*Math.max(0,1-c.l/7.5);if(c.l>7.5||c.x<-160){FA.clouds.splice(i,1);continue}w=Math.max(w,c.a)}
  FA.wind=w}
 function stinkWob(A){if(!FA.wind||AS.on||!A)return A;var w=FA.wind*(Math.sin(FA.tt*2.4)*4+Math.sin(FA.tt*6.3)*1.3);return{ang:A.ang+w,p:A.p,len:A.len,snap:A.snap,stink:true}}

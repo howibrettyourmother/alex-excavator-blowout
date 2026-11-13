@@ -14,7 +14,7 @@ function drawBG(){var c=mkc((CW+2*BGM)*DPR,(CH+2*BGM)*DPR),g=c.getContext('2d'),
  var sg=g.createLinearGradient(cx1,0,cx1+60,0);sg.addColorStop(0,'rgba(0,0,0,.35)');sg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=sg;g.fillRect(cx1,v.y0,60,TABLE-v.y0);
  // navy flag with gold fringe (no emblem)
  g.fillStyle='#c9a227';g.fillRect(986,v.y0,6,330-v.y0);g.beginPath();g.moveTo(992,-20);g.quadraticCurveTo(1030,80,1010,250);g.lineTo(1040,240);g.quadraticCurveTo(1060,90,1035,-20);g.closePath();g.fillStyle='#1c2a6b';g.fill();g.strokeStyle='#e0b83a';g.lineWidth=5;g.beginPath();g.moveTo(1010,250);g.lineTo(1040,240);g.stroke();
- drawBanner(g);BG=c;
+ drawBench(g);drawBanner(g);BG=c;
  // ---- front layer (table, box) drawn over the crowd ----
  BG1Y=Math.max(0,Math.floor(DPR*(OY+BGM+(TOP-34)*S)));c=mkc((CW+2*BGM)*DPR,(CH+2*BGM)*DPR-BG1Y);g=c.getContext('2d');g.setTransform(DPR*S,0,0,DPR*S,DPR*(OX+BGM),DPR*(OY+BGM)-BG1Y);
  drawLunch(g);
