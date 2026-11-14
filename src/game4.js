@@ -11,12 +11,13 @@ function ftext(x,y,t,c){FT.push({x:x,y:y,t:t,c:c||'#ffde3b',l:1.3});if(FT.length
 function updP(dt){for(var i=P.length-1;i>=0;i--){var p=P[i];p.l-=dt;if(p.l<=0){P.splice(i,1);continue}
  if(p.k==='conf'){p.vx*=Math.pow(.25,dt);p.vy=p.vy*Math.pow(.3,dt)+900*dt*.5;p.vy=Math.min(p.vy,260);p.r+=p.vr*dt;p.x+=p.vx*dt+Math.sin(p.l*8+p.s)*40*dt}
  else if(p.k==='ss'){p.vx*=Math.pow(.15,dt);p.vy=p.vy*Math.pow(.15,dt)+240*dt;p.x+=p.vx*dt;p.ph+=dt*8}
- else if(p.k==='du'||p.k==='sm'||p.k==='pf'){p.vx*=.96;p.vy*=.96;p.s+=dt*30;p.x+=p.vx*dt}else{p.vy+=(p.k==='st'?600:900)*dt;p.x+=p.vx*dt}
+ else if(p.k==='fb'){p.vx*=Math.pow(.2,dt);p.vy=p.vy*Math.pow(.25,dt)+280*dt;p.x+=p.vx*dt;p.s+=dt*8}else if(p.k==='du'||p.k==='sm'||p.k==='pf'){p.vx*=.96;p.vy*=.96;p.s+=dt*30;p.x+=p.vx*dt}else{p.vy+=(p.k==='st'?600:900)*dt;p.x+=p.vx*dt}
  p.y+=p.vy*dt}
  for(i=FT.length-1;i>=0;i--){FT[i].l-=dt;FT[i].y-=50*dt;if(FT[i].l<=0)FT.splice(i,1)}}
 function drawP(g){for(var i=0;i<P.length;i++){var p=P[i],a=clamp(p.l/p.m,0,1);
  if(p.k==='conf'){g.save();g.translate(p.x,p.y);g.rotate(p.r);g.globalAlpha=Math.min(1,a*2);g.fillStyle=p.c;g.fillRect(-p.s/2,-p.s/4*Math.abs(Math.cos(p.r*1.3))-1,p.s,p.s/2*Math.abs(Math.cos(p.r*1.3))+2);g.restore()}
  else if(p.k==='ss'){var an=Math.atan2(p.vy,p.vx)+PI;g.globalAlpha=Math.min(1,a*1.6);g.strokeStyle=p.c;g.lineWidth=3.5;g.lineCap='round';g.beginPath();for(var j=0;j<=6;j++){var d=j*6,wv=Math.sin(p.ph+j*1.1)*5;g.lineTo(p.x+Math.cos(an)*d-Math.sin(an)*wv,p.y+Math.sin(an)*d+Math.cos(an)*wv)}g.stroke()}
+ else if(p.k==='fb'){g.globalAlpha=Math.min(1,a*1.4);g.fillStyle=p.c;g.beginPath();g.ellipse(p.x,p.y,p.s*.7,p.s*.55,0,0,2*PI);g.fill();g.fillStyle='rgba(255,255,255,.5)';g.beginPath();g.ellipse(p.x-p.s*.2,p.y-p.s*.2,p.s*.25,p.s*.18,0,0,2*PI);g.fill()}
  else if(p.k==='du'||p.k==='sm'||p.k==='pf'){g.globalAlpha=a*(p.k==='pf'?.7:.5);g.fillStyle=p.k==='sm'?'#777':p.k==='pf'?'#fff4f6':'#c8a070';g.beginPath();g.arc(p.x,p.y,p.s,0,2*PI);g.fill()}
  else if(p.k==='str'){g.globalAlpha=a;g.strokeStyle=p.c;g.lineWidth=2.5;g.beginPath();g.moveTo(p.x,p.y);g.quadraticCurveTo(p.x+6,p.y-6,p.x+12,p.y+2);g.stroke()}
  else{g.globalAlpha=a;g.fillStyle=p.c;g.fillRect(p.x-p.s/2,p.y-p.s/2,p.s,p.s)}}g.globalAlpha=1;
@@ -117,6 +118,7 @@ function popBubble(b,sp){if(!sp)return;var c=Math.cos(-b.angle),s=Math.sin(-b.an
  var ix=clamp(Math.round((lx-10)/20),0,Math.floor((b.ww-10)/20)),iy=clamp(Math.round((ly-10)/20),0,Math.floor((b.wh-10)/20)),key=ix+','+iy;if(b.pops.indexOf(key)<0){b.pops.push(key);b.dirty=1;SFX.pop();sparks(sp.x,sp.y,4,'#dff4ff')}}
 function physStep(){gt+=FIXED/1000;moveMovers();Engine.update(engine,FIXED);
  if(FANL.length){fanStep(ball,SIM);for(var fi=0;fi<XB.length;fi++)fanStep(XB[fi],SIM)}
+ try{toyStep._did=0;toyStep(ball,SIM);for(var ti=0;ti<(XB||[]).length;ti++)toyStep(XB[ti],SIM)}catch(e){}
  if(PORT.length){if(ball&&portalTP(ball,SIM)&&fly)fly.px=ball.position.x;for(var xi=0;xi<XB.length;xi++)if(portalTP(XB[xi],SIM))XB[xi].px=XB[xi].position.x}
  for(var i=flying.length-1;i>=0;i--){var f=flying[i];if(f.position.y<-140||(f.velocity.y>0&&f.position.y>TABLE)||gt-f.gone>2.5){Composite.remove(world,f);flying.splice(i,1)}}
  for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3)}}}}

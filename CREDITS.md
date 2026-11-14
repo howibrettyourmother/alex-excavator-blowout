@@ -42,3 +42,15 @@ Each clip was trimmed, faded, loudness-matched, and re-encoded as mono 64 kbps M
 
 ## v1.6.3 goat scream
 - `sfx/sheep_scream.mp3` (1.80 s, mono 64 kbps): Screaming Sheep audio from YouTube video SIaFtAKnqBU (AjQ2891), used non-commercially for a private family game at the owner's request; not CC0. It's the 3.03-4.80 s scream, trimmed, faded and loudness-normalized. The earlier CC0 goat clips (goat1-3) are no longer used.
+
+## v1.7.0 piece sounds and UV hum
+All new sounds are synthesized at runtime with WebAudio (no samples, nothing copyrighted):
+- Fidget spinner: a rising zip / whir
+- Pinwheel: a soft flutter
+- Jello: a wet squish
+- Boxing glove: a short thud and cartoon POW
+- Balloon: a pop
+- Rubber duck: a squeaky peep
+- Elephant toothpaste: a fizzy foam whoosh
+- Invisible-ink black light: a soft low hum (sine + triangle with a slow wobble) while UV mode is on
+

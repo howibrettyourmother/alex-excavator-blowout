@@ -231,7 +231,7 @@ function assistGeom(){ // clear the path: remove obstacles + movers (keep ledges
  if(HOLE.mv){var m=HOLE.mv;HOLE.mv=null;setHole(m[0]-m[2]/2-15,m[0]+m[2]/2+15)}else setHole(HOLE.y0-30,HOLE.y1)}
 function tossDeb(b){if(b.isStatic)Body.setStatic(b,false);b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);Body.setVelocity(b,{x:2+rnd()*5,y:-30-rnd()*8});Body.setAngularVelocity(b,(rnd()-.5)*.6);b.gone=gt;flying.push(b);debris.splice(debris.indexOf(b),1);dust(b.position.x,FLOOR,4)}
 function simBall(deg,p,rec){var a=deg*PI/180,v=9+25*p,b=mkBall(LX,LY);SIMB=true;Composite.add(world,b);Body.setVelocity(b,{x:Math.cos(a)*v,y:-Math.sin(a)*v});
- var px=LX,res=0,still=0,path=rec?[]:null;for(var i=0;i<460;i++){Engine.update(engine,FIXED);fanStep(b,true);if(portalTP(b,true))px=b.position.x;var q=b.position;if(rec&&i%4===0)path.push({x:q.x,y:q.y});
+ var px=LX,res=0,still=0,path=rec?[]:null;for(var i=0;i<460;i++){Engine.update(engine,FIXED);fanStep(b,true);try{toyStep._did=0;toyStep(b,true)}catch(e){}if(portalTP(b,true))px=b.position.x;var q=b.position;if(rec&&i%4===0)path.push({x:q.x,y:q.y});
   var inS=false;for(var j=0;j<shreds.length;j++){var sh=shreds[j];if(q.x>sh.x0-5&&q.x<sh.x1+5&&q.y>FLOOR-sh.h)inS=true}b.frictionAir=inS?.045:.004;
   if(q.x>BX0+20&&px<=BX0+20&&q.y>HOLE.y0-6&&q.y<HOLE.y1+6){res=1;break}px=q.x;if(Body.getSpeed(b)<.3){if(++still>70)break}else still=0;if(q.y>TABLE+200||q.x<-280)break}
  Composite.remove(world,b);SIMB=false;return rec?{res:res,path:path}:res}

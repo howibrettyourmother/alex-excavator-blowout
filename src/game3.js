@@ -41,7 +41,42 @@ function genLevel(n){var r=rng(n*977+13),L={n:LVP[(n-LEVELS.length)%LVP.length].
  for(var i=0;i<cnt;i++){var t=types[(r()*types.length)|0],x=600+r()*660;
   if(t==='plate')L.deb.push(['plate',x,740-r()*80,38+r()*8]);else if(t==='cup')L.deb.push(['cup',x,740,['r','g','b'][(r()*3)|0]]);else if(t==='scrap')L.deb.push(['scrap',x,740,50+r()*40,30+r()*20]);else if(t==='edge')L.deb.push(['edge',x,700,0]);else L.deb.push(['wrap',x,720,100+r()*60,40])}
  L.shred.push([560+r()*500|0,0,24]);L.shred[0][1]=L.shred[0][0]+80+r()*40;
- for(i=0;i<4;i++)L.gems.push([620+r()*680,500+r()*220]);if(r()<.7)L.ring=[700+r()*500,560+r()*120];return L}
+ for(i=0;i<4;i++)L.gems.push([620+r()*680,500+r()*220]);if(r()<.7)L.ring=[700+r()*500,560+r()*120];
+ if(n!==6&&n!==8&&n!==9&&n!==14)addSilly(L,n,r);return L}
+function addSilly(L,n,r){
+ function hit(x,y,w,h){var m=22,i,d,tw,th;
+  function ov(px,py,pw,ph){return Math.abs(x-px)<(w+pw)/2+m&&Math.abs(y-py)<(h+ph)/2+m}
+  for(i=0;i<(L.st||[]).length;i++){d=L.st[i];tw=d[3]||90;th=d[4]||80;if(!tw)tw=90;if(!th)th=80;if(ov(d[1],d[2],tw,th))return 1}
+  for(i=0;i<(L.deb||[]).length;i++){d=L.deb[i];if(ov(d[1],d[2],80,60))return 1}
+  return 0}
+ function pick(kind,fn){var k,p,w=90,h=70;
+  if(kind==='spin'||kind==='jello')w=h=100;
+  if(kind==='tramp')w=160,h=50;
+  if(kind==='goat')w=90,h=100;
+  if(kind==='paste'||kind==='balloon'||kind==='pin')w=70,h=110;
+  if(kind==='spray')w=40,h=80;
+  for(k=0;k<10;k++){p=fn(r);if(!hit(p[0],p[1],w,h))return p}
+  return null}
+ /* Attic (above the left entry gap) and left apron (clear of the floor wrap pad). */
+ function fl(r){return[560+r()*130,FLOOR-36]}
+ function mid(r){return[600+r()*420,TOP+36+r()*90]}
+ function hi(r){return[640+r()*400,TOP+28+r()*70]}
+ var packs;
+ if(n<11)packs=[['pin',hi],['duck',fl],['horn',hi],['frog',fl]];
+ else if(n<15)packs=[['balloon',hi],['banana',fl],['whoop',fl],['chick',fl],['spray',mid],['jello',mid]];
+ else if(n<18)packs=[['tramp',fl],['glove',mid],['spin',mid],['goat',fl],['fan',mid],['jello',mid],['chick',fl],['pin',hi]];
+ else packs=[['paste',fl],['portal',mid],['spin',mid],['glove',mid],['fan',mid],['tramp',fl],['balloon',hi],['goat',fl],['duck',fl],['jello',mid],['spray',mid]];
+ var want=n<11?(r()<.75?1:0):n<15?1+(r()<.5?1:0):n<18?2+(r()<.5?1:0):2+((r()*3)|0);
+ var used={},i,k,t,fn,p;
+ for(i=0;i<want&&i<packs.length;i++){do{k=(r()*packs.length)|0}while(used[k]&&Object.keys(used).length<packs.length);used[k]=1;t=packs[k][0];fn=packs[k][1];
+  if(t==='portal'){if(L.portals)continue;var x1=600+r()*180,y1=TOP+40+r()*80,x2=980+r()*180,y2=TOP+40+r()*90;L.portals=[null,null,null,null,null,null,null,null];L.portals[0]=[x1,y1,0,0];L.portals[1]=[x2,y2,0,4];continue}
+  p=pick(t,fn);if(!p)continue;
+  if(t==='duck'||t==='chick')L.deb.push([t,p[0],p[1]]);
+  else if(t==='fan')L.st.push(['fan',p[0],p[1],56,46,0]);
+  else if(t==='spin'||t==='glove')L.st.push([t,p[0],p[1],0,0,r()<.5?1:0]);
+  else if(t==='spray')L.st.push(['spray',p[0],p[1],36,78]);
+  else if(t==='whoop')L.st.push(['whoop',p[0],p[1],92,36]);
+  else L.st.push([t,p[0],p[1],0,0,0])}}
 function levelDef(n){if(CUS.on&&CUS.def)return CUS.def;return n<LEVELS.length?LEVELS[n]:genLevel(n)}
 /* ---------- level objects ---------- */
 var debris=[],statics=[],movers=[],gems=[],ring=null,shreds=[],gt=0,LV=null,lvN=0;
@@ -53,9 +88,10 @@ function mkDeb(d,spawnDy){var t=d[0],x=d[1],y=d[2]-(spawnDy||0),b;
  else if(t==='scrap'){b=Bodies.rectangle(x,y,d[3],d[4],{density:.0011,friction:.6,restitution:.2,frictionAir:.01,angle:d[5]||0});b.mat='card';b.sk=sprScrap(d[3]|0,d[4]|0,(x*3)|0);b.sw=d[3]|0;b.sh=d[4]|0}
  else if(t==='wrap'){b=Bodies.rectangle(x,y,d[3],d[4],{density:.0006,friction:.3,restitution:.8,frictionAir:.015});b.mat='wrap';b.ww=d[3];b.wh=d[4];b.pops=[]}
  else if(t==='chick'){b=Bodies.rectangle(x,y,124,36,{density:.00045,friction:.45,restitution:.75,frictionAir:.01,chamfer:{radius:17}});b.mat='card';b.toy=1;b.sw=156;b.sh=72;b.lastHit=-9;b.hitT=-9}
+ else if(t==='duck'){b=Bodies.rectangle(x,y,70,40,{density:.00032,friction:.25,restitution:.7,frictionAir:.012,chamfer:{radius:16}});b.mat='card';b.toy=1;b.sw=84;b.sh=72;b.lastHit=-9;b.hitT=-9}
  b.kind=t;b.def=d;Composite.add(world,b);debris.push(b);return b}
 function mkStatic(d){var t=d[0],b;
- if(t==='whoop'||t==='spray'||t==='tramp'||t==='banana'||t==='frog'||t==='horn'||t==='goat'||t==='fan')b=mkToy(t,d);
+ if(t==='whoop'||t==='spray'||t==='tramp'||t==='banana'||t==='frog'||t==='horn'||t==='goat'||t==='fan'||t==='spin'||t==='pin'||t==='jello'||t==='glove'||t==='balloon'||t==='paste')b=mkToy(t,d);
  else if(t==='wrapS'){b=d[6]==='pad'?stat(d[1],d[2],d[3],d[4],{mat:'pad',re:PAD.re,fr:.3}):stat(d[1],d[2],d[3],d[4],{mat:'wrap',re:1.05,fr:.2});b.ww=d[3];b.wh=d[4];b.pops=[];b.kind='wrap';if(d[6]==='pad'){b.kind='pad';b.toy=1;b.sw=164;b.sh=84;b.lastHit=-9;b.hitT=-9}}
  else{b=stat(d[1],d[2],d[3],d[4],{mat:'card',re:.15,fr:.6,a:d[5]||0});b.sk=sprScrap(d[3]|0,d[4]|0,(d[1]*5)|0);b.sw=d[3]|0;b.sh=d[4]|0;b.kind='card'}
  b.isLedge=t==='ledge';b.holeLedge=t==='ledge'&&d[6]==='hole';b.pop0=gt;statics.push(b);return b}
@@ -63,7 +99,7 @@ function mkMover(d){var b;if(d[0]==='pend'){b=Bodies.circle(d[1],d[2]+d[3],d[4],
   b.mf=function(t){var a=d[6]*Math.sin(t*2*PI/d[5]);return{x:d[1]+Math.sin(a)*d[3],y:d[2]+Math.cos(a)*d[3],a:a}};b.anchor={x:d[1],y:d[2]}}
  else{b=Bodies.rectangle(d[1],d[2],d[3],d[4],{isStatic:true,restitution:.3,chamfer:{radius:6}});b.mat='card';b.sk=sprScrap(d[3],d[4],91);b.sw=d[3];b.sh=d[4];b.mf=function(t){return{x:d[1],y:d[2]+d[5]*Math.sin(t*2*PI/d[6]),a:0}}}
  Composite.add(world,b);b.pop0=gt;movers.push(b);return b}
-function clearLevel(keepDeb){statics.concat(movers).forEach(function(b){Composite.remove(world,b)});statics=[];movers=[];PORT=[];FANL=[];if(!keepDeb){debris.forEach(function(b){Composite.remove(world,b)});debris=[]}gems=[];ring=null;shreds=[]}
+function clearLevel(keepDeb){statics.concat(movers).forEach(function(b){Composite.remove(world,b)});statics=[];movers=[];PORT=[];FANL=[];try{foamClear()}catch(e){FOAM=[]}if(!keepDeb){debris.forEach(function(b){Composite.remove(world,b)});debris=[]}gems=[];ring=null;shreds=[]}
 function setupLevel(n,instant){lvN=n;LV=levelDef(n);clearLevel(!instant);
  if(LV.holeMv){HOLE.mv=LV.holeMv;var m=LV.holeMv;setHole(m[0]-m[2]/2,m[0]+m[2]/2)}else{HOLE.mv=null;setHole(LV.hole[0],LV.hole[1])}
  (LV.st||[]).forEach(mkStatic);(LV.mov||[]).forEach(mkMover);PORT=LV.portals?LV.portals.map(function(p){return p?{x:p[0],y:p[1],a:p[2]||0,d:p[3]==null?null:p[3]}:null}):[];
