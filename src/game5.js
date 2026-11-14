@@ -65,9 +65,10 @@ cv.addEventListener('pointerup',function(e){release(e)});cv.addEventListener('po
 document.addEventListener('touchmove',function(e){if(e.target===cv)e.preventDefault()},{passive:false});
 document.addEventListener('gesturestart',function(e){e.preventDefault()});
 /* ---------- resize + loop ---------- */
-function edPad(){var t=0,b=0;try{if(edPal&&edPal.style.display==='flex'){var pr=edPal.getBoundingClientRect();b=Math.max(0,CH-pr.top)+8;if(edTop&&edTop.style.display==='flex')t=edTop.getBoundingClientRect().bottom+8}}catch(e){}return{t:t,b:b}}
+/* v1.9.0: builder uses the same scale as play mode. Only on very narrow screens is the playfield nudged/shrunk so the left toy shelf (min 252px) stays off the box. */
+function edPad(){var l=0;try{if(edPal&&edPal.style.display==='flex')l=252}catch(e){}return{t:0,b:0,l:l}}
 function resize(){CW=Math.max(1,innerWidth);CH=Math.max(1,innerHeight);DPR=Math.min(window.devicePixelRatio||1,2)*qual;cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);cv.style.width=CW+'px';cv.style.height=CH+'px';
- var pad=edPad(),availH=Math.max(160,CH-pad.t-pad.b);S=Math.min(CW/W,availH/H);OX=(CW-W*S)/2;OY=pad.t+(availH-H*S)/2;K=S*DPR;SPR={};drawBG();mkPanel();mkSign();mkCeil();CBP=ctx.createPattern(CBT,'repeat')}
+ var pad=edPad(),availH=Math.max(160,CH-pad.t-pad.b);S=Math.min(CW/W,availH/H);if(pad.l)S=Math.max(.1,Math.min(S,(CW-pad.l)/(W-415)));OX=(CW-W*S)/2;if(pad.l)OX=Math.min(CW-W*S,Math.max(OX,pad.l-415*S));OY=pad.t+(availH-H*S)/2;K=S*DPR;SPR={};drawBG();mkPanel();mkSign();mkCeil();CBP=ctx.createPattern(CBT,'repeat');try{if(typeof edLayout==='function')edLayout()}catch(e){}}
 addEventListener('resize',function(){clearTimeout(resize.t);resize.t=setTimeout(resize,120)});addEventListener('orientationchange',function(){setTimeout(resize,300)});
 var last=0,acc=0,FR=[],paused=false,titleOn=true;
 function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:16.7);last=ts;FR.push(dt);if(FR.length>120)FR.shift();decShk(dt/1000);

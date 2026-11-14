@@ -132,3 +132,11 @@ Silly pieces shuffle larger sound pools (existing clips plus a verified-CC0 pack
 - Intro sounds are real CC0 recordings: rumble, track clatter, diesel engine (revs on wind-up), whoosh, layered smash + explosion, and debris.
 - **Theme music system:** an intro sting synced to the smash (`hit` point), a seamless menu loop (loop points in `music/music.json`) and the full song from the settings panel. Missing files mean silence and no requests. Music ducks under booms, fanfares and meme stings. Drop-in: `python3 src/music_dropin.py` (steps in /workspace/kids_audio/excavator_theme/DROP_IN.md). The song files aren't shipped yet.
 - **⚙️ Sound panel** (title screen + HUD): Music and Sounds sliders and on/off toggles, saved per kid (`aeb_snd_alex` / `aeb_snd_zoe`). The old 🔊 button still mutes everything.
+
+## v1.9.0 (2026-11-14): full-screen builder
+- The builder now uses the same scale as play mode, so the box is about twice the size it was in v1.8.0 (27% of the screen instead of 13.5% at 1180×820, and 25% instead of 12.8% at 1024×768). Nothing sits on top of the box or its floor.
+- **Top bar** (over the ceiling, never the box): ◀ Back and ↶ Undo on the left; 📣 Dad, 💥 Blow it up!, ▶ Test it! and ☰ More on the right. Every button is at least 60 px.
+- **Toy shelf** on the left, over the crowd and table where pieces can't go anyway. It has the 5 tabs (3+2 grid) and the pieces (3 columns) with their "left" count badges. Drag a piece straight into the box.
+- **☰ More** menu: level name, 🎲 new name, 💾 Save, 🕳️ Hole size, ↕️ Moving hole, 🧹 Clear all, 🔊 Sounds (the ⚙️ panel) and 📣 Challenge Dad. It closes on ✖, after a one-shot action, or on a tap anywhere else.
+- The selected-piece tools (↺ ↻ ➜ 🎨 🗑️) are now 60 px or bigger and stay clear of the shelf and the top bar.
+- On very narrow screens the playfield shrinks or slides right just enough to keep the shelf off the box.
