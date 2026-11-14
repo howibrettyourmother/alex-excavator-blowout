@@ -2,7 +2,7 @@ import os,re,base64,sys
 D=os.path.dirname(os.path.abspath(__file__));R=os.path.dirname(D)
 VER=open(f'{R}/VERSION').read().strip()
 t=open(f'{D}/template.html').read()
-game=''.join(open(f'{D}/game{i}.js').read() for i in (1,2,3,4,6,7,8,9,10,5)).replace('/*VER*/',VER)
+game=''.join(open(f'{D}/game{i}.js').read() for i in (1,2,3,4,6,7,8,9,10,11,5)).replace('/*VER*/',VER)
 pack=open(f'{R}/sfx/pools.json').read().strip()
 if '/*PACK*/null' not in game: raise SystemExit('PACK marker missing')
 game=game.replace('/*PACK*/null',pack,1)

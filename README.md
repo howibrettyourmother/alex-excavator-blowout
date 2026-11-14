@@ -147,3 +147,13 @@ Silly pieces shuffle larger sound pools (existing clips plus a verified-CC0 pack
 - **Menu:** the song keeps playing over TAP TO PLAY and the title screen until its big "ALEX!" ending. It fades out when a level or the builder starts, when Music is switched off or when 🔇 is on. It is never looped, because it has a hard ending. If the intro ran silently (iPad before the first touch), the song starts from the top on the title screen as soon as audio unlocks. It plays once per launch, and again with 🎬 Replay intro.
 - **Full song:** ⚙️ → 🎤 Theme song plays it from the top.
 - The sting and the full song share one file, which is fetched and decoded once and precached by the service worker.
+
+## v1.10.0 (2026-11-14): Challenge Dad, synced across devices
+- 📣 **Dad** (top bar), 📣 **Challenge Dad** (More) and 📣 in Alex's Levels now send the challenge straight to Dad. No typing, email or app is needed. A big **"Dad has been CHALLENGED!"** screen with confetti shows the level name and the score to beat, then **"✅ Sent to Dad!"**.
+- How it works: the game posts a tiny message (level code, level name, best score, kid, plus a random device id and challenge id; nothing personal) to a private ntfy.sh topic. Every device running the game checks that topic when it opens and whenever the home screen comes back.
+- Offline: the challenge waits in the device's storage and is retried on load, when the internet comes back, and every 60 s ("We'll send it when the internet's back."). At most 1 push per 30 s.
+- On any other device, the home screen shows **"🏆 New challenge from Alex!"** with a count. Tap it for the list, then ▶ to play. When Dad finishes, the win card says **"🏆 Dad beat it!"**, **"😜 Alex wins!"** or **"🤝 It's a tie!"**, with an Alex vs Dad tally.
+- A device never shows its own challenges. Everything fetched is cached locally.
+- **Limit:** ntfy.sh keeps messages for 12 hours, so a challenge vanishes if no other device opens the game within 12 h of it being sent.
+- The old share link (and the system Share sheet) is still there for grown-ups: More → 🔗 Share link.
+- The service worker never touches ntfy.sh requests.

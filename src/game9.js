@@ -110,7 +110,7 @@ edTop.innerHTML='<div class="grp"><button class="tag cb mk" id="edBack">◀ Back
  '<div class="grp"><button class="tag mk dadb" id="edDad" aria-label="Challenge Dad">📣 Dad</button><button class="tag mk boom" id="edBlow">💥 Blow it up!</button><button class="tag mk go" id="edTest">▶ Test it!</button><button class="tag cb mk" id="edMoreB" aria-label="More">☰ More</button></div>';
 edMore.innerHTML='<button class="tag cb mk wide" id="edName">✏️ My Level</button><button class="tag cb mk" id="edDice" aria-label="Random name">🎲 New name</button><button class="tag cb mk" id="edSave">💾 Save</button>'+
  '<button class="tag cb mk" id="edHole">🕳️ Hole: Medium</button><button class="tag cb mk" id="edMove">↕️ Moving: off</button><button class="tag cb mk" id="edClear">🧹 Clear all</button>'+
- '<button class="tag cb mk" id="edSet">🔊 Sounds</button><button class="tag mk dadb wide" id="edDad2">📣 Challenge Dad</button><button class="tag cb mk wide" id="edMoreX">✖ Close</button>';
+ '<button class="tag cb mk" id="edSet">🔊 Sounds</button><button class="tag cb mk" id="edLink" aria-label="Share link for grown-ups">🔗 Share link</button><button class="tag mk dadb wide" id="edDad2">📣 Challenge Dad</button><button class="tag cb mk wide" id="edMoreX">✖ Close</button>';
 edTools.innerHTML='<button class="tag cb" id="edRotL" aria-label="Turn back">↺</button><button class="tag cb" id="edRot" aria-label="Turn">↻</button><button class="tag cb" id="edDir" aria-label="Exit direction">➜</button><button class="tag cb" id="edCol" aria-label="Color">🎨</button><button class="tag cb" id="edDel" aria-label="Throw away">🗑️</button>';
 var hudEl=$('hud'),edB=mkEl('button','edbtn','tag cb mk','🛠️ Edit',hudEl);hudEl.insertBefore(edB,$('mute'));edB.style.display='none';
 mkEl('div','myLv','ov','<div class="card cb"><h2 class="mk">🛠️ Alex\'s Levels</h2><div id="lvSub" style="font-size:18px;color:#4a2e10">Build your own junk pile, then challenge Dad!</div><div id="lvRows"></div>'+
@@ -232,8 +232,9 @@ $('edDice').addEventListener('click',function(){ED.name=rndName();ED.dirty=true;
 $('edSave').addEventListener('click',function(){edSave()});
 $('edBack').addEventListener('click',function(){SFX.click();if(ED.dirty&&ED.items.length)edSave(true);showEd(false);closeEditor();openLevels()});
 $('edTest').addEventListener('click',function(){if(ED.dirty||!ED.id)edSave(true);playCustom(edSnapshot(),{fromEd:true,id:ED.id})});
-function dadGo(){moreOn(false);var s=ED.dirty||!ED.id?edSave(true):edSnapshot();openDad(s)}
-$('edDad').addEventListener('click',dadGo);$('edDad2').addEventListener('click',dadGo);
+function dadGo(){moreOn(false);var s=ED.dirty||!ED.id?edSave(true):edSnapshot();dadChallenge(s)}
+function dadLink(){moreOn(false);var s=ED.dirty||!ED.id?edSave(true):edSnapshot();openDad(s)}
+$('edDad').addEventListener('click',dadGo);$('edDad2').addEventListener('click',dadGo);$('edLink').addEventListener('click',dadLink);
 $('edMoreB').addEventListener('click',function(){SFX.click();moreOn()});$('edMoreX').addEventListener('click',function(){SFX.click();moreOn(false)});
 $('edSet').addEventListener('click',function(){moreOn(false);try{$('gear').click()}catch(e){}});
 ['edName','edSave','edClear'].forEach(function(id){$(id).addEventListener('click',function(){moreOn(false)})});
@@ -263,7 +264,7 @@ function openLevels(){aInit();var a=lvList(),h='';
 $('lvRows').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=lvList(),x=a[+b.dataset.i];if(!x)return;SFX.click();
  if(b.dataset.a==='play'){$('myLv').classList.remove('on');playCustom(x,{id:x.id})}
  else if(b.dataset.a==='edit'){$('myLv').classList.remove('on');openEditor(x)}
- else if(b.dataset.a==='dad')openDad(x);
+ else if(b.dataset.a==='dad')dadChallenge(x);
  else if(b.dataset.a==='del'){if(b.dataset.sure){a.splice(+b.dataset.i,1);lvStore(a);if(ED.id===x.id){ED.id=null;ED.items=[]}SFX.pop();openLevels()}else{b.dataset.sure=1;b.textContent='Sure?';b.style.background='#e8342a';b.style.color='#fff'}}});
 $('lvNew').addEventListener('click',function(){SFX.click();$('myLv').classList.remove('on');ED.items=[];ED.id=null;ED.name='';openEditor()});
 $('lvClose').addEventListener('click',function(){SFX.click();$('myLv').classList.remove('on')});
