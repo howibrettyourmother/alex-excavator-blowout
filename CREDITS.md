@@ -219,3 +219,22 @@ Clips were downloaded from myinstants.com, trimmed, faded, loudness-normalized, 
 - `sfx/family-only/price_is_right_fail.mp3` (4.55 s): Price is Right fail horn, https://www.myinstants.com/en/instant/price-is-right-fail/ — fail, verified by title only
 - `sfx/family-only/hitmarker.mp3` (0.13 s): Hitmarker, https://www.myinstants.com/en/instant/hitmarker-noise/ — hit, verified by title only
 - `sfx/family-only/goose_honk.mp3` (0.24 s): Goose honk, https://www.myinstants.com/en/instant/untitled-goose-honk-51300/ — silly, verified by title only
+
+## v1.8.0 intro sounds (all CC0 1.0 / public domain, from Freesound.org; license checked on each page)
+Each file was trimmed, faded, loudness-normalized (EBU R128) and encoded as mono 64 kbps MP3. The engine (`sfx/engine.mp3`), whoosh (`sfx/whoosh.mp3`) and explosion body (`sfx/boom1.mp3`) in the intro are the existing CC0 files listed above.
+- `sfx/intro_rumble.mp3` (4.2 s, -19.7 LUFS): "Cinematic Rumble.flac" by qubodup, https://freesound.org/people/qubodup/sounds/184936/ (CC0). First 4.2 s, 0.4 s fade-in, 1.2 s fade-out. The ground rumble at the start.
+- `sfx/intro_tracks.mp3` (3.0 s, -21 LUFS): "tracks moving" by christerljung, https://freesound.org/people/christerljung/sounds/849062/ (CC0). First 3.0 s. Track clatter while the excavator rolls in.
+- `sfx/intro_smash.mp3` (2.8 s, -16 LUFS): the logo smash, a layered mix of
+  - "Fast Collision" by qubodup, https://freesound.org/people/qubodup/sounds/332056/ (CC0), the metal transient
+  - "Smashed/demolished brick wall crumbling/caving in" by Squirrel_404, https://freesound.org/people/Squirrel_404/sounds/829103/ (CC0), from 0.16 s
+  - "Rock Smash" by NeoSpica, https://freesound.org/people/NeoSpica/sounds/512243/ (CC0), from 0.27 s at 70%
+
+  The layers were compressed and limited together.
+- `sfx/intro_debris.mp3` (2.2 s, -18 LUFS): falling debris, a mix of
+  - "Scrap metal dropping / crashing" by SamsterBirdies, https://freesound.org/people/SamsterBirdies/sounds/587443/ (CC0), 2.35–4.5 s
+  - "Bricks.wav" by cejordi84, https://freesound.org/people/cejordi84/sounds/232396/ (CC0), entering at 0.38 s
+
+The segments were picked from the audio energy envelopes, not by ear.
+
+## v1.8.0 theme music
+Theme music isn't included yet. `music/` holds only `music.json`, and the game stays silent until the approved song files are added (see the drop-in steps in the README). The intro artwork, the excavator and the logo are all drawn in code.

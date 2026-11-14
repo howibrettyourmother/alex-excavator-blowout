@@ -2,10 +2,20 @@ import os,re,base64,sys
 D=os.path.dirname(os.path.abspath(__file__));R=os.path.dirname(D)
 VER=open(f'{R}/VERSION').read().strip()
 t=open(f'{D}/template.html').read()
-game=''.join(open(f'{D}/game{i}.js').read() for i in (1,2,3,4,6,7,8,9,5)).replace('/*VER*/',VER)
+game=''.join(open(f'{D}/game{i}.js').read() for i in (1,2,3,4,6,7,8,9,10,5)).replace('/*VER*/',VER)
 pack=open(f'{R}/sfx/pools.json').read().strip()
 if '/*PACK*/null' not in game: raise SystemExit('PACK marker missing')
 game=game.replace('/*PACK*/null',pack,1)
+# v1.8.0 theme music: bake music/music.json + which of its files actually exist (missing files = silence, no 404s)
+import json
+mj=json.load(open(f'{R}/music/music.json'))
+have={}
+for k in ('sting','loop','full'):
+  f=(mj.get(k) or {}).get('file')
+  if f and os.path.isfile(f'{R}/music/{f}'): have[k]='music/'+f
+if '/*MUSIC*/null' not in game: raise SystemExit('MUSIC marker missing')
+game=game.replace('/*MUSIC*/null',json.dumps({'cfg':mj,'have':have},separators=(',',':')),1)
+print('music', have or 'none yet (silent)')
 t=t.replace('/*FONT*/',base64.b64encode(open(f'{D}/pm.woff2','rb').read()).decode()).replace('/*MATTER*/',open(f'{D}/matter.min.js').read()).replace('/*GAME*/',game).replace('/*VER*/',VER)
 KH='/workspace/kids-hubs'
 # idempotent: drop any shared blocks the kids-hubs scripts may have injected into the template, then inject fresh copies
@@ -22,7 +32,7 @@ i=t.rfind('</body>');t=t[:i]+sw+'\n'+home+'\n'+swr+'\n'+play+'\n'+t[i:]
 open(f'{R}/index.html','w').write(t)
 s=open(f'{R}/sw.js').read();s=re.sub(r"V='[^']*'","V='%s'"%VER,s)
 sfx=[]
-for dp,dns,fns in os.walk(f'{R}/sfx'):
+for dp,dns,fns in [x for d in ('sfx','music') for x in os.walk(f'{R}/'+d)]:
   for fn in fns:
     if fn.endswith(('.mp3','.json')):
       sfx.append(os.path.relpath(os.path.join(dp,fn),R).replace(os.sep,'/'))

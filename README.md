@@ -124,3 +124,11 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 
 ## v1.7.4
 Silly pieces shuffle larger sound pools (existing clips plus a verified-CC0 pack and a family-only meme pack). Hard hits and ordinary prize wins can play a meme sting, still gated to one every 1.5 s. Already-approved fail-pool and cue stings are unchanged. See CREDITS.md.
+
+## v1.8.0: cinematic intro + theme-music system
+- **Intro** (canvas, iPad landscape first): the ground rumbles and dust sifts, then the EB-1 excavator rolls in with its headlight and beacon on. It winds up, and its bucket smashes through a cardboard KEEP OUT wall. The wall breaks into 96 shards, and the extruded, bevelled, glowing EXCAVATOR BLOWOUT! logo slams in behind sun rays, sparks, debris and embers. There is one inverted impact frame plus a flash, a hit-stop, a shockwave, and a camera shake that is exactly 0 after 0.9 s. A pulsing TAP TO PLAY follows. The scene has layered parallax: sky, two mountain ranges, city and tower cranes, mounds, ground and foreground.
+- The full version (about 6.5 s to TAP TO PLAY) plays on each kid's first launch. Afterwards, a quick version of about 2 s plays and fades into the menu by itself. A tap during the full intro jumps straight to the smash, and the next tap goes to the menu. To watch it again: ⚙️ → 🎬 Replay intro. URL flags `?intro=full`, `?intro=quick` and `?nointro`.
+- The intro looks complete without sound. Audio unlocks on the first touch anywhere, and if that touch skips ahead, the smash still has its sound.
+- Intro sounds are real CC0 recordings: rumble, track clatter, diesel engine (revs on wind-up), whoosh, layered smash + explosion, and debris.
+- **Theme music system:** an intro sting synced to the smash (`hit` point), a seamless menu loop (loop points in `music/music.json`) and the full song from the settings panel. Missing files mean silence and no requests. Music ducks under booms, fanfares and meme stings. Drop-in: `python3 src/music_dropin.py` (steps in /workspace/kids_audio/excavator_theme/DROP_IN.md). The song files aren't shipped yet.
+- **⚙️ Sound panel** (title screen + HUD): Music and Sounds sliders and on/off toggles, saved per kid (`aeb_snd_alex` / `aeb_snd_zoe`). The old 🔊 button still mutes everything.
