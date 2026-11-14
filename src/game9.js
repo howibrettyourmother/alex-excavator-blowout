@@ -813,12 +813,32 @@ smpReg('portal',['portal1.mp3','portal2.mp3']);smpReg('toot',['toot6.mp3','toot7
 smpReg('spray',['spray1.mp3']);smpReg('blower',['blower1.mp3']);smpReg('fail',['fail.mp3']);smpReg('jello',['jello.mp3']);
 smpReg('oof',['oof.mp3']);smpReg('anime_wow',['anime_wow.mp3']);smpReg('bruh',['bruh.mp3']);smpReg('yeet',['yeet.mp3']);smpReg('tom_scream',['tom_scream.mp3']);
 smpReg('dundundun',['dundundun.mp3']);smpReg('scratch',['scratch.mp3']);smpReg('few_moments',['few_moments.mp3']);smpReg('fart_reverb',['fart_reverb.mp3']);smpReg('badumtss',['badumtss.mp3']);
-/* meme clips: at most one every 1.5s; win > fail > others. aok() is inside playSample. */
+smpReg('sad_guitar',['sad_guitar.mp3']);smpReg('fail_aww',['aww.mp3']);smpReg('okay',['okay.mp3']);smpReg('what',['what.mp3']);smpReg('suspense',['suspense.mp3']);smpReg('omg',['omg.mp3']);smpReg('god',['god.mp3']);
+smpReg('throw',['throw.mp3']);smpReg('whoosh',['whoosh.mp3']);smpReg('hit_plate',['hit_plate.mp3']);smpReg('hit_cup',['hit_cup.mp3']);smpReg('hit_wrap',['hit_wrap.mp3']);smpReg('hit_wall',['hit_wall.mp3']);smpReg('hit_table',['hit_table.mp3']);smpReg('hit_card',['hit_card.mp3']);
+smpReg('pop',['pop.mp3']);smpReg('balloon',['balloon.mp3']);smpReg('gem',['gem.mp3']);smpReg('ring',['ring.mp3']);smpReg('tick',['tick.mp3']);smpReg('fanfare',['fanfare.mp3']);smpReg('ok',['ok.mp3']);smpReg('no',['no.mp3']);
+smpReg('thunk',['thunk.mp3']);smpReg('dump',['dump.mp3']);smpReg('click',['click.mp3']);smpReg('beep',['beep.mp3']);smpReg('stretch',['stretch.mp3']);
+smpReg('duck',['duck.mp3']);smpReg('spin',['spin.mp3']);smpReg('punch',['punch.mp3']);smpReg('pin',['pin.mp3']);smpReg('paste',['paste.mp3']);smpReg('sparkle',['sparkle.mp3']);
+smpReg('horn1',['horn1.mp3']);smpReg('horn2',['horn2.mp3']);smpReg('uvhum',['uvhum.mp3']);smpReg('engine',['engine.mp3']);
+smpReg('crowdbed',['crowdbed.mp3']);smpReg('cheer',['cheer.mp3']);smpReg('cheer_sm',['cheer_sm.mp3']);smpReg('ooh',['ooh.mp3']);smpReg('crowd_aww',['crowd_aww.mp3']);smpReg('murmur',['murmur.mp3']);smpReg('squeak',['squeak.mp3']);
+/* meme clips: at most one every 1.5s; win > fail > others. Vocals play at recorded pitch (lock). */
 var MEME={t:0,pri:0};
-function memePlay(k,pri,vol){if(!aok())return false;var n=performance.now();if(n-MEME.t<1500&&pri<=(MEME.pri||0))return false;if(!playSample(k,vol==null?.95:vol))return false;MEME.t=n;MEME.pri=pri||1;return true}
-(function(){var w=function(k,f,v,pick){return function(a){if(!playSample(pick?pick(a):k,v,null))f(a)}};
- chickSquawk=w('chick',chickSquawk,1,function(big){return 'chick'});burpSnd=w('burp',burpSnd,1);honkSnd=w('honk',honkSnd,.9);goatSnd=w('goat',goatSnd,1);
- wheeSnd=w('whee',wheeSnd,.8);boingSnd=w('tramp',boingSnd,.9);vwoop=w('portal',vwoop,.7);SFX.aww=w('fail',SFX.aww,.95);jelloSnd=w('jello',jelloSnd,.95)})();
+function memePlay(k,pri,vol){if(!aok())return false;var n=performance.now();if(n-MEME.t<1500&&pri<=(MEME.pri||0))return false;if(!playSample(k,vol==null?.95:vol,null,1,0,true))return false;MEME.t=n;MEME.pri=pri||1;return true}
+/* v1.7.3 fail pool: WA WA WA ~40%, the seven other approved miss lines share the rest; never repeat the last pick. */
+var FAILPOOL=[{k:'fail',w:.4},{k:'sad_guitar',w:.6/7},{k:'fail_aww',w:.6/7},{k:'okay',w:.6/7},{k:'what',w:.6/7},{k:'suspense',w:.6/7},{k:'omg',w:.6/7},{k:'god',w:.6/7}],FAILLAST=null;
+function failPick(){var opts=FAILPOOL.filter(function(x){return x.k!==FAILLAST});if(!opts.length)opts=FAILPOOL.slice();var tw=0,i;for(i=0;i<opts.length;i++)tw+=opts[i].w;var r=rnd()*tw,acc=0;for(i=0;i<opts.length;i++){acc+=opts[i].w;if(r<=acc){FAILLAST=opts[i].k;return FAILLAST}}FAILLAST=opts[opts.length-1].k;return FAILLAST}
+function failPlay(){return memePlay(failPick(),2,.95)}
+(function(){var w=function(k,f,v,pick,lock){return function(a){var vol=typeof v==='function'?v(a):v;if(!playSample(pick?pick(a):k,vol,null,1,0,!!lock))f(a)}};
+ chickSquawk=w('chick',chickSquawk,1,function(big){return 'chick'});burpSnd=w('burp',burpSnd,1);honkSnd=w('honk',honkSnd,.9);goatSnd=w('goat',goatSnd,1,null,true);
+ wheeSnd=w('whee',wheeSnd,.8);boingSnd=w('tramp',boingSnd,.9);vwoop=w('portal',vwoop,.7);jelloSnd=w('jello',jelloSnd,.95);
+ duckSnd=w('duck',duckSnd,.9);spinSnd=w('spin',spinSnd,.8);powSnd=w('punch',powSnd,.9);popSnd=w('balloon',popSnd,.9);pasteSnd=w('paste',pasteSnd,.85);pinSnd=w('pin',pinSnd,.8);
+ SFX.throw=w('throw',SFX.throw,function(p){return .5+.4*(p||0)});SFX.pop=w('pop',SFX.pop,.85);SFX.gem=w('gem',SFX.gem,.9);SFX.ring=w('ring',SFX.ring,.9);
+ SFX.fanfare=w('fanfare',SFX.fanfare,.9,null,true);SFX.boom=w('boom',SFX.boom,.95);SFX.thunk=w('thunk',SFX.thunk,.9);SFX.dump=w('dump',SFX.dump,.9);
+ SFX.click=w('click',SFX.click,.8);SFX.beep=w('beep',SFX.beep,.7,null,true);SFX.whoosh=w('whoosh',SFX.whoosh,.8);SFX.ok=w('ok',SFX.ok,.85,null,true);SFX.no=w('no',SFX.no,.85);
+ var tick0=SFX.tick;SFX.tick=function(i){if(!playSample('tick',.55))tick0(i)};
+ var st0=SFX.stretch;SFX.stretch=function(p){if(!lim('st',80))return;if(!playSample('stretch',.12+.2*(p||0),null,.85+(p||0)*.4,0,true))tone(180+p*420,.06,{type:'triangle',vol:.035})};
+ var hit0=SFX.hit;SFX.hit=function(mat,v){var a=clamp(v/16,.08,1);if(!lim(mat,50))return;var k={plate:'hit_plate',cup:'hit_cup',wrap:'hit_wrap',wall:'hit_wall',table:'hit_table'}[mat]||'hit_card';if(!playSample(k,.35+.6*a))SFX.hitS(mat,a)};
+ var aww0=SFX.aww;SFX.aww=function(){if(!failPlay())aww0()};
+})();
 
 /* ===== v1.7.0 secret: Dad's invisible-ink pen (UV black light). Plain glossy blue barrel, no text. ===== */
 var UV={on:false,x:0,y:0,px:0,py:0,ang:-.4,R:170,hum:null,ink:null,found:{},spark:[],t:0};
@@ -936,8 +956,8 @@ function uvInk(w,h){var c=mkc(w,h),g=c.getContext('2d');g.textAlign='center';g.t
   g.beginPath();g.moveTo(0,16);g.lineTo(-12,32);g.moveTo(0,16);g.lineTo(12,32);g.stroke();
  },.66,.80,1.05,-.05);
  UV.ink=c;UV.mw=w;UV.mh=h;return c}
-function uvHum(on){if(UV.hum){try{UV.hum.g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.08);UV.hum.o.stop(AC.currentTime+.12);UV.hum.o2.stop(AC.currentTime+.12)}catch(e){}UV.hum=null}
- if(!on||!aok())return;try{var o=AC.createOscillator(),o2=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain();
+function uvHum(on){if(UV.hum){try{if(UV.hum.sample){stopLoop('uvhum')}else{UV.hum.g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.08);UV.hum.o.stop(AC.currentTime+.12);UV.hum.o2.stop(AC.currentTime+.12);if(UV.hum.l)UV.hum.l.stop(AC.currentTime+.12)}}catch(e){}UV.hum=null}
+ if(!on||!aok())return;if(playLoop('uvhum',.1)){UV.hum={sample:1};return}try{var o=AC.createOscillator(),o2=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain();
   o.type='sine';o.frequency.value=92;o2.type='triangle';o2.frequency.value=184;f.type='lowpass';f.frequency.value=420;f.Q.value=.8;
   l.type='sine';l.frequency.value=.7;lg.gain.value=8;l.connect(lg);lg.connect(o.frequency);
   g.gain.value=.0001;g.gain.linearRampToValueAtTime(.045,AC.currentTime+.2);
@@ -946,7 +966,7 @@ function uvHum(on){if(UV.hum){try{UV.hum.g.gain.exponentialRampToValueAtTime(.00
 function uvOn(){uvLoad();UV.on=true;UV.t=0;UV.spark=[];uvResize();
  var L=$('uvLayer'),X=$('uvX'),P=$('inkPen');L.style.display='block';X.style.display='block';if(P)P.style.zIndex=33;
  UV.x=innerWidth*.55;UV.y=innerHeight*.45;UV.px=UV.x;UV.py=UV.y;
- uvHum(true);tone(240,.2,{to:180,type:'sine',vol:.06});SFX.click()}
+ uvHum(true);SFX.click()}
 function uvOff(){if(!UV.on)return;UV.on=false;uvHum(false);$('uvLayer').style.display='none';$('uvX').style.display='none';var P=$('inkPen');if(P)P.style.zIndex=22;SFX.click()}
 function uvResize(){var L=$('uvLayer');if(!L)return;var d=Math.min(devicePixelRatio||1,2);L.width=Math.round(innerWidth*d);L.height=Math.round(innerHeight*d);L.style.width=innerWidth+'px';L.style.height=innerHeight+'px';uvInk(L.width,L.height);placePen()}
 function uvPtr(e){if(!UV.on)return;e.preventDefault();UV.x=e.clientX;UV.y=e.clientY}
@@ -974,6 +994,6 @@ function uvTick(dt){UV.t+=dt;var dx=UV.x-UV.px,dy=UV.y-UV.py;if(dx*dx+dy*dy>4)UV
  for(var i=UV.spark.length-1;i>=0;i--){var s=UV.spark[i];s.l-=dt;if(s.l<=0){UV.spark.splice(i,1);continue}
   g.globalAlpha=clamp(s.l/.6,0,1);g.fillStyle=s.c;g.save();g.translate(s.x,s.y);g.rotate(s.a);g.fillRect(-s.s/2,-1.5*d,s.s,3*d);g.restore();s.x+=s.vx*dt;s.y+=s.vy*dt}g.globalAlpha=1}
 function uvSpark(x,y,c){for(var i=0;i<18;i++){var a=rnd()*2*PI,sp=40+rnd()*180;UV.spark.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,s:6+rnd()*10,a:a,c:c||'#fff',l:.55+rnd()*.3})}
- tone(720,.18,{to:1400,type:'sine',vol:.08});tone(1080,.22,{to:1800,type:'triangle',vol:.04,at:.04})}
+ if(!playSample('sparkle',.7,null,1,0,true)){tone(720,.18,{to:1400,type:'sine',vol:.08});tone(1080,.22,{to:1800,type:'triangle',vol:.04,at:.04})}}
 mkPenBtn();placePen();
 addEventListener('resize',function(){clearTimeout(placePen.t);placePen.t=setTimeout(function(){placePen();if(UV.on)uvResize()},120)});

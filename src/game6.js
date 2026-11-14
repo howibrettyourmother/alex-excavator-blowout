@@ -1,18 +1,18 @@
 /* ===== crowd of cheering kids, 6-7, Meadow Brook Mouse helper ===== */
 var SIMB=false;
-/* ---- crowd sounds (synthesized; routed through crowdBus -> master, so mute + audio guard apply) ---- */
+/* ---- crowd sounds (CC0 recordings with synth fallback; routed through crowdBus -> master, so mute + audio guard apply) ---- */
 function voices(n,f0,f1,dur,F,vol,at){if(!aok())return;try{var t0=AC.currentTime+(at||0);for(var i=0;i<n;i++){var t=t0+rnd()*.08,k=1+(rnd()-.5)*.16,o=AC.createOscillator(),e=AC.createGain();o.type='sawtooth';o.frequency.setValueAtTime(f0*k,t);o.frequency.linearRampToValueAtTime(f1*k,t+dur);
  e.gain.setValueAtTime(.0001,t);e.gain.linearRampToValueAtTime(vol,t+Math.min(.08,dur*.3));e.gain.setValueAtTime(vol,t+dur*.6);e.gain.exponentialRampToValueAtTime(.0001,t+dur);
  F.forEach(function(ff,j){var b=AC.createBiquadFilter();b.type='bandpass';b.frequency.value=ff[0]*(1+(rnd()-.5)*.08);b.Q.value=ff[1];var gg=AC.createGain();gg.gain.value=j?.6:1;o.connect(b);b.connect(gg);gg.connect(e)});e.connect(crowdBus);o.start(t);o.stop(t+dur+.05)}}catch(x){}}
 var CSND={bed:null,
- start:function(){if(!AC||CSND.bed)return;try{var s=AC.createBufferSource();s.buffer=NB;s.loop=true;var f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=480;f.Q.value=.8;var g=AC.createGain();g.gain.value=.03;var l=AC.createOscillator(),lg=AC.createGain();l.frequency.value=.17;lg.gain.value=.012;l.connect(lg);lg.connect(g.gain);s.connect(f);f.connect(g);g.connect(crowdBus);s.start();l.start();CSND.bed={s:s,g:g}}catch(x){}},
- ooh:function(){voices(6,300,430,.75,[[330,7],[850,9]],.05)},
- aww:function(big){voices(big?8:5,440,290,big?1.1:.8,[[760,6],[1150,8]],big?.055:.035)},
- cheer:function(big){var d=big?1.8:1;noise(d,{f:1600,q:.5,vol:big?.22:.13,att:.08,bus:crowdBus});voices(big?9:6,380,540,d*.8,[[850,5],[1250,7]],.045);var n=big?36:14;for(var i=0;i<n;i++)noise(.03,{f:1100+rnd()*900,q:.9,vol:.2+rnd()*.15,at:.15+rnd()*(big?2.2:1.1),bus:crowdBus})},
+ start:function(){if(!AC||CSND.bed)return;if(typeof playLoop==='function'&&playLoop('crowdbed',.07,crowdBus)){CSND.bed={sample:1};return}try{var s=AC.createBufferSource();s.buffer=NB;s.loop=true;var f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=480;f.Q.value=.8;var g=AC.createGain();g.gain.value=.03;var l=AC.createOscillator(),lg=AC.createGain();l.frequency.value=.17;lg.gain.value=.012;l.connect(lg);lg.connect(g.gain);s.connect(f);f.connect(g);g.connect(crowdBus);s.start();l.start();CSND.bed={s:s,g:g}}catch(x){}},
+ ooh:function(){if(typeof playSample==='function'&&playSample('ooh',.8,null,1,0,true,crowdBus))return;voices(6,300,430,.75,[[330,7],[850,9]],.05)},
+ aww:function(big){if(typeof playSample==='function'&&playSample('crowd_aww',big?.85:.7,null,1,0,true,crowdBus))return;voices(big?8:5,440,290,big?1.1:.8,[[760,6],[1150,8]],big?.055:.035)},
+ cheer:function(big){if(typeof playSample==='function'&&playSample(big?'cheer':'cheer_sm',big?.85:.65,null,1,0,true,crowdBus))return;var d=big?1.8:1;noise(d,{f:1600,q:.5,vol:big?.22:.13,att:.08,bus:crowdBus});voices(big?9:6,380,540,d*.8,[[850,5],[1250,7]],.045);var n=big?36:14;for(var i=0;i<n;i++)noise(.03,{f:1100+rnd()*900,q:.9,vol:.2+rnd()*.15,at:.15+rnd()*(big?2.2:1.1),bus:crowdBus})},
  six:function(at){at=at||0;for(var r=0;r<2;r++){var b=at+r*.95;noise(.09,{ft:'highpass',f:4200,vol:.12,at:b,bus:crowdBus});voices(5,540,520,.17,[[420,8],[2100,10]],.055,b+.07);noise(.05,{ft:'highpass',f:3500,vol:.08,at:b+.25,bus:crowdBus});
   noise(.08,{ft:'highpass',f:4200,vol:.1,at:b+.38,bus:crowdBus});voices(5,450,440,.15,[[600,8],[1800,10]],.055,b+.45);voices(5,400,370,.22,[[340,8],[1500,10]],.05,b+.62)}},
- squeak:function(){tone(2500,.07,{to:3500,vol:.13});tone(3100,.09,{to:2300,vol:.12,at:.11});tone(2800,.06,{to:3600,vol:.1,at:.26})}};
-setInterval(function(){if(!CSND.bed||!aok()||titleOn||rnd()>.4)return;voices(1,230+rnd()*200,220+rnd()*200,.09+rnd()*.1,[[500+rnd()*400,5],[1400+rnd()*500,6]],.012)},140);
+ squeak:function(){if(typeof playSample==='function'&&playSample('squeak',.85,null,1,0,true))return;tone(2500,.07,{to:3500,vol:.13});tone(3100,.09,{to:2300,vol:.12,at:.11});tone(2800,.06,{to:3600,vol:.1,at:.26})}};
+setInterval(function(){if(!CSND.bed||!aok()||titleOn)return;if(typeof playSample==='function'&&SMP.murmur&&SMP.murmur.length){if(rnd()>.2||!lim('mur',2200))return;playSample('murmur',.2,null,1,0,true,crowdBus);return}if(rnd()>.4)return;voices(1,230+rnd()*200,220+rnd()*200,.09+rnd()*.1,[[500+rnd()*400,5],[1400+rnd()*500,6]],.012)},140);
 /* ---- kids (v1.5: little 6-7-year-olds: big heads, tees/hoodies + shorts/jeans/leggings, sneakers) ---- */
 var SKIN=['#f8d9bf','#efbf98','#d39a6a','#b07444','#85532e','#5c3a22'],SHIRT=['#e8342a','#1f6fd1','#2f9a3a','#f2b705','#7a4bc4','#ff7a1a','#14a3a3','#ff6fb5','#3a3a8a','#9acd32'];
 var KST=[

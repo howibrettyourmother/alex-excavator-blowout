@@ -5,9 +5,13 @@ function loadFarts(){if(!AC||FA.load)return;FA.load=1;[1,2,3,4].forEach(/* fart5
 var SMPL={},SMP={},SMPN={};function smpReg(k,files){SMPL[k]=files}
 function loadSamples(){if(!AC||loadSamples.on)return;loadSamples.on=1;Object.keys(SMPL).forEach(function(k){SMP[k]=SMP[k]||[];SMPL[k].forEach(function(f,i){try{fetch('sfx/'+f).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){buf.__i=i;SMP[k].push(buf);if(k==='toot'){buf.__n=6+i;FA.buf.push(buf)}},function(){})}).catch(function(){})}catch(e){}})})}
 function smpPick(k){var a=SMP[k];if(!a||!a.length)return null;var o=a.length>1?a.filter(function(x){return x.__i!==SMPN[k]}):a;var b=o[(rnd()*o.length)|0];SMPN[k]=b.__i;return b}
-function playSample(k,vol,fb,rate,at){if(!aok())return false;var b=smpPick(k);if(!b){if(fb)fb();return false}tootBuf(b,(rate||1)*(.95+rnd()*.1),vol==null?1:vol,at);return true}
+function playSample(k,vol,fb,rate,at,lock,bus){if(!aok())return false;var b=smpPick(k);if(!b){if(fb)fb();return false}var r=rate||1;if(!lock)r*=(.95+rnd()*.1);tootBuf(b,r,vol==null?1:vol,at,bus);return true}
+var SMPLOOP={};
+function playLoop(k,vol,bus){if(!aok())return false;if(SMPLOOP[k])return true;var b=smpPick(k);if(!b)return false;try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=b;s.loop=true;s.playbackRate.value=1;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(vol==null?.2:vol,AC.currentTime+.3);s.connect(g);g.connect(bus||sfxBus);s.start();SMPLOOP[k]={s:s,g:g};return true}catch(e){return false}}
+function stopLoop(k){var e=SMPLOOP[k];if(!e)return;delete SMPLOOP[k];try{var n=AC.currentTime;e.g.gain.cancelScheduledValues(n);e.g.gain.setValueAtTime(Math.max(e.g.gain.value,.0001),n);e.g.gain.exponentialRampToValueAtTime(.0001,n+.3);e.s.stop(n+.35)}catch(x){}}
+function loopRate(k,r){var e=SMPLOOP[k];if(e)try{e.s.playbackRate.setTargetAtTime(r,AC.currentTime,.08)}catch(x){}}
 function pickToot(){var bs=FA.buf.filter(function(x){return x.__n!==5});if(!bs.length)return null;var o=bs.filter(function(x){return x.__n!==FA.lastN});if(o.length)bs=o;var b=bs[(rnd()*bs.length)|0];FA.lastN=b.__n;return b}
-function tootBuf(buf,rate,vol,at){try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=buf;s.playbackRate.value=rate;g.gain.value=vol;s.connect(g);g.connect(sfxBus);s.start(AC.currentTime+(at||0))}catch(e){}}
+function tootBuf(buf,rate,vol,at,bus){try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=buf;s.playbackRate.value=rate;g.gain.value=vol;s.connect(g);g.connect(bus||sfxBus);s.start(AC.currentTime+(at||0))}catch(e){}}
 function playToot(vol){var b=pickToot();if(!b)return false;var r=.8+rnd()*.5;tootBuf(b,r,vol);if(rnd()<.22){var b2=pickToot();if(b2)tootBuf(b2,r*1.25+.1,vol*.6,.16+rnd()*.1)}return true}
 function playFart(){if(!aok())return;if(!FA.buf.length){noise(.35,{ft:'lowpass',f:260,fto:120,q:4,vol:.4});tone(90,.35,{to:60,type:'sawtooth',vol:.12});return}
  playToot(.9)}
@@ -33,5 +37,5 @@ var SLOW={t:0,used:false};
 function squashHit(b,n,rv){if(!b||rv<4)return;b.sq=Math.min(1,rv/14);b.sqT=gt;b.sqN=Math.atan2(n.y,n.x)}
 function squashXf(g,b){if(!b||!b.sq)return;var k=b.sq*Math.exp(-(gt-b.sqT)*16);if(k<.02){b.sq=0;return}g.rotate(b.sqN);g.scale(1-.28*k,1+.16*k);g.rotate(-b.sqN)}
 function slowTS(dt){if(state!=='fly'||!ball||SIM){SLOW.t=0;return 1}if(SLOW.t>0){SLOW.t-=dt;return SLOW.t>0?.38:1}
- if(!SLOW.used){var p=ball.position,v=ball.velocity,cy=(HOLE.y0+HOLE.y1)/2;if(v.x>.8&&p.x>BX0-190&&p.x<BX0-30&&Math.abs(p.y-cy)<(HOLE.y1-HOLE.y0)/2+30){SLOW.used=true;SLOW.t=.55;if(!SIM){ftext(p.x,p.y-60,'Ooooh…!','#fff6a0');CSND.ooh()}tone(520,.5,{to:260,type:'sine',vol:.08});return .38}}return 1}
+ if(!SLOW.used){var p=ball.position,v=ball.velocity,cy=(HOLE.y0+HOLE.y1)/2;if(v.x>.8&&p.x>BX0-190&&p.x<BX0-30&&Math.abs(p.y-cy)<(HOLE.y1-HOLE.y0)/2+30){SLOW.used=true;SLOW.t=.55;if(!SIM){ftext(p.x,p.y-60,'Ooooh…!','#fff6a0');CSND.ooh()}return .38}}return 1}
 function drawSlow(g){if(!(SLOW.t>0))return;var a=Math.min(1,SLOW.t*3)*.35;var gr=g.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.85);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(20,10,0,'+a+')');g.fillStyle=gr;g.fillRect(-200,-200,W+400,H+400)}

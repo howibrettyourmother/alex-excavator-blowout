@@ -80,12 +80,12 @@ function launch(deg,p){deg=clamp(deg,-25,75);p=clamp(p,0,1);var a=deg*PI/180,v=9
  if(!SIM){SFX.throw(p);if(p>=.8)memePlay('yeet',1,.95);hud();rpBegin('shot')}}
 function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';rpReady();lvMiss++;
  var short=fly&&((fly.pow!=null&&fly.pow<.22)||(fly.maxD!=null&&fly.maxD<200));
- if(short){if(!memePlay('bruh',1,.95))memePlay('fail',2,.95)}else memePlay('fail',2,.95);
+ if(short){if(!memePlay('bruh',1,.95))failPlay()}else failPlay();
  crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
  after(.35,function(){if(ball){Composite.remove(world,ball);ball=null}clearXB();if(throwsLeft>0){spawnAim();banner('Throw '+(4-throwsLeft)+' of 3',1)}else roundLost()})}
 function roundLost(){state='lost';lvLost++;banner('So close! Try again!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
 var lastWin=null;
-function partyHorn(k){tone(k?660:520,.32,{to:k?880:700,type:'sawtooth',vol:.05});noise(.25,{ft:'bandpass',f:k?2400:1800,q:2,vol:.05})}
+function partyHorn(k){if(playSample(k?'horn2':'horn1',.7,null,1,0,true))return;tone(k?660:520,.32,{to:k?880:700,type:'sawtooth',vol:.05});noise(.25,{ft:'bandpass',f:k?2400:1800,q:2,vol:.05})}
 function win(){if(SIM){simRes='win';state='simdone';return}state='won';rpReady();stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
  SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');after(.22,function(){confetti(FX1+90,TOP+30,45);partyHorn(0)});after(.45,function(){confetti(BX0-80,TOP+30,45);partyHorn(1)});if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
  var allG=gems.length&&gems.every(function(g){return g.got});if((fly&&fly.bn>=3)||(fly&&fly.pt)||allG)memePlay('anime_wow',3,.95);
