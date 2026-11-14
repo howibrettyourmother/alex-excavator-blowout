@@ -237,4 +237,7 @@ Each file was trimmed, faded, loudness-normalized (EBU R128) and encoded as mono
 The segments were picked from the audio energy envelopes, not by ear.
 
 ## v1.8.0 theme music
-Theme music isn't included yet. `music/` holds only `music.json`, and the game stays silent until the approved song files are added (see the drop-in steps in the README). The intro artwork, the excavator and the logo are all drawn in code.
+The intro artwork, the excavator and the logo are all drawn in code.
+
+## v1.9.1 theme song
+- `music/theme_full.mp3`: "Excavator Blowout" intro theme ("Here comes Alex! … Go, Alex, go!"). AI-generated for the family by PM (ElevenLabs Music via fal), approved by Brett on 2026-11-14. Made for this family's game; not a third-party recording.

@@ -140,3 +140,10 @@ Silly pieces shuffle larger sound pools (existing clips plus a verified-CC0 pack
 - **☰ More** menu: level name, 🎲 new name, 💾 Save, 🕳️ Hole size, ↕️ Moving hole, 🧹 Clear all, 🔊 Sounds (the ⚙️ panel) and 📣 Challenge Dad. It closes on ✖, after a one-shot action, or on a tap anywhere else.
 - The selected-piece tools (↺ ↻ ➜ 🎨 🗑️) are now 60 px or bigger and stay clear of the shelf and the top bar.
 - On very narrow screens the playfield shrinks or slides right just enough to keep the shelf off the box.
+
+## v1.9.1 (2026-11-14): Alex's theme song
+- Brett approved PM's "Excavator Blowout" theme (`alex_v4/theme_intro_v2.mp3`, 27.9 s, hard ending). It's shipped as `music/theme_full.mp3`, re-encoded to 160 kbps CBR (547 KB, -14.4 LUFS).
+- **Intro:** the song's opening brass hit (0.08 s into the file) lands right on the logo smash, in both the full intro and the quick one.
+- **Menu:** the song keeps playing over TAP TO PLAY and the title screen until its big "ALEX!" ending. It fades out when a level or the builder starts, when Music is switched off or when 🔇 is on. It is never looped, because it has a hard ending. If the intro ran silently (iPad before the first touch), the song starts from the top on the title screen as soon as audio unlocks. It plays once per launch, and again with 🎬 Replay intro.
+- **Full song:** ⚙️ → 🎤 Theme song plays it from the top.
+- The sting and the full song share one file, which is fetched and decoded once and precached by the service worker.

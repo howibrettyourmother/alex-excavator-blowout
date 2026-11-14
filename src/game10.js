@@ -13,17 +13,19 @@ function mzGain(k){var c=mzCfg(k);return c.gain==null?1:+c.gain||0}
 function sndApply(){if(!AC)return;var n=AC.currentTime;function sv(node,v){if(!node)return;try{node.gain.cancelScheduledValues(n);node.gain.setTargetAtTime(v,n,.03)}catch(e){try{node.gain.value=v}catch(e2){}}}
  var mg=SND.mo?SND.mv:0,sg=SND.so?SND.sv:0;sv(musBus,.15*mg);sv(MZ.tg,(MZ.cfg.gain==null?.55:+MZ.cfg.gain)*mg);sv(sfxBus,.85*sg);sv(crowdBus,.75*sg)}
 function mzNodes(){if(!AC||MZ.dg||!master)return;try{MZ.dg=AC.createGain();MZ.dg.connect(master);MZ.tg=AC.createGain();MZ.tg.connect(MZ.dg);try{musBus.disconnect()}catch(e){}musBus.connect(MZ.dg)}catch(e){}sndApply()}
-function mzLoad(){if(!AC||MZ.ld)return;MZ.ld=1;['sting','loop','full'].forEach(function(k){var f=MZ.have[k];if(!f)return;try{fetch(f).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){MZ.buf[k]=buf;try{updSett()}catch(e){}},function(){})}).catch(function(){})}catch(e){}})}
+function mzLoad(){if(!AC||MZ.ld)return;MZ.ld=1;var byF={};['sting','loop','full'].forEach(function(k){var f=MZ.have[k];if(!f)return;(byF[f]=byF[f]||[]).push(k)});
+ /* one fetch + decode per file (v1.9.1: the sting and the full song are the same file) */
+ Object.keys(byF).forEach(function(f){try{fetch(f).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){byF[f].forEach(function(k){MZ.buf[k]=buf});try{updSett()}catch(e){}},function(){})}).catch(function(){})}catch(e){}})}
 function mzSrc(buf){var s=AC.createBufferSource(),g=AC.createGain();s.buffer=buf;g.gain.value=0;s.connect(g);g.connect(MZ.tg);return{s:s,g:g}}
 function mzFade(o,to,d){if(!o)return;try{var n=AC.currentTime;o.g.gain.cancelScheduledValues(n);o.g.gain.setValueAtTime(o.g.gain.value,n);o.g.gain.linearRampToValueAtTime(to,n+d)}catch(e){}}
 function mzKill(o,d){if(!o)return;mzFade(o,0,d);try{o.s.stop(AC.currentTime+d+.05)}catch(e){}}
-function mzLoopOn(){if(MZ.loop||!MZ.tg||!aok())return;var k=MZ.buf.loop?'loop':MZ.buf.full?'full':null;if(!k)return;try{var b=MZ.buf[k],c=mzCfg(k),o=mzSrc(b),ls=+c.loopStart||0,le=+c.loopEnd||0;o.s.loop=true;
+function mzLoopOn(){if(MZ.loop||!MZ.tg||!aok())return;var k=MZ.buf.loop?'loop':(MZ.buf.full&&MZ.cfg.fullLoop!==false)?'full':null;if(!k)return;try{var b=MZ.buf[k],c=mzCfg(k),o=mzSrc(b),ls=+c.loopStart||0,le=+c.loopEnd||0;o.s.loop=true;
  if(le>ls+.25&&le<=b.duration+.01){o.s.loopStart=ls;o.s.loopEnd=le}o.s.start(AC.currentTime+.05);mzFade(o,mzGain(k),1.2);MZ.loop=o}catch(e){}}
 function mzLoopOff(d){if(!MZ.loop)return;mzKill(MZ.loop,d==null?.7:d);MZ.loop=null}
-function mzFullToggle(){if(MZ.full){mzKill(MZ.full,.5);MZ.full=null;return false}if(!MZ.buf.full||!MZ.tg||!aok())return false;mzLoopOff(.4);try{var o=mzSrc(MZ.buf.full);o.s.start(AC.currentTime+.05);mzFade(o,mzGain('full'),.3);o.s.onended=function(){if(MZ.full===o){MZ.full=null;try{updSett()}catch(e){}}};MZ.full=o;return true}catch(e){return false}}
+function mzFullToggle(){if(MZ.full){mzKill(MZ.full,.5);MZ.full=null;return false}if(!MZ.buf.full||!MZ.tg||!aok())return false;mzLoopOff(.4);if(MZ.sting){mzKill(MZ.sting,.3);MZ.sting=null}try{var o=mzSrc(MZ.buf.full);o.s.start(AC.currentTime+.05);o.t0=AC.currentTime+.05;mzFade(o,mzGain('full'),.3);o.s.onended=function(){if(MZ.full===o){MZ.full=null;try{updSett()}catch(e){}}};MZ.full=o;return true}catch(e){return false}}
 /* rem = seconds until the logo smash; the sting starts so its "hit" point (music.json sting.hit) lands on the smash */
 function mzSting(rem){if(MZ.sting||!MZ.buf.sting||!MZ.tg||!aok())return false;var hit=+mzCfg('sting').hit||0;if(rem>hit+.03)return false;var off=Math.max(0,hit-rem);if(off>=MZ.buf.sting.duration-.05)return true;
- try{var o=mzSrc(MZ.buf.sting);o.g.gain.value=mzGain('sting');o.s.start(AC.currentTime,off);MZ.sting=o;o.s.onended=function(){if(MZ.sting===o)MZ.sting=null}}catch(e){}return true}
+ try{var o=mzSrc(MZ.buf.sting);if(off>.05)mzFade(o,mzGain('sting'),.12);else o.g.gain.value=mzGain('sting');o.s.start(AC.currentTime,off);o.t0=AC.currentTime-off;MZ.sting=o;MZ.sung=1;o.s.onended=function(){if(MZ.sting===o)MZ.sting=null}}catch(e){}return true}
 function mzDuck(depth,hold){if(!MZ.dg||!AC)return;try{var n=AC.currentTime,p=MZ.dg.gain;p.cancelScheduledValues(n);p.setValueAtTime(Math.max(.0001,p.value),n);p.linearRampToValueAtTime(depth,n+.05);p.setTargetAtTime(1,n+.05+hold,.3)}catch(e){}}
 /* hooks: build the music buses whenever audio starts; duck music under big hits / stings */
 var aInit0=aInit;aInit=function(){aInit0();if(AC){mzNodes();mzLoad()}};
@@ -33,8 +35,12 @@ var meme0=memePlay;memePlay=function(k,pri,vol){var r=meme0(k,pri,vol);if(r)mzDu
 /* iPad Safari: unlock audio on the very first touch anywhere (capture phase, before any game handler) */
 function auUnlock(){try{aInit();if(AC&&!auUnlock.done&&AC.state==='running'){auUnlock.done=1;var s=AC.createBufferSource();s.buffer=AC.createBuffer(1,1,22050);s.connect(AC.destination);s.start(0)}}catch(e){}}
 ['touchstart','touchend','pointerdown','mousedown','click','keydown'].forEach(function(ev){document.addEventListener(ev,auUnlock,{capture:true,passive:true})});
-setInterval(function(){if(!AC||!MZ.tg)return;var tv=!$('title').classList.contains('off'),has=!!(MZ.buf.loop||MZ.buf.full);
- var want=has&&!IN.on&&tv&&!MZ.full&&SND.mo&&aok();
+setInterval(function(){if(!AC||!MZ.tg)return;var tv=!$('title').classList.contains('off'),ts=!!MZ.cfg.titleSong,has=!!(MZ.buf.loop||(MZ.buf.full&&MZ.cfg.fullLoop!==false));
+ /* v1.9.1 title song: the intro sting plays on over the menu to its own hard ending; it fades when a level/builder starts, Music is switched off or 🔇 is on */
+ if(MZ.sting&&!IN.on&&(!tv||!SND.mo||muted)){mzKill(MZ.sting,tv?.25:.8);MZ.sting=null}
+ if(ts&&tv&&!IN.on&&!MZ.sung&&!MZ.sting&&!MZ.full&&MZ.buf.sting&&SND.mo&&aok()){try{var o=mzSrc(MZ.buf.sting);mzFade(o,mzGain('sting'),.05);o.s.start(AC.currentTime+.05);o.t0=AC.currentTime+.05;MZ.sting=o;MZ.sung=1;o.s.onended=function(){if(MZ.sting===o)MZ.sting=null}}catch(e){}}
+ if(MZ.sting&&MUS.on)MUS.on=false;
+ var want=has&&!IN.on&&tv&&!MZ.full&&SND.mo&&aok()&&!(ts&&MZ.sting);
  if(want){if(MZ.sting){mzKill(MZ.sting,1.2);MZ.sting=null}if(!MZ.loop)mzLoopOn();if(MZ.loop&&MUS.on)MUS.on=false}
  else if(MZ.loop&&(!tv||IN.on||MZ.full||!SND.mo))mzLoopOff()},250);
 
@@ -354,7 +360,7 @@ function inCues(){if(!AC)return;var t=IN.t;CUES.forEach(function(c){if(IN.fired[
  if(!IN.stung&&t<T_IMP+.3&&MZ.buf.sting){if(mzSting(Math.max(0,T_IMP-t)))IN.stung=true}}
 /* ---------- control ---------- */
 function inStart(mode,replay){inEl();IN.mode=mode==='quick'?'quick':'full';IN.on=true;IN.ending=false;IN.paused=false;IN.hit=0;IN.ip=null;IN.skipped=false;IN.stung=false;IN.fired={};IN.P=[];IN.R=rng(20261114);IN.F=inFrags();IN.last=0;IN.fc=0;IN.fs=0;
- IN.snd.forEach(function(o){if(o.loop)ipStop(o,.2)});IN.snd=[];IN.eng=null;mzLoopOff(.4);if(MZ.full){mzKill(MZ.full,.4);MZ.full=null}
+ IN.snd.forEach(function(o){if(o.loop)ipStop(o,.2)});IN.snd=[];IN.eng=null;mzLoopOff(.4);if(MZ.full){mzKill(MZ.full,.4);MZ.full=null}if(MZ.sting){mzKill(MZ.sting,.3);MZ.sting=null}
  IN.t=IN.mode==='quick'?T_IMP-.6:0;IN.t0=IN.t;IN.tTap=T_IMP+1.9;IN.tEnd=T_IMP+1.0;IN.dts=[];
  CUES.forEach(function(c){if(c[0]<IN.t)IN.fired[c[1]]=1});if(IN.mode==='quick'){IN.fired.rumble=1;IN.fired.tracks=1}
  IN.st=performance.now();IN.el.style.display='';IN.el.classList.remove('out');inResize();cancelAnimationFrame(IN.raf);IN.raf=requestAnimationFrame(inFrame);
@@ -373,7 +379,7 @@ function inEnd(now){if(!IN.on||IN.ending&&!now)return;IN.ending=true;inMarkSeen(
 function inSeek(t,mode){inStart(mode||IN.mode||'full');IN.silent=true;var n=0;while(IN.t<t&&n++<4000)inStep(1/60);IN.silent=false;IN.paused=true;inDraw();return IN.t}
 window.EBI={state:function(){var s=inShake(IN.t);return{on:IN.on,mode:IN.mode,t:+IN.t.toFixed(3),hit:!!IN.hit,ending:IN.ending,shake:+s.a.toFixed(4),parts:IN.P.length,shards:IN.F.length,dpr:IN.dpr,lowq:!!IN.lowq,seen:inSeen(),tap:IN.mode==='full'&&IN.t>=IN.tTap,au:AC?AC.state:null,fired:Object.keys(IN.fired)}},
  play:function(m){inStart(m||'full');return IN.mode},seek:function(t,m){return inSeek(t,m)},pause:function(p){IN.paused=p!==false;return IN.paused},tap:function(){inTap();return IN.t},end:function(){inEnd(true);return IN.on},
- shakeAt:function(t){return inShake(t).a},music:function(){return{have:MZ.have,cfg:MZ.cfg,loaded:Object.keys(MZ.buf),loop:!!MZ.loop,full:!!MZ.full,sting:!!MZ.sting,nodes:!!MZ.dg,duck:MZ.dg?+MZ.dg.gain.value.toFixed(3):null}},
+ shakeAt:function(t){return inShake(t).a},music:function(){return{have:MZ.have,cfg:MZ.cfg,loaded:Object.keys(MZ.buf),loop:!!MZ.loop,full:!!MZ.full,sting:!!MZ.sting,sung:!!MZ.sung,pos:MZ.sting&&MZ.sting.t0!=null&&AC?+(AC.currentTime-MZ.sting.t0).toFixed(3):(MZ.full&&MZ.full.t0!=null&&AC?+(AC.currentTime-MZ.full.t0).toFixed(3):null),gain:MZ.sting?+MZ.sting.g.gain.value.toFixed(3):(MZ.full?+MZ.full.g.gain.value.toFixed(3):null),tg:MZ.tg?+MZ.tg.gain.value.toFixed(3):null,ctx:AC?AC.state:null,t:AC?+AC.currentTime.toFixed(3):null,muted:muted,mo:SND.mo,nodes:!!MZ.dg,duck:MZ.dg?+MZ.dg.gain.value.toFixed(3):null}},
  perf:function(){var a=(IN.dts||[]).slice(5).sort(function(x,y){return x-y});if(!a.length)return null;return{n:a.length,avg:+(a.reduce(function(s,v){return s+v},0)/a.length).toFixed(2),p95:+a[Math.floor(a.length*.95)].toFixed(2),max:+a[a.length-1].toFixed(2)}},
  drawCost:function(n){n=n||30;var t0=performance.now();for(var i=0;i<n;i++)inDraw();return +((performance.now()-t0)/n).toFixed(2)},
  snd:function(){return{key:SNDK,s:JSON.parse(JSON.stringify(SND)),sfx:sfxBus?+sfxBus.gain.value.toFixed(3):null,mus:musBus?+musBus.gain.value.toFixed(3):null}},duck:function(){mzDuck(.35,.7);return true}};
