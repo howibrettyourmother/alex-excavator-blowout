@@ -172,8 +172,8 @@ function doSix(){var ids=KIDS.map(function(k){return k.i}).sort(function(){retur
  var k=KIDS[ids.slice().sort(function(a,b){return KIDS[a].x-KIDS[b].x})[0]];CR.bub={x:clamp(k.x+40,110,1380),y:clamp(k.hy-120*k.s-20,110,700),t:0};CSND.six()}
 function crowdEv(e){if(SIM)return;
  if(e==='ooh')CSND.ooh();
- else if(e==='near'){crowd('groan',1.9);CSND.aww(true);maySix(.3,1.2)}
- else if(e==='miss'){crowd('sad',1.2);CSND.aww(false)}
+ else if(e==='near'){crowd('groan',1.9);maySix(.3,1.2)}
+ else if(e==='miss'){crowd('sad',1.2)}
  else if(e==='score'){crowd('cheer',3.2);CSND.cheer(true);KIDS.slice().sort(function(){return rnd()-.5}).slice(0,4).forEach(function(k){confetti(k.x,k.hy-40,8)});maySix(.65,1.1)}
  else if(e==='blowout'){crowd('excite',2.2);CSND.cheer(false);maySix(.35,.9)}
  else if(e==='mouse'){crowd('excite',3)}

@@ -107,3 +107,8 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - The builder tray is redesigned for ~29 pieces: five big icon-first category tabs (Basics, Bouncy, Movers, Silly, Boom), 64px+ touch targets, a count-left badge on each piece, and the last-used tab is remembered. Undo, Clear, Blow it up! and the other tools stay in the top bar.
 - Secret Easter egg from Dad: a small blue invisible-ink pen (the real glossy translucent one, with a chunky UV cap — no writing on the barrel) is tucked on the right edge of the arcade cabinet on the title screen. Tap it to enter black-light mode: the screen goes dark purple, a UV glow follows your finger from the pen's cap, and Dad's hidden notes and doodles only show up in the light. Tap the pen again or ✕ to leave. It never blocks play, and it works for Zoe too.
 
+## v1.7.1
+- Builder tray no longer covers the floor. In the editor the playfield rescales to sit fully above the tabbed tray, including at iPad landscape sizes and shorter Safari-toolbar heights, so you can place and drag pieces on the floor and in the bottom corners. Tray touches stay on the tray.
+- Polish pass on the seven 1.7.0 toys: richer art, juicier hit animation, and a full elephant-toothpaste overhaul (science flask, chunky striped foam column that billows then slumps). The fidget spinner is now a face-on classic tri-spinner with still center cap and motion blur; the rubber duck is a classic yellow ducky.
+- New miss sting: a recorded "WA WA WA" fail sound (YouTube S9LAxmDGQGw, approved exception like the goat scream) plays once when a shot misses.
+- Other piece and UI sounds stay as they were (a mix of earlier CC0 recordings and synthesized effects). A full premium real-sound pack is planned for v1.7.2.

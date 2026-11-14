@@ -54,3 +54,5 @@ All new sounds are synthesized at runtime with WebAudio (no samples, nothing cop
 - Elephant toothpaste: a fizzy foam whoosh
 - Invisible-ink black light: a soft low hum (sine + triangle with a slow wobble) while UV mode is on
 
+## v1.7.1 fail sting and polish
+- `sfx/fail.mp3` (3.38 s, mono 64 kbps): "WA WA WA" fail sound effect from YouTube video S9LAxmDGQGw (channel Trending Sound Effect, https://youtu.be/S9LAxmDGQGw), used with the owner's approval for this private, non-profit kids' game; not CC0. The source clip is 4.27 s; the effect is four descending "wa" notes (about 592, 562, 536, then 511 Hz). Trimmed from 0.50–3.88 s, faded, and loudness-normalized. It plays once per missed shot.
