@@ -39,3 +39,6 @@ Each clip was trimmed, faded, loudness-matched, and re-encoded as mono 64 kbps M
 - `sfx/spray1.mp3`: "spray can.wav" by Kiyoshiakira, https://freesound.org/people/Kiyoshiakira/sounds/436774/ (CC0)
 - `sfx/blower1.mp3`: "Leaf Blower.wav" by Kiano.ow, https://freesound.org/people/Kiano.ow/sounds/594138/ (CC0) — 1.6 s steady section
 - The Gastric Distress clip (`sfx/fart5.mp3`) is no longer loaded or played anywhere; the file only stays so old cached URLs keep working.
+
+## v1.6.3 goat scream
+- `sfx/sheep_scream.mp3` (1.80 s, mono 64 kbps): Screaming Sheep audio from YouTube video SIaFtAKnqBU (AjQ2891), used non-commercially for a private family game at the owner's request; not CC0. It's the 3.03-4.80 s scream, trimmed, faded and loudness-normalized. The earlier CC0 goat clips (goat1-3) are no longer used.

@@ -82,3 +82,6 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - Leaf blower is about 4.7x stronger up close (0.52 vs 0.11 peak) and fades with distance; reach is 420 px, matching the airflow. Lift is capped below gravity, so the ball can't hover.
 - Portals: each portal has an arrow showing its exit direction (8 directions, 45° apart). Tap the arrow, or the ➜ button, to turn it. The ball leaves along the arrow at its entry speed. Codes save it as `-N`. Old codes have no arrow and keep the old turn-based exit.
 - Builder: ↺ and ↻ buttons, a name tag on the selected piece, snap ticks, a drop ring, and starter pieces that snap to the grid (fixes the 5px Clear→Undo offset).
+
+## v1.6.3
+- The screaming goat now plays the Screaming Sheep scream on every hit (see CREDITS.md). Its head is thrown back with the mouth wide open, held for the full 1.8 s scream. Hits during a scream don't restart it.

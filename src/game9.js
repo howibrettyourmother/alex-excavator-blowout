@@ -264,9 +264,9 @@ function mkToy(t,d){var b;if(t==='whoop'){b=stat(d[1],d[2],d[3],d[4]-6,{mat:'who
  else if(t==='goat'){b=stat(d[1],d[2],76,92,{mat:'card',re:.3,fr:.5});b.sw=116;b.sh=100}
  else{b=stat(d[1],d[2],86,48,{mat:'card',re:.3,fr:.5});b.sw=92;b.sh=60}
  b.kind=t;b.toy=1;b.lastHit=-9;b.hitT=-9;return b}
-function drawToy(g,b){var k=clamp((gt-b.hitT)/(b.kind==='chick'?.75:b.kind==='goat'?1:.45),0,1),on=k<1,s=spr(b.kind==='goat'?'goatb':b.kind),q;if(!s)return;
- if(b.kind==='goat'){var hs=spr('goath');g.drawImage(s.c,-b.sw/2,-b.sh/2,s.w,s.h);q=on?Math.sin(k*PI*9)*(1-k):0;var tl=on?-.35*Math.sin(Math.min(1,k*5)*PI/2)*(1-k*k):0;
-  g.save();g.translate(19,-17);g.rotate(tl+.16*q);g.translate(-19,17);if(hs)g.drawImage(hs.c,-b.sw/2,-b.sh/2,hs.w,hs.h);if(on&&k<.9){g.fillStyle='#3a0f14';g.beginPath();g.ellipse(47,-17,6,8*(1-k*.6),.3,0,2*PI);g.fill();g.fillStyle='#ff7a8a';g.beginPath();g.ellipse(47,-14,3.5,3.5*(1-k*.6),.3,0,2*PI);g.fill()}g.restore();return}
+function drawToy(g,b){var k=clamp((gt-b.hitT)/(b.kind==='chick'?.75:b.kind==='goat'?GOATL:.45),0,1),on=k<1,s=spr(b.kind==='goat'?'goatb':b.kind),q;if(!s)return;
+ if(b.kind==='goat'){var hs=spr('goath');g.drawImage(s.c,-b.sw/2,-b.sh/2,s.w,s.h);/* v1.6.3: head thrown back + mouth wide open, held for the whole scream, then settles */var gu=clamp(k/.06,0,1),gd=clamp((k-.9)/.1,0,1),hold=on?Math.sin(gu*PI/2)*(1-gd*gd):0;q=on?Math.sin(gt*55)*.12*hold+Math.sin(k*PI*6)*(1-k)*.3*gd:0;var tl=-.62*hold;
+  g.save();g.translate(19,-17);g.rotate(tl+.16*q);g.translate(-19,17);if(hs)g.drawImage(hs.c,-b.sw/2,-b.sh/2,hs.w,hs.h);if(hold>.05){var mo=hold*(1+.08*Math.sin(gt*40));g.fillStyle='#3a0f14';g.beginPath();g.ellipse(48,-15,9*mo,14*mo,.3,0,2*PI);g.fill();g.fillStyle='#ff7a8a';g.beginPath();g.ellipse(49,-9,5.5*mo,5*mo,.3,0,2*PI);g.fill();g.fillStyle='#fff';g.fillRect(43,-28*mo+0,4,4);g.fillRect(49,-28*mo+1,4,4)}g.restore();return}
  if(b.kind==='chick'){q=on?Math.sin(k*PI*3)*(1-k):0;var cx=1+.38*q;g.translate(0,-6-16*Math.abs(q));g.rotate(-.12*q);g.scale(cx,1/cx);g.drawImage(s.c,-b.sw/2,-b.sh/2,s.w,s.h);return}
  if(b.kind==='fan'){g.drawImage(s.c,-b.sw/2,-b.sh/2,s.w,s.h);g.save();g.translate(-8,-2);g.rotate(gt*16);g.fillStyle='rgba(230,240,255,.85)';for(var bi=0;bi<3;bi++){g.rotate(2*PI/3);g.beginPath();g.ellipse(0,-10,6,11,.3,0,2*PI);g.fill()}g.restore();g.fillStyle='#2b3440';g.beginPath();g.arc(-8,-2,4,0,2*PI);g.fill();return}
  if(b.kind==='pad'){var kp=clamp((gt-b.hitT)/.7,0,1),sy=1;if(kp<1){if(kp<.16)sy=1-.48*Math.sin(kp/.16*PI/2);else{var u=(kp-.16)/.84;sy=1-.48*Math.cos(u*PI*3)*Math.pow(1-u,1.6)}}
@@ -282,7 +282,7 @@ function whoopSnd(){loadFarts();if(!aok())return;var bs=FA.buf.filter(function(x
  playToot(.85)}
 function sprayCount(){var n=0;for(var i=0;i<P.length;i++)if(P[i].k==='ss')n++;return n}
 var TSQ=[];function toySndOk(){var n=performance.now();TSQ=TSQ.filter(function(t){return n-t<250});if(TSQ.length>=4)return false;TSQ.push(n);return true}
-function toyHit(b,rv,sp){if(gt-b.lastHit<.4)return;b.lastHit=gt;b.hitT=gt;var x=b.position.x,y=b.position.y,snd=toySndOk();
+function toyHit(b,rv,sp){if(b.kind==='goat'&&gt-b.hitT<GOATL-.08){b.lastHit=gt;return}if(gt-b.lastHit<.4)return;b.lastHit=gt;b.hitT=gt;var x=b.position.x,y=b.position.y,snd=toySndOk();
  if(b.kind==='whoop'){if(snd)whoopSnd();ftext(x,y-46,'Pfffft!','#ffb3c7');for(var i=0;i<7;i++)emit({k:'pf',x:x+44+rnd()*8,y:y+(rnd()-.5)*10,vx:120+rnd()*160,vy:-30-rnd()*80,m:.5+rnd()*.4,s:5+rnd()*6})}
  else if(b.kind!=='spray')silly(b,x,y,rv,snd);
  else{if(snd&&!playSample('spray',.85)){noise(.34,{ft:'bandpass',f:5600,fto:2400,q:.7,vol:.22,att:.01});noise(.18,{ft:'highpass',f:6500,vol:.08,at:.05})}
@@ -373,7 +373,7 @@ function silly(b,x,y,rv,snd){var k=b.kind,i;var S=function(f,a){if(snd)f(a)};
  else if(k==='fan'){}
  else if(k==='pad'){S(function(){playSample('boing',1,boingSnd)});ftext(x,y-60,'BOING!!','#ff5fb0');for(i=0;i<10;i++){var pa=-PI*(i+.5)/10;emit({k:'sp',x:x+Math.cos(pa)*60,y:y-30,vx:Math.cos(pa)*260,vy:Math.sin(pa)*300-80,m:.45,c:i%2?'#ff5fb0':'#ffe27a',s:6})}}
  else if(k==='horn'){S(honkSnd);ftext(x,y-52,'HONK HONK!','#ffb04a')}
- else if(k==='goat'){S(goatSnd);ftext(x+10,y-64,['MEHHHHH!','AAAAAHHH!','BLEHHHH!'][(rnd()*3)|0],'#fff')}}
+ else if(k==='goat'){S(goatSnd);ftext(x+10,y-64,['AAAAAHHHH!','AAAHHHHHH!','AAAAAAHH!'][(rnd()*3)|0],'#fff')}}
 /* synthesized goat scream: buzzy voice, fast bleat wobble, 'ehh' vowel formants. No samples. */
 function goatSnd(){if(!aok())return;try{var t=AC.currentTime,d=.95,f=330+rnd()*80,o=AC.createOscillator(),o2=AC.createOscillator(),vib=AC.createOscillator(),vg=AC.createGain(),trem=AC.createOscillator(),tg=AC.createGain(),g=AC.createGain(),out=AC.createGain();
  o.type='sawtooth';o2.type='square';[o,o2].forEach(function(x,i){var m=i?1.003:1;x.frequency.setValueAtTime(f*.8*m,t);x.frequency.linearRampToValueAtTime(f*1.35*m,t+.12);x.frequency.linearRampToValueAtTime(f*1.25*m,t+d*.7);x.frequency.linearRampToValueAtTime(f*.85*m,t+d)});
@@ -477,7 +477,7 @@ window.EBED={open:function(){openEditor()},
  w2s:function(x,y){return{x:OX+x*S,y:OY+y*S}},sb:function(a,p){return simBall(a,p)},ports:function(){return{n:PORT.length,real:PTN[0],sim:PTN[1],p:PORT.map(function(q){return q?{x:q.x,y:q.y,a:q.a,fl:q.fl,d:q.d}:null})}},toys:function(){return{toys:statics.concat(debris).filter(function(b){return b.toy}).map(function(b){return{k:b.kind,last:+b.lastHit.toFixed(2),x:b.position.x,y:b.position.y,a:+b.angle.toFixed(2)}}),ss:sprayCount(),P:P.length,shk:shk,gt:gt}},save:function(){return edSave(true)},hist:function(){return ED.hist.length},pg:function(){return palPg},lvs:function(){return lvList()}};
 
 /* v1.6.2 recorded CC0 samples (CREDITS.md). Each synth sound stays as the automatic fallback if its file fails to load. */
-smpReg('chick',['chick1.mp3','chick2.mp3','chick3.mp3']);smpReg('goat',['goat1.mp3','goat2.mp3','goat3.mp3']);smpReg('burp',['burp1.mp3','burp2.mp3']);
+smpReg('chick',['chick1.mp3','chick2.mp3','chick3.mp3']);/* v1.6.3: the Screaming Sheep clip, every hit (owner's request; not CC0, see CREDITS.md) */var GOATL=1.8;smpReg('goat',['sheep_scream.mp3']);smpReg('burp',['burp1.mp3','burp2.mp3']);
 smpReg('honk',['honk1.mp3','honk2.mp3']);smpReg('whee',['whee1.mp3','whee2.mp3']);smpReg('tramp',['tramp1.mp3']);smpReg('boing',['boing1.mp3']);
 smpReg('portal',['portal1.mp3','portal2.mp3']);smpReg('toot',['toot6.mp3','toot7.mp3','toot8.mp3']);smpReg('boom',['boom1.mp3']);
 smpReg('spray',['spray1.mp3']);smpReg('blower',['blower1.mp3']);
