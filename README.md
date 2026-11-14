@@ -121,3 +121,6 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 ## v1.7.3: fail pool and premium real sounds
 - **Fail pool.** A missed shot now picks one of eight approved fail clips at random, never repeating the last one. The v1.7.1 "WA WA WA" sting is weighted about 40%. The other seven lines ("oh my god", "okay", "god", "what", a short suspense sting, sad guitar, and "aww") come from the same two YouTube Shorts as the v1.7.2 memes, with trims refined by onset analysis. A barely-moving shot still prefers "bruh". Vocals play at recorded pitch. See CREDITS.md.
 - **Premium real sounds.** Every remaining synthesized one-shot and loop (hits, UI, gems, fanfare, duck, spinner, toothpaste fizz, UV hum, excavator idle, crowd bed/cheer/ooh, party horns, and the rest) is replaced by a verified-CC0 real recording, analyzed, trimmed, and normalized. Already-mapped meme clips stay mapped. The original chiptune and the "6-7!" chant stay synthesized (original music / original cue). Full source table in CREDITS.md.
+
+## v1.7.4
+Silly pieces shuffle larger sound pools (existing clips plus a verified-CC0 pack and a family-only meme pack). Hard hits and ordinary prize wins can play a meme sting, still gated to one every 1.5 s. Already-approved fail-pool and cue stings are unchanged. See CREDITS.md.

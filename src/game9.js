@@ -317,7 +317,7 @@ function drawToy(g,b){if(b.kind==='jello'){if(b.ofs)g.translate(b.ofs.x,b.ofs.y)
  if(b.kind==='duck'){q=on?Math.sin(k*PI*4)*(1-k):Math.sin(gt*2)*.04;var ds=on?1+.12*Math.sin(k*PI*3)*(1-k):1;g.translate(0,-10*Math.abs(q));g.rotate(.22*q);g.scale(ds,2-ds);if(s)g.drawImage(s.c,-b.sw/2,-b.sh/2,s.w,s.h);return}
  if(b.kind==='whoop'){var q=on?Math.sin(k*PI)*(1-k*.25):0,sy=1-.55*q,sx=1+.2*q;g.translate(0,b.sh*.38*(1-sy));g.scale(sx,sy);g.drawImage(s.c,-b.sw/2,-b.sh/2,s.w,s.h)}
  else{var w=on?Math.sin(k*PI*5)*.12*(1-k):0;g.translate(0,b.sh/2);g.rotate(w);g.drawImage(s.c,-b.sw/2,-b.sh,s.w,s.h)}}
-function whoopSnd(){loadFarts();if(!aok())return;if(rnd()<.333&&memePlay('fart_reverb',1,.95))return;var bs=FA.buf.filter(function(x){return x.__n!==5});// never the wet 'Gastric Distress' clip
+function whoopSnd(){loadFarts();if(!aok())return;if(playSample('whoop',.85))return;var bs=FA.buf.filter(function(x){return x.__n!==5});// never the wet 'Gastric Distress' clip
  if(!bs.length){noise(.3,{ft:'lowpass',f:300,fto:120,q:5,vol:.38});tone(110,.3,{to:70,type:'sawtooth',vol:.1});return}
  playToot(.85)}
 function sprayCount(){var n=0;for(var i=0;i<P.length;i++)if(P[i].k==='ss')n++;return n}
@@ -426,7 +426,7 @@ function wheeSnd(){tone(420,.5,{to:1700,type:'sine',vol:.15});tone(840,.5,{to:34
 function silly(b,x,y,rv,snd){var k=b.kind,i;var S=function(f,a){if(snd)f(a)};
  if(k==='chick'){var big=rv>5||gt-(b.sqT||-9)>2;b.sqT=gt;S(chickSquawk,big);ftext(x,y-54,['BAWK!','BA-GAWK!','SQUAWK!!','BAWWWK!'][(rnd()*4)|0],'#fff27a');for(i=0;i<8;i++)emit({k:'sp',x:x,y:y-10,vx:(rnd()-.5)*300,vy:-120-rnd()*200,m:.45,c:i%2?'#ffd84a':'#ff6a3d',s:4})}
  else if(k==='tramp'){S(boingSnd);ftext(x,y-50,'BOING!','#9fd8ff')}
- else if(k==='banana'){S(function(){if(!memePlay('badumtss',1,.95))wheeSnd()});ftext(x,y-36,'Wheee!','#fff27a')}
+ else if(k==='banana'){S(function(){if(!playSample('banana',.95))wheeSnd()});ftext(x,y-36,'Wheee!','#fff27a')}
  else if(k==='frog'){S(burpSnd);ftext(x,y-60,'BURRRP!','#b6ff7a');for(i=0;i<6;i++)emit({k:'sp',x:x,y:y-4,vx:(rnd()-.5)*160,vy:-60-rnd()*120,m:.5,c:'#8fe86a',s:5})}
  else if(k==='fan'){}
  else if(k==='pad'){S(function(){playSample('boing',1,boingSnd)});ftext(x,y-60,'BOING!!','#ff5fb0');for(i=0;i<10;i++){var pa=-PI*(i+.5)/10;emit({k:'sp',x:x+Math.cos(pa)*60,y:y-30,vx:Math.cos(pa)*260,vy:Math.sin(pa)*300-80,m:.45,c:i%2?'#ff5fb0':'#ffe27a',s:6})}}
@@ -435,7 +435,7 @@ function silly(b,x,y,rv,snd){var k=b.kind,i;var S=function(f,a){if(snd)f(a)};
  else if(k==='duck'){S(duckSnd);ftext(x,y-50,['SQUEAK!','SQUEEEK!','Peep!'][(rnd()*3)|0],'#fff27a');for(i=0;i<6;i++)emit({k:'sp',x:x,y:y-8,vx:(rnd()-.5)*160,vy:-80-rnd()*140,m:.4,c:'#7ad8ff',s:4})}
  else if(k==='jello'){S(jelloSnd);ftext(x,y-48,'Bloop!','#ff6aa8');for(i=0;i<8;i++)emit({k:'sp',x:x+(rnd()-.5)*30,y:y-10,vx:(rnd()-.5)*140,vy:-40-rnd()*120,m:.45,c:i%2?'#ff6aa8':'#ffe27a',s:5})}
  else if(k==='spin'){S(spinSnd);ftext(x,y-56,'WHIRRR!','#7ad8ff');for(i=0;i<10;i++){var sa=i/10*2*PI;emit({k:'sp',x:x+Math.cos(sa)*20,y:y+Math.sin(sa)*20,vx:Math.cos(sa)*200,vy:Math.sin(sa)*200,m:.4,c:['#5ad0ff','#ff4fa0','#ffd21a'][i%3],s:4})}}
- else if(k==='glove'){S(function(){if(!memePlay('tom_scream',1,.95))powSnd()});ftext(x+(b.dir||1)*40,y-60,'POW!','#ff5a3a');for(i=0;i<8;i++)emit({k:'sp',x:x+(b.dir||1)*40,y:y,vx:(b.dir||1)*(80+rnd()*160),vy:-60-rnd()*140,m:.4,c:i%2?'#ffe27a':'#ff5a3a',s:6})}
+ else if(k==='glove'){S(function(){if(!playSample('glove',.95))powSnd()});ftext(x+(b.dir||1)*40,y-60,'POW!','#ff5a3a');for(i=0;i<8;i++)emit({k:'sp',x:x+(b.dir||1)*40,y:y,vx:(b.dir||1)*(80+rnd()*160),vy:-60-rnd()*140,m:.4,c:i%2?'#ffe27a':'#ff5a3a',s:6})}
  else if(k==='balloon'){S(popSnd);ftext(x,y-50,'POP!','#ffb3c7')}
  else if(k==='paste'){S(pasteSnd);ftext(x,y-70,'FOOOAM!!','#ff7ad9')}
  else if(k==='pin'){S(pinSnd);for(i=0;i<5;i++)emit({k:'sp',x:x,y:y-36,vx:(rnd()-.5)*80,vy:-40-rnd()*80,m:.4,c:['#ff3b4a','#ffd21a','#3b8aff'][i%3],s:3})}}
@@ -820,6 +820,11 @@ smpReg('thunk',['thunk.mp3']);smpReg('dump',['dump.mp3']);smpReg('click',['click
 smpReg('duck',['duck.mp3']);smpReg('spin',['spin.mp3']);smpReg('punch',['punch.mp3']);smpReg('pin',['pin.mp3']);smpReg('paste',['paste.mp3']);smpReg('sparkle',['sparkle.mp3']);
 smpReg('horn1',['horn1.mp3']);smpReg('horn2',['horn2.mp3']);smpReg('uvhum',['uvhum.mp3']);smpReg('engine',['engine.mp3']);
 smpReg('crowdbed',['crowdbed.mp3']);smpReg('cheer',['cheer.mp3']);smpReg('cheer_sm',['cheer_sm.mp3']);smpReg('ooh',['ooh.mp3']);smpReg('crowd_aww',['crowd_aww.mp3']);smpReg('murmur',['murmur.mp3']);smpReg('squeak',['squeak.mp3']);
+/* v1.7.4 data-driven piece/sting pools (sfx/pools.json), baked at build time. One-line swap: change PACK_URL. */
+var PACK_URL='sfx/pools.json';
+var PACK=/*PACK*/null;
+function applyPack(m){if(!m||!m.pools)return;Object.keys(m.pools).forEach(function(k){if(m.pools[k]&&m.pools[k].length)smpReg(k,m.pools[k])})}
+if(PACK)applyPack(PACK);
 /* meme clips: at most one every 1.5s; win > fail > others. Vocals play at recorded pitch (lock). */
 var MEME={t:0,pri:0};
 function memePlay(k,pri,vol){if(!aok())return false;var n=performance.now();if(n-MEME.t<1500&&pri<=(MEME.pri||0))return false;if(!playSample(k,vol==null?.95:vol,null,1,0,true))return false;MEME.t=n;MEME.pri=pri||1;return true}
@@ -836,7 +841,7 @@ function failPlay(){return memePlay(failPick(),2,.95)}
  SFX.click=w('click',SFX.click,.8);SFX.beep=w('beep',SFX.beep,.7,null,true);SFX.whoosh=w('whoosh',SFX.whoosh,.8);SFX.ok=w('ok',SFX.ok,.85,null,true);SFX.no=w('no',SFX.no,.85);
  var tick0=SFX.tick;SFX.tick=function(i){if(!playSample('tick',.55))tick0(i)};
  var st0=SFX.stretch;SFX.stretch=function(p){if(!lim('st',80))return;if(!playSample('stretch',.12+.2*(p||0),null,.85+(p||0)*.4,0,true))tone(180+p*420,.06,{type:'triangle',vol:.035})};
- var hit0=SFX.hit;SFX.hit=function(mat,v){var a=clamp(v/16,.08,1);if(!lim(mat,50))return;var k={plate:'hit_plate',cup:'hit_cup',wrap:'hit_wrap',wall:'hit_wall',table:'hit_table'}[mat]||'hit_card';if(!playSample(k,.35+.6*a))SFX.hitS(mat,a)};
+ var hit0=SFX.hit;SFX.hit=function(mat,v){var a=clamp(v/16,.08,1);if(!lim(mat,50))return;var k={plate:'hit_plate',cup:'hit_cup',wrap:'hit_wrap',wall:'hit_wall',table:'hit_table'}[mat]||'hit_card';if(!playSample(k,.35+.6*a))SFX.hitS(mat,a);if(a>.7&&rnd()<.4)memePlay('hit',1,.85)};
  var aww0=SFX.aww;SFX.aww=function(){if(!failPlay())aww0()};
 })();
 

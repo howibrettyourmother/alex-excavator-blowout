@@ -1,0 +1,579 @@
+{
+  "pack": "meme-pack-cc0",
+  "license": "CC0 1.0 (Creative Commons Zero)",
+  "note": "Verified-CC0 recordings from Freesound.org, trimmed, loudness-normalized (about \u221217 dBFS, peak cap \u22121 dBFS), mono 64 kbps MP3. Clips were picked without listening. Voiced clips (wow, cartoon scream) were transcribed with faster-whisper base.en and contained no swear words. Instrumental and animal clips were screened by title and description only. Safe to ship publicly. Mix with sfx/family-only/ in sfx/pools.json. To change packs later, edit pools.json or PACK_URL.",
+  "clip_count": 38,
+  "clips": [
+    {
+      "name": "Low-bit boom",
+      "id": "boom_hit",
+      "file": "boom_hit.mp3",
+      "source": "https://freesound.org/people/XHALE303/sounds/535615/",
+      "author": "XHALE303",
+      "freesound_id": "535615",
+      "duration": 1.52,
+      "category": "hit",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Metal pipe drop",
+      "id": "metal_pipe",
+      "file": "metal_pipe.mp3",
+      "source": "https://freesound.org/people/Anzbot/sounds/562162/",
+      "author": "Anzbot",
+      "freesound_id": "562162",
+      "duration": 0.61,
+      "category": "hit",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Bonk",
+      "id": "bonk",
+      "file": "bonk.mp3",
+      "source": "https://freesound.org/people/reevesT/sounds/857868/",
+      "author": "reevesT",
+      "freesound_id": "857868",
+      "duration": 0.17,
+      "category": "hit",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Cartoon punch",
+      "id": "punch",
+      "file": "punch.mp3",
+      "source": "https://freesound.org/people/nicholasdaryl/sounds/563356/",
+      "author": "nicholasdaryl",
+      "freesound_id": "563356",
+      "duration": 0.42,
+      "category": "hit",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Sad trombone",
+      "id": "sad_trombone",
+      "file": "sad_trombone.mp3",
+      "source": "https://freesound.org/people/kirbydx/sounds/175409/",
+      "author": "kirbydx",
+      "freesound_id": "175409",
+      "duration": 4.5,
+      "category": "fail",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Fail jingle party horn",
+      "id": "fail_partyhorn",
+      "file": "fail_partyhorn.mp3",
+      "source": "https://freesound.org/people/qubodup/sounds/825292/",
+      "author": "qubodup",
+      "freesound_id": "825292",
+      "duration": 2.95,
+      "category": "fail",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Wrong buzzer",
+      "id": "wrong_buzzer",
+      "file": "wrong_buzzer.mp3",
+      "source": "https://freesound.org/people/KevinVG207/sounds/331912/",
+      "author": "KevinVG207",
+      "freesound_id": "331912",
+      "duration": 0.49,
+      "category": "fail",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Cricket chirp",
+      "id": "crickets",
+      "file": "crickets.mp3",
+      "source": "https://freesound.org/people/_sinny_/sounds/822935/",
+      "author": "_sinny_",
+      "freesound_id": "822935",
+      "duration": 2.83,
+      "category": "fail",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Crowd cheer",
+      "id": "crowd_cheer",
+      "file": "crowd_cheer.mp3",
+      "source": "https://freesound.org/people/Krizin/sounds/651646/",
+      "author": "Krizin",
+      "freesound_id": "651646",
+      "duration": 2.8,
+      "category": "win",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "8-bit coin",
+      "id": "coin",
+      "file": "coin.mp3",
+      "source": "https://freesound.org/people/timgormly/sounds/162805/",
+      "author": "timgormly",
+      "freesound_id": "162805",
+      "duration": 0.37,
+      "category": "win",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "1-up",
+      "id": "oneup",
+      "file": "oneup.mp3",
+      "source": "https://freesound.org/people/ash_rez/sounds/518888/",
+      "author": "ash_rez",
+      "freesound_id": "518888",
+      "duration": 0.53,
+      "category": "win",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Cartoon wow scream",
+      "id": "wow",
+      "file": "wow.mp3",
+      "source": "https://freesound.org/people/NicknameLarry/sounds/508898/",
+      "author": "NicknameLarry",
+      "freesound_id": "508898",
+      "duration": 0.58,
+      "category": "win",
+      "license": "CC0 1.0",
+      "verified": "transcription",
+      "transcript": "AHHH! (no swear words)"
+    },
+    {
+      "name": "Airhorn",
+      "id": "airhorn",
+      "file": "airhorn.mp3",
+      "source": "https://freesound.org/people/jacksonacademyashmore/sounds/414208/",
+      "author": "jacksonacademyashmore",
+      "freesound_id": "414208",
+      "duration": 1.6,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Cartoon slide-fall",
+      "id": "slide_fall",
+      "file": "slide_fall.mp3",
+      "source": "https://freesound.org/people/plasterbrain/sounds/395443/",
+      "author": "plasterbrain",
+      "freesound_id": "395443",
+      "duration": 1.98,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Slide whistle",
+      "id": "slide_whistle",
+      "file": "slide_whistle.mp3",
+      "source": "https://freesound.org/people/SamuelGremaud/sounds/517633/",
+      "author": "SamuelGremaud",
+      "freesound_id": "517633",
+      "duration": 1.7,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Record scratch",
+      "id": "record_scratch",
+      "file": "record_scratch.mp3",
+      "source": "https://freesound.org/people/ludvique/sounds/71853/",
+      "author": "ludvique",
+      "freesound_id": "71853",
+      "duration": 0.45,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Funny boing",
+      "id": "boing",
+      "file": "boing.mp3",
+      "source": "https://freesound.org/people/se2001/sounds/543641/",
+      "author": "se2001",
+      "freesound_id": "543641",
+      "duration": 0.65,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Boing 2",
+      "id": "boing2",
+      "file": "boing2.mp3",
+      "source": "https://freesound.org/people/magnuswaker/sounds/540790/",
+      "author": "magnuswaker",
+      "freesound_id": "540790",
+      "duration": 0.87,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Ba-dum-tss",
+      "id": "ba_dum_tss",
+      "file": "ba_dum_tss.mp3",
+      "source": "https://freesound.org/people/gefscream/sounds/470195/",
+      "author": "gefscream",
+      "freesound_id": "470195",
+      "duration": 1.23,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Clown horn (single honk)",
+      "id": "horn",
+      "file": "horn.mp3",
+      "source": "https://freesound.org/people/Gimp_Revival/sounds/588570/",
+      "author": "Gimp_Revival",
+      "freesound_id": "588570",
+      "duration": 0.56,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Clown too-doo horn",
+      "id": "horn2",
+      "file": "horn2.mp3",
+      "source": "https://freesound.org/people/FunWithSound/sounds/608085/",
+      "author": "FunWithSound",
+      "freesound_id": "608085",
+      "duration": 1.37,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Whoosh flutter wings",
+      "id": "flutter",
+      "file": "flutter.mp3",
+      "source": "https://freesound.org/people/Qvantor/sounds/877979/",
+      "author": "Qvantor",
+      "freesound_id": "877979",
+      "duration": 1.16,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Short whoosh",
+      "id": "whoosh",
+      "file": "whoosh.mp3",
+      "source": "https://freesound.org/people/FartCTO/sounds/789840/",
+      "author": "FartCTO",
+      "freesound_id": "789840",
+      "duration": 0.51,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Spray-can hiss",
+      "id": "spray",
+      "file": "spray.mp3",
+      "source": "https://freesound.org/people/michael_grinnell/sounds/464428/",
+      "author": "michael_grinnell",
+      "freesound_id": "464428",
+      "duration": 0.74,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Balloon pop",
+      "id": "pop",
+      "file": "pop.mp3",
+      "source": "https://freesound.org/people/Mart1001/sounds/54012/",
+      "author": "Mart1001",
+      "freesound_id": "54012",
+      "duration": 0.66,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Toy duck quack",
+      "id": "quack",
+      "file": "quack.mp3",
+      "source": "https://freesound.org/people/martian/sounds/547601/",
+      "author": "martian",
+      "freesound_id": "547601",
+      "duration": 1.22,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Rubber-duck squeak",
+      "id": "duck",
+      "file": "duck.mp3",
+      "source": "https://freesound.org/people/csaszi/sounds/350917/",
+      "author": "csaszi",
+      "freesound_id": "350917",
+      "duration": 0.53,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Squeaky toy",
+      "id": "squeaky",
+      "file": "squeaky.mp3",
+      "source": "https://freesound.org/people/Breviceps/sounds/468443/",
+      "author": "Breviceps",
+      "freesound_id": "468443",
+      "duration": 0.43,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Fidget-spinner whir",
+      "id": "spin",
+      "file": "spin.mp3",
+      "source": "https://freesound.org/people/chestnutjam/sounds/399285/",
+      "author": "chestnutjam",
+      "freesound_id": "399285",
+      "duration": 1.0,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Mini goat baa",
+      "id": "goat_baa",
+      "file": "goat_baa.mp3",
+      "source": "https://freesound.org/people/satoristudios3/sounds/677218/",
+      "author": "satoristudios3",
+      "freesound_id": "677218",
+      "duration": 1.17,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Baby goat bleat",
+      "id": "goat_bleat",
+      "file": "goat_bleat.mp3",
+      "source": "https://freesound.org/people/jsbarrett/sounds/200333/",
+      "author": "jsbarrett",
+      "freesound_id": "200333",
+      "duration": 0.73,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Whoopee cushion",
+      "id": "toot",
+      "file": "toot.mp3",
+      "source": "https://freesound.org/people/FlashTrauma/sounds/398284/",
+      "author": "FlashTrauma",
+      "freesound_id": "398284",
+      "duration": 0.78,
+      "category": "toot",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Toot",
+      "id": "toot2",
+      "file": "toot2.mp3",
+      "source": "https://freesound.org/people/bassimat/sounds/840755/",
+      "author": "bassimat",
+      "freesound_id": "840755",
+      "duration": 1.76,
+      "category": "toot",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Burp",
+      "id": "burp",
+      "file": "burp.mp3",
+      "source": "https://freesound.org/people/scooterfort/sounds/570266/",
+      "author": "scooterfort",
+      "freesound_id": "570266",
+      "duration": 0.49,
+      "category": "toot",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Slime squish",
+      "id": "squish",
+      "file": "squish.mp3",
+      "source": "https://freesound.org/people/qubodup/sounds/442772/",
+      "author": "qubodup",
+      "freesound_id": "442772",
+      "duration": 0.42,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Splat squish",
+      "id": "squish2",
+      "file": "squish2.mp3",
+      "source": "https://freesound.org/people/mrickey13/sounds/515621/",
+      "author": "mrickey13",
+      "freesound_id": "515621",
+      "duration": 0.4,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Bubbles bursting",
+      "id": "bubbles",
+      "file": "bubbles.mp3",
+      "source": "https://freesound.org/people/florianreichelt/sounds/683100/",
+      "author": "florianreichelt",
+      "freesound_id": "683100",
+      "duration": 0.68,
+      "category": "silly",
+      "license": "CC0 1.0",
+      "verified": "title",
+      "transcript": null
+    },
+    {
+      "name": "Cartoony scream",
+      "id": "cartoon_scream",
+      "file": "cartoon_scream.mp3",
+      "source": "https://freesound.org/people/el_boss/sounds/751702/",
+      "author": "el_boss",
+      "freesound_id": "751702",
+      "duration": 1.05,
+      "category": "voice",
+      "license": "CC0 1.0",
+      "verified": "transcription",
+      "transcript": "Woo! (no swear words)"
+    }
+  ],
+  "pools": {
+    "whoop": [
+      "toot.mp3",
+      "toot2.mp3"
+    ],
+    "chick": [
+      "squeaky.mp3"
+    ],
+    "goat": [
+      "goat_baa.mp3",
+      "goat_bleat.mp3"
+    ],
+    "banana": [
+      "slide_fall.mp3",
+      "slide_whistle.mp3",
+      "ba_dum_tss.mp3"
+    ],
+    "frog": [
+      "burp.mp3"
+    ],
+    "horn": [
+      "horn.mp3",
+      "horn2.mp3",
+      "airhorn.mp3"
+    ],
+    "pad": [
+      "boing.mp3",
+      "boing2.mp3"
+    ],
+    "tramp": [
+      "boing.mp3",
+      "boing2.mp3"
+    ],
+    "blower": [
+      "whoosh.mp3"
+    ],
+    "spray": [
+      "spray.mp3"
+    ],
+    "spin": [
+      "spin.mp3"
+    ],
+    "pin": [
+      "flutter.mp3"
+    ],
+    "jello": [
+      "squish.mp3",
+      "squish2.mp3"
+    ],
+    "glove": [
+      "punch.mp3",
+      "bonk.mp3",
+      "cartoon_scream.mp3"
+    ],
+    "balloon": [
+      "pop.mp3"
+    ],
+    "duck": [
+      "duck.mp3",
+      "quack.mp3"
+    ],
+    "paste": [
+      "bubbles.mp3"
+    ],
+    "hit": [
+      "boom_hit.mp3",
+      "metal_pipe.mp3",
+      "bonk.mp3",
+      "punch.mp3"
+    ],
+    "win": [
+      "coin.mp3",
+      "oneup.mp3",
+      "wow.mp3",
+      "crowd_cheer.mp3"
+    ]
+  }
+}

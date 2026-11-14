@@ -135,3 +135,87 @@ The deferred premium real-sounds pass replaces the remaining synthesized one-sho
 Left synthesized, on purpose:
 - The title-screen chiptune (`MUS` in `src/game1.js`) is original music written for this game, not a missing sound effect.
 - The rare "6-7!" crowd chant (`CSND.six`) stays an original WebAudio rhythm written for that gesture. There is no approved or CC0 "six-seven" recording.
+
+## v1.7.4 sound packs and data-driven pools
+Silly pieces now shuffle a pool of  existing sounds plus new clips (no immediate repeats). Hard hits and ordinary level-clears can play a sting from the hit/win pools, still limited to one sting every 1.5 s, with priority win > fail > others. Trick-shot wins still play the approved `anime_wow` sting first. The fail pool, the Screaming Sheep, and the other already-approved 1.7.2/1.7.3 meme cues are unchanged.
+Pools are listed in `sfx/pools.json` and baked into the game at build time (`PACK_URL`). To drop in or rearrange clips later, edit that file and rebuild.
+
+### CC0 meme-alike pack (`sfx/meme-cc0/`)
+Verified-CC0 recordings from Freesound.org, trimmed, faded, loudness-normalized (about −17 dBFS, peak cap −1 dBFS), and encoded as mono 64 kbps MP3. Clips were picked without listening. Voiced clips were transcribed with faster-whisper; none contained swear words.
+- `sfx/meme-cc0/boom_hit.mp3` (1.52 s): Low-bit boom by XHALE303, https://freesound.org/people/XHALE303/sounds/535615/ (CC0) — hit, verified by title only
+- `sfx/meme-cc0/metal_pipe.mp3` (0.61 s): Metal pipe drop by Anzbot, https://freesound.org/people/Anzbot/sounds/562162/ (CC0) — hit, verified by title only
+- `sfx/meme-cc0/bonk.mp3` (0.17 s): Bonk by reevesT, https://freesound.org/people/reevesT/sounds/857868/ (CC0) — hit, verified by title only
+- `sfx/meme-cc0/punch.mp3` (0.42 s): Cartoon punch by nicholasdaryl, https://freesound.org/people/nicholasdaryl/sounds/563356/ (CC0) — hit, verified by title only
+- `sfx/meme-cc0/sad_trombone.mp3` (4.50 s): Sad trombone by kirbydx, https://freesound.org/people/kirbydx/sounds/175409/ (CC0) — fail, verified by title only
+- `sfx/meme-cc0/fail_partyhorn.mp3` (2.95 s): Fail jingle party horn by qubodup, https://freesound.org/people/qubodup/sounds/825292/ (CC0) — fail, verified by title only
+- `sfx/meme-cc0/wrong_buzzer.mp3` (0.49 s): Wrong buzzer by KevinVG207, https://freesound.org/people/KevinVG207/sounds/331912/ (CC0) — fail, verified by title only
+- `sfx/meme-cc0/crickets.mp3` (2.83 s): Cricket chirp by _sinny_, https://freesound.org/people/_sinny_/sounds/822935/ (CC0) — fail, verified by title only
+- `sfx/meme-cc0/crowd_cheer.mp3` (2.80 s): Crowd cheer by Krizin, https://freesound.org/people/Krizin/sounds/651646/ (CC0) — win, verified by title only
+- `sfx/meme-cc0/coin.mp3` (0.37 s): 8-bit coin by timgormly, https://freesound.org/people/timgormly/sounds/162805/ (CC0) — win, verified by title only
+- `sfx/meme-cc0/oneup.mp3` (0.53 s): 1-up by ash_rez, https://freesound.org/people/ash_rez/sounds/518888/ (CC0) — win, verified by title only
+- `sfx/meme-cc0/wow.mp3` (0.58 s): Cartoon wow scream by NicknameLarry, https://freesound.org/people/NicknameLarry/sounds/508898/ (CC0) — win, verified by transcription — heard as “AHHH! (no swear words)”
+- `sfx/meme-cc0/airhorn.mp3` (1.60 s): Airhorn by jacksonacademyashmore, https://freesound.org/people/jacksonacademyashmore/sounds/414208/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/slide_fall.mp3` (1.98 s): Cartoon slide-fall by plasterbrain, https://freesound.org/people/plasterbrain/sounds/395443/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/slide_whistle.mp3` (1.70 s): Slide whistle by SamuelGremaud, https://freesound.org/people/SamuelGremaud/sounds/517633/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/record_scratch.mp3` (0.45 s): Record scratch by ludvique, https://freesound.org/people/ludvique/sounds/71853/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/boing.mp3` (0.65 s): Funny boing by se2001, https://freesound.org/people/se2001/sounds/543641/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/boing2.mp3` (0.87 s): Boing 2 by magnuswaker, https://freesound.org/people/magnuswaker/sounds/540790/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/ba_dum_tss.mp3` (1.23 s): Ba-dum-tss by gefscream, https://freesound.org/people/gefscream/sounds/470195/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/horn.mp3` (0.56 s): Clown horn (single honk) by Gimp_Revival, https://freesound.org/people/Gimp_Revival/sounds/588570/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/horn2.mp3` (1.37 s): Clown too-doo horn by FunWithSound, https://freesound.org/people/FunWithSound/sounds/608085/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/flutter.mp3` (1.16 s): Whoosh flutter wings by Qvantor, https://freesound.org/people/Qvantor/sounds/877979/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/whoosh.mp3` (0.51 s): Short whoosh by FartCTO, https://freesound.org/people/FartCTO/sounds/789840/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/spray.mp3` (0.74 s): Spray-can hiss by michael_grinnell, https://freesound.org/people/michael_grinnell/sounds/464428/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/pop.mp3` (0.66 s): Balloon pop by Mart1001, https://freesound.org/people/Mart1001/sounds/54012/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/quack.mp3` (1.22 s): Toy duck quack by martian, https://freesound.org/people/martian/sounds/547601/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/duck.mp3` (0.53 s): Rubber-duck squeak by csaszi, https://freesound.org/people/csaszi/sounds/350917/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/squeaky.mp3` (0.43 s): Squeaky toy by Breviceps, https://freesound.org/people/Breviceps/sounds/468443/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/spin.mp3` (1.00 s): Fidget-spinner whir by chestnutjam, https://freesound.org/people/chestnutjam/sounds/399285/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/goat_baa.mp3` (1.17 s): Mini goat baa by satoristudios3, https://freesound.org/people/satoristudios3/sounds/677218/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/goat_bleat.mp3` (0.73 s): Baby goat bleat by jsbarrett, https://freesound.org/people/jsbarrett/sounds/200333/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/toot.mp3` (0.78 s): Whoopee cushion by FlashTrauma, https://freesound.org/people/FlashTrauma/sounds/398284/ (CC0) — toot, verified by title only
+- `sfx/meme-cc0/toot2.mp3` (1.76 s): Toot by bassimat, https://freesound.org/people/bassimat/sounds/840755/ (CC0) — toot, verified by title only
+- `sfx/meme-cc0/burp.mp3` (0.49 s): Burp by scooterfort, https://freesound.org/people/scooterfort/sounds/570266/ (CC0) — toot, verified by title only
+- `sfx/meme-cc0/squish.mp3` (0.42 s): Slime squish by qubodup, https://freesound.org/people/qubodup/sounds/442772/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/squish2.mp3` (0.40 s): Splat squish by mrickey13, https://freesound.org/people/mrickey13/sounds/515621/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/bubbles.mp3` (0.68 s): Bubbles bursting by florianreichelt, https://freesound.org/people/florianreichelt/sounds/683100/ (CC0) — silly, verified by title only
+- `sfx/meme-cc0/cartoon_scream.mp3` (1.05 s): Cartoony scream by el_boss, https://freesound.org/people/el_boss/sounds/751702/ (CC0) — voice, verified by transcription — heard as “Woo! (no swear words)”
+
+## Family-only, copyrighted, not for public release
+These meme clips are copyrighted. They are used with the owner’s approval for this private, non-profit kids’ game (the same exception as the sheep scream, the fail sting, and the 1.7.2/1.7.3 meme cues). **The GitHub Pages repo is public, so “family-only” is a label, not access control.** Brett asked to post them on the site anyway.
+Clips were downloaded from myinstants.com, trimmed, faded, loudness-normalized, and encoded as mono 64 kbps MP3. They were picked without listening. Voiced clips were transcribed with faster-whisper base.en. Anything whose title suggested profanity, or whose transcript could not be verified as clean (including a clip whose transcript contained “damn it”, and a long clip with no usable transcript), was excluded.
+- `sfx/family-only/vine_boom.mp3` (1.20 s): Vine boom, https://www.myinstants.com/en/instant/vine-boom-sound-70972/ — hit, verified by title only
+- `sfx/family-only/bruh.mp3` (0.47 s): Bruh, https://www.myinstants.com/en/instant/bruh-sound-effect-2-51486/ — voice, verified by transcription — heard as “Brown (model heard “bruh” as “Brown”; no swear words)”
+- `sfx/family-only/sad_trombone.mp3` (3.16 s): Sad trombone, https://www.myinstants.com/en/instant/sad-trombone/ — fail, verified by title only
+- `sfx/family-only/airhorn.mp3` (1.59 s): Airhorn, https://www.myinstants.com/en/instant/mlg-airhorn/ — silly, verified by title only
+- `sfx/family-only/oh_no_no_no.mp3` (4.81 s): Oh no no no, https://www.myinstants.com/en/instant/oh-no-no-no-no-tiktok-11109/ — fail, verified by transcription — heard as “Oh no, oh no, oh no, no, no, no, no”
+- `sfx/family-only/mario_coin.mp3` (0.71 s): Mario coin-style, https://www.myinstants.com/en/instant/coin-mario/ — win, verified by title only
+- `sfx/family-only/mario_jump.mp3` (0.65 s): Mario jump-style, https://www.myinstants.com/en/instant/super-mario-jump-89968/ — silly, verified by title only
+- `sfx/family-only/mario_1up.mp3` (0.91 s): Mario 1-up-style, https://www.myinstants.com/en/instant/mario-1up/ — win, verified by title only
+- `sfx/family-only/minecraft_hurt.mp3` (0.37 s): Minecraft hurt-style, https://www.myinstants.com/en/instant/minecraft-hurt/ — hit, verified by title only
+- `sfx/family-only/roblox_oof.mp3` (0.34 s): Oof (Roblox-style), https://www.myinstants.com/en/instant/roblox-oof/ — fail, verified by transcription — heard as “Oh / Boop (no swear words)”
+- `sfx/family-only/boing.mp3` (0.73 s): Cartoon boing, https://www.myinstants.com/en/instant/cartoon-boing-48644/ — silly, verified by title only
+- `sfx/family-only/slide_whistle.mp3` (1.07 s): Slide whistle, https://www.myinstants.com/en/instant/cartoon-slide-whistle-1386/ — silly, verified by title only
+- `sfx/family-only/record_scratch.mp3` (0.71 s): Record scratch, https://www.myinstants.com/en/instant/record-scratch/ — silly, verified by title only
+- `sfx/family-only/anime_wow.mp3` (3.55 s): Anime wow, https://www.myinstants.com/en/instant/anime-wow/ — win, verified by transcription — heard as “Wow!”
+- `sfx/family-only/crowd_cheer.mp3` (3.53 s): Crowd cheer, https://www.myinstants.com/en/instant/crowd-cheer-20179/ — win, verified by title only
+- `sfx/family-only/ba_dum_tss.mp3` (1.72 s): Ba-dum-tss, https://www.myinstants.com/en/instant/ba-dum-tssss-25991/ — silly, verified by title only
+- `sfx/family-only/metal_pipe.mp3` (3.19 s): Metal pipe, https://www.myinstants.com/en/instant/jixaw-metal-pipe-falling-sound-28270/ — hit, verified by title only
+- `sfx/family-only/bonk.mp3` (0.44 s): Bonk, https://www.myinstants.com/en/instant/doge-bonk-84044/ — hit, verified by title only
+- `sfx/family-only/taco_bell_bong.mp3` (1.75 s): Taco Bell bong, https://www.myinstants.com/en/instant/taco-bell-bong-bruh-5894/ — silly, verified by title only
+- `sfx/family-only/crickets.mp3` (3.87 s): Awkward crickets, https://www.myinstants.com/en/instant/awkward-crickets-18144/ — fail, verified by title only
+- `sfx/family-only/wrong_buzzer.mp3` (1.10 s): Wrong-answer buzzer, https://www.myinstants.com/en/instant/wrong-answer-buzzer-6983/ — fail, verified by title only
+- `sfx/family-only/yippee.mp3` (0.68 s): Yippee, https://www.myinstants.com/en/instant/tbh-yippee-81266/ — win, verified by transcription — heard as “Yippee!”
+- `sfx/family-only/sheesh.mp3` (1.15 s): Sheesh, https://www.myinstants.com/en/instant/sheeeeesh-35698/ — voice, verified by transcription — heard as “Cheers! / Chase! (model misheard “sheesh”; no swear words)”
+- `sfx/family-only/lets_a_go.mp3` (0.97 s): Let's-a-go, https://www.myinstants.com/en/instant/mario-64-lets-a-go/ — win, verified by transcription — heard as “Let's go!”
+- `sfx/family-only/goofy_yell.mp3` (1.93 s): Goofy yell, https://www.myinstants.com/en/instant/goofy-yelling-76377/ — silly, verified by transcription — heard as “Yay! Woo-hoo-hoo-hoo! / Oh”
+- `sfx/family-only/toot.mp3` (0.37 s): Toot, https://www.myinstants.com/en/instant/fart-button/ — toot, verified by title only
+- `sfx/family-only/burp.mp3` (1.23 s): Burp, https://www.myinstants.com/en/instant/burp-blahhhh/ — toot, verified by title only
+- `sfx/family-only/quack.mp3` (2.04 s): Quack, https://www.myinstants.com/en/instant/quacks/ — silly, verified by title only
+- `sfx/family-only/cartoon_punch.mp3` (0.60 s): Cartoon punch, https://www.myinstants.com/en/instant/cartoon-punch-sound-effect-59674/ — hit, verified by title only
+- `sfx/family-only/mission_failed.mp3` (2.77 s): Mission failed, we'll get 'em next time, https://www.myinstants.com/en/instant/mission-failed-well-get-them-6/ — fail, verified by transcription — heard as “This ship failed. We'll count next time. (model approximation of the well-known line; no swear words)”
+- `sfx/family-only/boowomp.mp3` (0.44 s): Boowomp, https://www.myinstants.com/en/instant/spongebob-boowomp-96031/ — fail, verified by title only
+- `sfx/family-only/yeet.mp3` (2.25 s): Yeet, https://www.myinstants.com/en/instant/yeet/ — voice, verified by transcription — heard as “E.A. E.A. E.A. (model misheard the shout; no swear words)”
+- `sfx/family-only/price_is_right_fail.mp3` (4.55 s): Price is Right fail horn, https://www.myinstants.com/en/instant/price-is-right-fail/ — fail, verified by title only
+- `sfx/family-only/hitmarker.mp3` (0.13 s): Hitmarker, https://www.myinstants.com/en/instant/hitmarker-noise/ — hit, verified by title only
+- `sfx/family-only/goose_honk.mp3` (0.24 s): Goose honk, https://www.myinstants.com/en/instant/untitled-goose-honk-51300/ — silly, verified by title only

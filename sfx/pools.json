@@ -1,0 +1,130 @@
+{
+  "pack": "cc0+family-only-1.7.4",
+  "note": "Data-driven piece and sting pools for Excavator Blowout v1.7.4. Mixes existing game sounds (including already-approved meme clips) with sfx/meme-cc0/ (verified CC0) and sfx/family-only/ (copyrighted, family-only label). Existing fail-pool and cue-specific stings (sheep scream, WA WA WA fail pool, anime_wow / bruh / yeet / tom_scream / dundundun / scratch / few_moments / fart_reverb / badumtss / oof) stay wired. To swap or extend later, edit this file (it is baked into index.html at build time via PACK_URL / sfx/pools.json).",
+  "pools": {
+    "whoop": [
+      "toot6.mp3",
+      "toot7.mp3",
+      "toot8.mp3",
+      "fart1.mp3",
+      "fart2.mp3",
+      "fart3.mp3",
+      "fart4.mp3",
+      "fart_reverb.mp3",
+      "meme-cc0/toot.mp3",
+      "meme-cc0/toot2.mp3",
+      "family-only/toot.mp3"
+    ],
+    "chick": [
+      "chick1.mp3",
+      "chick2.mp3",
+      "chick3.mp3",
+      "meme-cc0/squeaky.mp3"
+    ],
+    "goat": [
+      "sheep_scream.mp3",
+      "meme-cc0/goat_baa.mp3",
+      "meme-cc0/goat_bleat.mp3"
+    ],
+    "banana": [
+      "badumtss.mp3",
+      "whee1.mp3",
+      "whee2.mp3",
+      "meme-cc0/slide_fall.mp3",
+      "meme-cc0/ba_dum_tss.mp3",
+      "family-only/ba_dum_tss.mp3"
+    ],
+    "burp": [
+      "burp1.mp3",
+      "burp2.mp3",
+      "meme-cc0/burp.mp3",
+      "family-only/burp.mp3"
+    ],
+    "honk": [
+      "honk1.mp3",
+      "honk2.mp3",
+      "meme-cc0/horn.mp3",
+      "meme-cc0/horn2.mp3",
+      "meme-cc0/airhorn.mp3",
+      "family-only/airhorn.mp3",
+      "family-only/goose_honk.mp3"
+    ],
+    "tramp": [
+      "tramp1.mp3",
+      "meme-cc0/boing.mp3",
+      "meme-cc0/boing2.mp3",
+      "family-only/boing.mp3"
+    ],
+    "boing": [
+      "boing1.mp3",
+      "meme-cc0/boing.mp3",
+      "meme-cc0/boing2.mp3",
+      "family-only/boing.mp3"
+    ],
+    "blower": [
+      "blower1.mp3",
+      "meme-cc0/whoosh.mp3"
+    ],
+    "spray": [
+      "spray1.mp3",
+      "meme-cc0/spray.mp3"
+    ],
+    "spin": [
+      "spin.mp3",
+      "meme-cc0/spin.mp3"
+    ],
+    "pin": [
+      "pin.mp3",
+      "meme-cc0/flutter.mp3"
+    ],
+    "jello": [
+      "jello.mp3",
+      "meme-cc0/squish.mp3",
+      "meme-cc0/squish2.mp3"
+    ],
+    "glove": [
+      "tom_scream.mp3",
+      "punch.mp3",
+      "meme-cc0/punch.mp3",
+      "meme-cc0/cartoon_scream.mp3",
+      "family-only/cartoon_punch.mp3",
+      "family-only/goofy_yell.mp3"
+    ],
+    "balloon": [
+      "balloon.mp3",
+      "meme-cc0/pop.mp3"
+    ],
+    "duck": [
+      "duck.mp3",
+      "meme-cc0/duck.mp3",
+      "meme-cc0/quack.mp3",
+      "family-only/quack.mp3"
+    ],
+    "paste": [
+      "paste.mp3",
+      "meme-cc0/bubbles.mp3"
+    ],
+    "hit": [
+      "meme-cc0/boom_hit.mp3",
+      "meme-cc0/metal_pipe.mp3",
+      "meme-cc0/bonk.mp3",
+      "family-only/vine_boom.mp3",
+      "family-only/metal_pipe.mp3",
+      "family-only/bonk.mp3",
+      "family-only/hitmarker.mp3"
+    ],
+    "win": [
+      "meme-cc0/coin.mp3",
+      "meme-cc0/oneup.mp3",
+      "meme-cc0/wow.mp3",
+      "meme-cc0/crowd_cheer.mp3",
+      "family-only/mario_coin.mp3",
+      "family-only/mario_1up.mp3",
+      "family-only/anime_wow.mp3",
+      "family-only/yippee.mp3",
+      "family-only/lets_a_go.mp3",
+      "family-only/crowd_cheer.mp3",
+      "family-only/airhorn.mp3"
+    ]
+  }
+}
