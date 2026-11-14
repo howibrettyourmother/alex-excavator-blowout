@@ -97,3 +97,6 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 
 ## v1.6.6
 - In play, portal exit arrows are smaller and fainter (about 60% size and 40% opacity). Builder arrows are unchanged.
+
+## v1.6.7
+- **Replay my shot**: each shot (and Blow it up!) is recorded for up to about 15 seconds. After it ends, a big 🎬 Replay! button appears. Tap it to watch the shot back at about 0.35× with a SLOW-MO badge; tap anywhere to skip. It works in built-in levels, Test it!, shared levels and Blow it up!. It never blocks Next or Play again, and the recording stays light on the iPad. Play-mode portal arrows stay the faint 1.6.6 size.

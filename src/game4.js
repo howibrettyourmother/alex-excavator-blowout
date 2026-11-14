@@ -67,7 +67,7 @@ var state='title',ball=null,throwsLeft=3,roundTk=0,fly=null,SIM=false,simRes=nul
 function banner(t,small){if(SIM)return;var b=$('banner');b.textContent=t;b.className='mk'+(small?' small':'');void b.offsetWidth;b.className='mk on'+(small?' small':'')}
 function hud(){$('lvl').textContent=CUS.on?'🛠️ '+LV.n:'Level '+(lvN+1)+' · '+LV.n;var bs=$('balls').children;for(var i=0;i<3;i++)bs[i].className=i<throwsLeft?'':'used';$('pc').textContent=prizeCount();updBadge()}
 function prizeCount(){var n=0;for(var k in save.pz)n+=save.pz[k];return n}
-function goLevel(n,first){state='build';lvMiss=0;lvLost=0;AS.on=false;AS.shot=null;AS.path=null;AS.q=null;MS.on=false;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];lvN=n;if(!CUS.on){save.lv=n;save.best=Math.max(save.best||0,n)}persist();
+function goLevel(n,first){try{rpClear()}catch(e){}state='build';lvMiss=0;lvLost=0;AS.on=false;AS.shot=null;AS.path=null;AS.q=null;MS.on=false;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];lvN=n;if(!CUS.on){save.lv=n;save.best=Math.max(save.best||0,n)}persist();
  var fresh=function(){setupLevel(n,false);hud();banner(CUS.on?'🛠️ '+LV.n:'Level '+(n+1)+': '+LV.n,1);after(.4,function(){dumpLevel(function(){state='settle';settleT=0})})};
  if(first){if(debris.length||statics.length){clearLevel(false)}fresh()}else blowout(fresh)}
 function newRound(){throwsLeft=3;roundTk=0;gems.forEach(function(g){g.got=false});hud();spawnAim()}
@@ -75,13 +75,13 @@ function spawnAim(){state='aim';drag=null;if(ball){Composite.remove(world,ball);
 function launch(deg,p){deg=clamp(deg,-25,75);p=clamp(p,0,1);var a=deg*PI/180,v=9+25*p;
  ball=mkBall(LX,LY);Composite.add(world,ball);
  Body.setVelocity(ball,{x:Math.cos(a)*v,y:-Math.sin(a)*v});Body.setAngularVelocity(ball,.15);fly={t:0,still:0,px:LX,ringed:false,minD:1e9,bn:0};SLOW.used=false;SLOW.t=0;state='fly';modeLaunch();throwsLeft--;stats.throws++;save.th=(save.th||0)+1;
- if(!SIM){SFX.throw(p);hud()}}
-function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';lvMiss++;crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
+ if(!SIM){SFX.throw(p);hud();rpBegin('shot')}}
+function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';rpReady();lvMiss++;crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
  after(.35,function(){if(ball){Composite.remove(world,ball);ball=null}clearXB();if(throwsLeft>0){spawnAim();banner('Throw '+(4-throwsLeft)+' of 3',1)}else roundLost()})}
 function roundLost(){state='lost';lvLost++;SFX.aww();banner('So close!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
 var lastWin=null;
 function partyHorn(k){tone(k?660:520,.32,{to:k?880:700,type:'sawtooth',vol:.05});noise(.25,{ft:'bandpass',f:k?2400:1800,q:2,vol:.05})}
-function win(){if(SIM){simRes='win';state='simdone';return}state='won';stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
+function win(){if(SIM){simRes='win';state='simdone';return}state='won';rpReady();stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
  SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');after(.22,function(){confetti(FX1+90,TOP+30,45);partyHorn(0)});after(.45,function(){confetti(BX0-80,TOP+30,45);partyHorn(1)});if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
  var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var before=save.tk;save.tk+=tot;
  save.st=save.st||{};var newMS=MODE!=='classic'&&!save.st['m_'+MODE];if(MODE!=='classic')save.st['m_'+MODE]=(save.st['m_'+MODE]||0)+1;var newSt=helped&&!(save.st&&save.st.mouse);if(helped){save.st=save.st||{};save.st.mouse=(save.st.mouse||0)+1}lvMiss=0;lvLost=0;
@@ -101,7 +101,7 @@ function showWin(){var w=lastWin;$('prizeBig').textContent=w.pr.e;$('prizeName')
  $('stk').innerHTML=w.helped?'<img alt="" src="'+stickerImg()+'"> '+(w.newSt?'New sticker: Mouse Buddy! Thanks for being a hero!':'Mouse Buddy helped! Hero teamwork!'):'';if(w.newMS)$('stk').innerHTML+=(w.helped?'<br>':'')+'<img alt="" src="'+modeSticker(w.mode)+'"> New sticker: '+modeOf(w.mode).n+'!';
  $('grandMsg').textContent=w.newG.length?('NEW GRAND PRIZE: '+w.newG.map(function(g){return g.e+' '+g.n}).join(', ')+'!'):'';
  if(CUS.on)customWon();else{$('next').textContent='Next level ▶';wEdit.style.display='none'}
- $('win').classList.add('on')}
+ $('win').classList.add('on');rpOnWinCard()}
 function showShelf(){var h='';PRIZES.forEach(function(p){var n=save.pz[p.id]||0;h+='<div class="pz'+(n?'':' no')+'">'+(n?p.e:'❔')+(n>1?'<b>×'+n+'</b>':'')+'<small>'+(n?p.n:'???')+'</small></div>'});$('shelfGrid').innerHTML=h;
  $('grand').innerHTML=GRAND.map(function(g){var got=save.gp[g.id],pc=Math.min(100,save.tk/g.at*100);return'<div class="gp'+(got?'':' no')+'"><div class="e">'+g.e+'</div><b>'+g.n+'</b><div>'+(got?'Won!':save.tk+' / '+g.at+' 🎟️')+'</div><div class="bar"><i style="width:'+pc+'%"></i></div></div>'}).join('');
  $('stickers').innerHTML=shelfStickers();
