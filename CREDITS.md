@@ -56,3 +56,23 @@ All new sounds are synthesized at runtime with WebAudio (no samples, nothing cop
 
 ## v1.7.1 fail sting and polish
 - `sfx/fail.mp3` (3.38 s, mono 64 kbps): "WA WA WA" fail sound effect from YouTube video S9LAxmDGQGw (channel Trending Sound Effect, https://youtu.be/S9LAxmDGQGw), used with the owner's approval for this private, non-profit kids' game; not CC0. The source clip is 4.27 s; the effect is four descending "wa" notes (about 592, 562, 536, then 511 Hz). Trimmed from 0.50–3.88 s, faded, and loudness-normalized. It plays once per missed shot.
+
+## v1.7.2 jello squish and meme stings
+- `sfx/jello.mp3` (0.72 s, mono 64 kbps): "Jello Squish" by Fugeni, https://freesound.org/people/Fugeni/sounds/559768/ (CC0). Trimmed from 6.64–7.28 s of the source, faded, and loudness-normalized. Plays on a jello hit.
+- The following clips are not CC0. They are meme sound effects from two YouTube Shorts, used with the owner's approval for this private, non-profit kids' game (the same exception as the sheep scream and the fail sting). The fail sound is still `sfx/fail.mp3` from S9LAxmDGQGw.
+
+From YouTube Short N1BOQ_9laWs (https://youtube.com/shorts/N1BOQ_9laWs):
+- `sfx/oof.mp3` (0.38 s): Roblox oof, trimmed 0.34–0.72 s. Plays when the ball falls into the shredder.
+- `sfx/tom_scream.mp3` (1.34 s): Tom scream, trimmed 1.52–2.86 s. Plays on a boxing glove punch.
+- `sfx/anime_wow.mp3` (1.58 s): the main "wow", trimmed 3.42–5.00 s (from a longer 2.9–7.5 s window). Plays on a trick-shot win (a bank of 3+ bounces, a portal win, or all gems).
+- `sfx/bruh.mp3` (0.52 s): "bruh", trimmed 9.76–10.28 s (cut before the next line at 10.50 s). Plays when a shot barely moves or stops short, at most once per shot.
+- `sfx/yeet.mp3` (0.64 s): "yeet", trimmed 12.18–12.82 s (the isolated shout after a gap; the review window was 11.7–12.7 s). Plays on a very hard flick (top ~20% power).
+
+From YouTube Short 2M43iYA5vPQ (https://youtube.com/shorts/2M43iYA5vPQ):
+- `sfx/dundundun.mp3` (2.06 s): dun-dun-dun, trimmed 0.12–2.18 s (the three hits plus a short ring, from a longer 0–3.3 s window). Plays on the Blow it up! wind-up.
+- `sfx/scratch.mp3` (0.74 s): record scratch, trimmed 4.16–4.90 s (onset after a pause; the review window was 3.3–4.9 s). Plays on Undo.
+- `sfx/few_moments.mp3` (1.84 s): "A few moments later", trimmed 5.24–7.08 s. Plays when a slow-mo replay starts.
+- `sfx/fart_reverb.mp3` (0.96 s): fart with reverb, trimmed 16.74–17.70 s. Plays on a whoopie cushion hit about 1 in 3 times.
+- `sfx/badumtss.mp3` (1.40 s): ba dum tss, trimmed 20.50–21.90 s. Plays on a banana peel slip.
+
+Timestamps were refined from a first-pass video review by analyzing audio onsets and energy (not by ear). "God", "Oh my god", the sad guitar, "Aww", "Okay", "What", and suspense were skipped. At most one of these meme clips (or the fail sting) plays every 1.5 s, with priority win > fail > others.

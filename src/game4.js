@@ -51,6 +51,7 @@ function shuffle(n,cb){var cand=debris.filter(function(b){return !b.gone});for(v
  exPark(cb)}
 var flying=[];
 function blowout(cb){if(!debris.length&&!statics.length&&!movers.length){cb();return}exStart();
+ try{memePlay('dundundun',1,.95)}catch(e){}
  act({d:.5,ex:1120,tx:900,ty:TOP-230,ba:.3});
  act({d:.2,tx:880,ty:FLOOR-90,ba:1.5,end:function(){SFX.boom();shake(26);banner('BLOWOUT!');dust(880,FLOOR,14);
   chickBlow();debris.forEach(function(b){if(b.isStatic)Body.setStatic(b,false);b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);Body.setVelocity(b,{x:(rnd()-.5)*10,y:-32-rnd()*10});Body.setAngularVelocity(b,(rnd()-.5)*.6);b.gone=gt;flying.push(b)});debris=[];
@@ -75,15 +76,19 @@ function newRound(){throwsLeft=3;roundTk=0;gems.forEach(function(g){g.got=false}
 function spawnAim(){state='aim';drag=null;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];hud()}
 function launch(deg,p){deg=clamp(deg,-25,75);p=clamp(p,0,1);var a=deg*PI/180,v=9+25*p;
  ball=mkBall(LX,LY);Composite.add(world,ball);
- Body.setVelocity(ball,{x:Math.cos(a)*v,y:-Math.sin(a)*v});Body.setAngularVelocity(ball,.15);fly={t:0,still:0,px:LX,ringed:false,minD:1e9,bn:0};SLOW.used=false;SLOW.t=0;state='fly';modeLaunch();throwsLeft--;stats.throws++;save.th=(save.th||0)+1;
- if(!SIM){SFX.throw(p);hud();rpBegin('shot')}}
-function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';rpReady();lvMiss++;if(lim('fail',900))SFX.aww();crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
+ Body.setVelocity(ball,{x:Math.cos(a)*v,y:-Math.sin(a)*v});Body.setAngularVelocity(ball,.15);fly={t:0,still:0,px:LX,ringed:false,minD:1e9,bn:0,pow:p,x0:LX,y0:LY,maxD:0,inS:0,pt:0};SLOW.used=false;SLOW.t=0;state='fly';modeLaunch();throwsLeft--;stats.throws++;save.th=(save.th||0)+1;
+ if(!SIM){SFX.throw(p);if(p>=.8)memePlay('yeet',1,.95);hud();rpBegin('shot')}}
+function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';rpReady();lvMiss++;
+ var short=fly&&((fly.pow!=null&&fly.pow<.22)||(fly.maxD!=null&&fly.maxD<200));
+ if(short){if(!memePlay('bruh',1,.95))memePlay('fail',2,.95)}else memePlay('fail',2,.95);
+ crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
  after(.35,function(){if(ball){Composite.remove(world,ball);ball=null}clearXB();if(throwsLeft>0){spawnAim();banner('Throw '+(4-throwsLeft)+' of 3',1)}else roundLost()})}
 function roundLost(){state='lost';lvLost++;banner('So close! Try again!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
 var lastWin=null;
 function partyHorn(k){tone(k?660:520,.32,{to:k?880:700,type:'sawtooth',vol:.05});noise(.25,{ft:'bandpass',f:k?2400:1800,q:2,vol:.05})}
 function win(){if(SIM){simRes='win';state='simdone';return}state='won';rpReady();stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
  SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');after(.22,function(){confetti(FX1+90,TOP+30,45);partyHorn(0)});after(.45,function(){confetti(BX0-80,TOP+30,45);partyHorn(1)});if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
+ var allG=gems.length&&gems.every(function(g){return g.got});if((fly&&fly.bn>=3)||(fly&&fly.pt)||allG)memePlay('anime_wow',3,.95);
  var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var before=save.tk;save.tk+=tot;
  save.st=save.st||{};var newMS=MODE!=='classic'&&!save.st['m_'+MODE];if(MODE!=='classic')save.st['m_'+MODE]=(save.st['m_'+MODE]||0)+1;var newSt=helped&&!(save.st&&save.st.mouse);if(helped){save.st=save.st||{};save.st.mouse=(save.st.mouse||0)+1}lvMiss=0;lvLost=0;
  var newG=GRAND.filter(function(gp){return !save.gp[gp.id]&&save.tk>=gp.at});newG.forEach(function(gp){save.gp[gp.id]=1});persist();
@@ -124,10 +129,12 @@ function physStep(){gt+=FIXED/1000;moveMovers();Engine.update(engine,FIXED);
  for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3)}}}}
  if(modeStep())return;
  if(state!=='fly'||!ball)return;var bp=ball.position;fly.t+=FIXED/1000;
+ if(fly){var fd=Math.hypot(bp.x-(fly.x0||LX),bp.y-(fly.y0||LY));if(fd>(fly.maxD||0))fly.maxD=fd}
  if(!SIM&&(trail.length===0||Math.hypot(trail[trail.length-1].x-bp.x,trail[trail.length-1].y-bp.y)>14)){trail.push({x:bp.x,y:bp.y});if(trail.length>10)trail.shift()}
  for(i=0;i<gems.length;i++){var g=gems[i];if(!g.got&&Math.hypot(bp.x-g.x,bp.y-g.y)<BR+14){g.got=true;roundTk++;if(!SIM){SFX.gem();sparks(g.x,g.y,10,'#dff4ff');ftext(g.x,g.y-20,'+1 🎟️','#bfe9ff')}}}
  if(ring&&!fly.ringed&&Math.hypot(bp.x-ring.x,bp.y-ring.y)<26){fly.ringed=true;roundTk+=3;ring.w=1;if(!SIM){SFX.ring();sparks(ring.x,ring.y,14,'#ffd21a');ftext(ring.x,ring.y-40,'Ring! +3 🎟️','#ffd21a')}}
  var inS=false;for(i=0;i<shreds.length;i++){var sh=shreds[i];if(bp.x>sh.x0-5&&bp.x<sh.x1+5&&bp.y>FLOOR-sh.h){inS=true;if(!SIM&&lim('shr',90)&&ball.speed>.8)emit({k:'str',x:bp.x,y:bp.y,vx:(rnd()-.5)*200,vy:-150-rnd()*150,m:.8,c:['#4fb6d6','#2f8fbf','#8fd6ea'][(rnd()*3)|0]})}}
+ if(!SIM&&inS&&fly&&!fly.inS){fly.inS=1;memePlay('oof',1,.95)}if(fly)fly.inS=inS?1:fly.inS;
  ball.frictionAir=inS?.045:.004;
  var hd=Math.hypot(bp.x-BX0,bp.y-(HOLE.y0+HOLE.y1)/2);if(hd<fly.minD)fly.minD=hd;if(fly.px<FX1&&bp.x>=FX1&&bp.y>GAP0&&bp.y<GAP1)crowdEv('ooh');
  if(bp.x>BX0+20&&fly.px<=BX0+20&&bp.y>HOLE.y0-6&&bp.y<HOLE.y1+6){fly.px=bp.x;win();return}fly.px=bp.x;
