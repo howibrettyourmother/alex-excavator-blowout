@@ -1,8 +1,16 @@
 /* ===== walk-by toot event (real CC0 recordings) + juice polish ===== */
 var FA={on:false,t:0,x:0,dir:1,k:null,tooted:false,next:40+rnd()*30,clouds:[],wind:0,tt:0,buf:[],load:0,count:0};
-function loadFarts(){if(!AC||FA.load)return;FA.load=1;[1,2,3,4,5].forEach(function(i){try{fetch('sfx/fart'+i+'.mp3').then(function(r){return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){buf.__n=i;FA.buf.push(buf)},function(){})}).catch(function(){})}catch(e){}})}
+function loadFarts(){if(!AC||FA.load)return;FA.load=1;[1,2,3,4].forEach(/* fart5 'Gastric Distress' is never loaded or played */function(i){try{fetch('sfx/fart'+i+'.mp3').then(function(r){return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){buf.__n=i;FA.buf.push(buf)},function(){})}).catch(function(){})}catch(e){}})}
+/* v1.6.2 recorded CC0 samples (see CREDITS.md). Decoded once, right after the first tap, so the first hit has no lag. Synth fallback if a file fails. */
+var SMPL={},SMP={},SMPN={};function smpReg(k,files){SMPL[k]=files}
+function loadSamples(){if(!AC||loadSamples.on)return;loadSamples.on=1;Object.keys(SMPL).forEach(function(k){SMP[k]=SMP[k]||[];SMPL[k].forEach(function(f,i){try{fetch('sfx/'+f).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){buf.__i=i;SMP[k].push(buf);if(k==='toot'){buf.__n=6+i;FA.buf.push(buf)}},function(){})}).catch(function(){})}catch(e){}})})}
+function smpPick(k){var a=SMP[k];if(!a||!a.length)return null;var o=a.length>1?a.filter(function(x){return x.__i!==SMPN[k]}):a;var b=o[(rnd()*o.length)|0];SMPN[k]=b.__i;return b}
+function playSample(k,vol,fb,rate,at){if(!aok())return false;var b=smpPick(k);if(!b){if(fb)fb();return false}tootBuf(b,(rate||1)*(.95+rnd()*.1),vol==null?1:vol,at);return true}
+function pickToot(){var bs=FA.buf.filter(function(x){return x.__n!==5});if(!bs.length)return null;var o=bs.filter(function(x){return x.__n!==FA.lastN});if(o.length)bs=o;var b=bs[(rnd()*bs.length)|0];FA.lastN=b.__n;return b}
+function tootBuf(buf,rate,vol,at){try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=buf;s.playbackRate.value=rate;g.gain.value=vol;s.connect(g);g.connect(sfxBus);s.start(AC.currentTime+(at||0))}catch(e){}}
+function playToot(vol){var b=pickToot();if(!b)return false;var r=.8+rnd()*.5;tootBuf(b,r,vol);if(rnd()<.22){var b2=pickToot();if(b2)tootBuf(b2,r*1.25+.1,vol*.6,.16+rnd()*.1)}return true}
 function playFart(){if(!aok())return;if(!FA.buf.length){noise(.35,{ft:'lowpass',f:260,fto:120,q:4,vol:.4});tone(90,.35,{to:60,type:'sawtooth',vol:.12});return}
- try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=FA.buf[(rnd()*FA.buf.length)|0];s.playbackRate.value=.88+rnd()*.24;g.gain.value=.9;s.connect(g);g.connect(sfxBus);s.start()}catch(e){}}
+ playToot(.9)}
 function eww(){voices(7,540,360,.75,[[300,8],[2300,9]],.045);for(var i=0;i<10;i++)voices(1,620+rnd()*260,700+rnd()*200,.07,[[720,6],[1900,8]],.035,.75+i*.1+rnd()*.04)}
 defSpr('stink',130,96,function(g){var r=rng(3);g.translate(65,52);g.fillStyle='rgba(150,205,70,.85)';g.strokeStyle='rgba(70,120,20,.9)';g.lineWidth=3;g.beginPath();
  [[-30,6,24],[-6,-10,30],[24,2,26],[4,16,24],[-22,-6,20]].forEach(function(c){g.moveTo(c[0]+c[2],c[1]);g.arc(c[0],c[1],c[2],0,2*PI)});g.fill();

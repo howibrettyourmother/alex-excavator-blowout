@@ -56,9 +56,9 @@ function mkDeb(d,spawnDy){var t=d[0],x=d[1],y=d[2]-(spawnDy||0),b;
  b.kind=t;b.def=d;Composite.add(world,b);debris.push(b);return b}
 function mkStatic(d){var t=d[0],b;
  if(t==='whoop'||t==='spray'||t==='tramp'||t==='banana'||t==='frog'||t==='horn'||t==='goat'||t==='fan')b=mkToy(t,d);
- else if(t==='wrapS'){b=stat(d[1],d[2],d[3],d[4],{mat:'wrap',re:1.05,fr:.2});b.ww=d[3];b.wh=d[4];b.pops=[];b.kind='wrap';if(d[6]==='pad'){b.kind='pad';b.toy=1;b.sw=164;b.sh=84;b.lastHit=-9;b.hitT=-9}}
+ else if(t==='wrapS'){b=d[6]==='pad'?stat(d[1],d[2],d[3],d[4],{mat:'pad',re:PAD.re,fr:.3}):stat(d[1],d[2],d[3],d[4],{mat:'wrap',re:1.05,fr:.2});b.ww=d[3];b.wh=d[4];b.pops=[];b.kind='wrap';if(d[6]==='pad'){b.kind='pad';b.toy=1;b.sw=164;b.sh=84;b.lastHit=-9;b.hitT=-9}}
  else{b=stat(d[1],d[2],d[3],d[4],{mat:'card',re:.15,fr:.6,a:d[5]||0});b.sk=sprScrap(d[3]|0,d[4]|0,(d[1]*5)|0);b.sw=d[3]|0;b.sh=d[4]|0;b.kind='card'}
- b.isLedge=t==='ledge';b.pop0=gt;statics.push(b);return b}
+ b.isLedge=t==='ledge';b.holeLedge=t==='ledge'&&d[6]==='hole';b.pop0=gt;statics.push(b);return b}
 function mkMover(d){var b;if(d[0]==='pend'){b=Bodies.circle(d[1],d[2]+d[3],d[4],{isStatic:true,restitution:.4});b.mat='plate';b.sk=sprPlate(d[4],77);b.sw=d[4]*2;b.sh=d[4]*2;
   b.mf=function(t){var a=d[6]*Math.sin(t*2*PI/d[5]);return{x:d[1]+Math.sin(a)*d[3],y:d[2]+Math.cos(a)*d[3],a:a}};b.anchor={x:d[1],y:d[2]}}
  else{b=Bodies.rectangle(d[1],d[2],d[3],d[4],{isStatic:true,restitution:.3,chamfer:{radius:6}});b.mat='card';b.sk=sprScrap(d[3],d[4],91);b.sw=d[3];b.sh=d[4];b.mf=function(t){return{x:d[1],y:d[2]+d[5]*Math.sin(t*2*PI/d[6]),a:0}}}
@@ -66,7 +66,7 @@ function mkMover(d){var b;if(d[0]==='pend'){b=Bodies.circle(d[1],d[2]+d[3],d[4],
 function clearLevel(keepDeb){statics.concat(movers).forEach(function(b){Composite.remove(world,b)});statics=[];movers=[];PORT=[];FANL=[];if(!keepDeb){debris.forEach(function(b){Composite.remove(world,b)});debris=[]}gems=[];ring=null;shreds=[]}
 function setupLevel(n,instant){lvN=n;LV=levelDef(n);clearLevel(!instant);
  if(LV.holeMv){HOLE.mv=LV.holeMv;var m=LV.holeMv;setHole(m[0]-m[2]/2,m[0]+m[2]/2)}else{HOLE.mv=null;setHole(LV.hole[0],LV.hole[1])}
- (LV.st||[]).forEach(mkStatic);(LV.mov||[]).forEach(mkMover);PORT=LV.portals?LV.portals.map(function(p){return p?{x:p[0],y:p[1],a:p[2]||0}:null}):[];
+ (LV.st||[]).forEach(mkStatic);(LV.mov||[]).forEach(mkMover);PORT=LV.portals?LV.portals.map(function(p){return p?{x:p[0],y:p[1],a:p[2]||0,d:p[3]==null?null:p[3]}:null}):[];
  gems=(LV.gems||[]).map(function(p){return{x:p[0],y:p[1],got:false,ph:rnd()*6}});ring=LV.ring?{x:LV.ring[0],y:LV.ring[1],w:0}:null;
  shreds=(LV.shred||[]).map(function(s){return{x0:s[0],x1:s[1],h:s[2]+30,sk:sprShred(s[1]-s[0]+30,s[2]+30,s[0]|0)}});
  if(instant){(LV.deb||[]).forEach(function(d){mkDeb(d)})}}

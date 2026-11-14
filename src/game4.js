@@ -4,9 +4,9 @@ function emit(o){if(P.length>=MAXP){if(o.k!=='conf')return;P.shift()}o.l=o.l||o.
 function sparks(x,y,n,col){for(var i=0;i<n;i++){var a=rnd()*2*PI,s=120+rnd()*320;emit({k:'sp',x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-80,m:.35+rnd()*.25,c:col||'#ffe27a',s:3})}}
 function dust(x,y,n){for(var i=0;i<n;i++)emit({k:'du',x:x+(rnd()-.5)*30,y:y,vx:(rnd()-.5)*160,vy:-40-rnd()*120,m:.6+rnd()*.5,c:'rgba(200,160,110,',s:8+rnd()*12})}
 function confetti(x,y,n){var cols=['#ffcb05','#2f8a3a','#e8342a','#1f6fd1','#ff7ac8','#7a4bc4','#fff'];for(var i=0;i<n;i++){var a=-PI/2+(rnd()-.5)*2.2,s=300+rnd()*700;emit({k:'conf',x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,m:2.2+rnd()*1.3,c:cols[i%7],s:8+rnd()*8,r:rnd()*6,vr:(rnd()-.5)*14})}}
-function shake(a){if(state==='edblow')return;shk=Math.min(28,Math.max(shk,a));shkAge=0}
+function shake(a){if(state==='edblow'){if(ED.blowShk)return;a=Math.min(a,16);ED.blowShk=1}shk=Math.min(28,Math.max(shk,a));shkAge=0}
 var shkAge=0;function decShk(sd){// runs every frame in every state, so a shake always ends (edit mode: hard stop after 0.3s)
- shkAge+=sd;shk=Math.max(0,shk-sd*shk*7-sd*2);if(titleOn||shkAge>(state==='edit'?.3:1.5))shk=0}
+ shkAge+=sd;shk=Math.max(0,shk-sd*shk*7-sd*2);if(titleOn||shkAge>(state==='edit'?.3:state==='edblow'?.6:1.5))shk=0}
 function ftext(x,y,t,c){FT.push({x:x,y:y,t:t,c:c||'#ffde3b',l:1.3});if(FT.length>12)FT.shift()}
 function updP(dt){for(var i=P.length-1;i>=0;i--){var p=P[i];p.l-=dt;if(p.l<=0){P.splice(i,1);continue}
  if(p.k==='conf'){p.vx*=Math.pow(.25,dt);p.vy=p.vy*Math.pow(.3,dt)+900*dt*.5;p.vy=Math.min(p.vy,260);p.r+=p.vr*dt;p.x+=p.vx*dt+Math.sin(p.l*8+p.s)*40*dt}
@@ -80,8 +80,9 @@ function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between'
  after(.35,function(){if(ball){Composite.remove(world,ball);ball=null}clearXB();if(throwsLeft>0){spawnAim();banner('Throw '+(4-throwsLeft)+' of 3',1)}else roundLost()})}
 function roundLost(){state='lost';lvLost++;SFX.aww();banner('So close!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
 var lastWin=null;
+function partyHorn(k){tone(k?660:520,.32,{to:k?880:700,type:'sawtooth',vol:.05});noise(.25,{ft:'bandpass',f:k?2400:1800,q:2,vol:.05})}
 function win(){if(SIM){simRes='win';state='simdone';return}state='won';stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
- SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
+ SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');after(.22,function(){confetti(FX1+90,TOP+30,45);partyHorn(0)});after(.45,function(){confetti(BX0-80,TOP+30,45);partyHorn(1)});if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
  var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var before=save.tk;save.tk+=tot;
  save.st=save.st||{};var newMS=MODE!=='classic'&&!save.st['m_'+MODE];if(MODE!=='classic')save.st['m_'+MODE]=(save.st['m_'+MODE]||0)+1;var newSt=helped&&!(save.st&&save.st.mouse);if(helped){save.st=save.st||{};save.st.mouse=(save.st.mouse||0)+1}lvMiss=0;lvLost=0;
  var newG=GRAND.filter(function(gp){return !save.gp[gp.id]&&save.tk>=gp.at});newG.forEach(function(gp){save.gp[gp.id]=1});persist();
@@ -110,7 +111,7 @@ Events.on(engine,'collisionStart',function(ev){if(SIMB)return;var ps=ev.pairs;fo
  var va=A.isStatic?A.velocity:Body.getVelocity(A),vb=B.isStatic?B.velocity:Body.getVelocity(B),rv=Math.abs((va.x-vb.x)*n.x+(va.y-vb.y)*n.y);
  var isB=A===ball||B===ball;if(!isB&&rv<4)continue;var o=A===ball?B:A,sp=pr.collision.supports&&pr.collision.supports[0];
  if(isB&&modeHit(o,rv,sp,A===ball?A:B))continue;
- if(isB){squashHit(ball,n,rv);if(o.isStatic&&rv>3&&fly)fly.bn=(fly.bn||0)+1;stats.hits++;if(SIM)continue;if(o.toy){toyHit(o,rv,sp);continue}if(rv>2.5)SFX.hit(o.mat||'card',rv);if(rv>7)shake(Math.min(12,rv*.7));if(sp&&rv>5)sparks(sp.x,sp.y,Math.min(8,(rv/2)|0),o.mat==='plate'?'#fff':'#ffe27a');
+ if(isB){squashHit(ball,n,rv);if(!o.isStatic&&!o.toy)squashHit(o,n,rv*.7);if(o.isStatic&&rv>3&&fly)fly.bn=(fly.bn||0)+1;stats.hits++;if(SIM)continue;if(o.toy){toyHit(o,rv,sp);continue}if(rv>2.5)SFX.hit(o.mat||'card',rv);if(rv>9&&lim('thump',140))tone(100,.14,{to:48,type:'sine',vol:Math.min(.22,rv*.014)});if(sp&&rv>6&&lim('hdust',70))dust(sp.x,sp.y,3);if(rv>7)shake(Math.min(12,rv*.7));if(sp&&rv>5)sparks(sp.x,sp.y,Math.min(8,(rv/2)|0),o.mat==='plate'?'#fff':'#ffe27a');
   if(o.kind==='wrap'&&rv>3)popBubble(o,sp)}else if(!SIM&&(A.toy||B.toy)){toyHit(A.toy?A:B,rv,sp)}else if(!SIM){SFX.hit((A.mat==='wall'||A.mat==='table')?B.mat:A.mat,rv*.6)}}});
 function popBubble(b,sp){if(!sp)return;var c=Math.cos(-b.angle),s=Math.sin(-b.angle),lx=(sp.x-b.position.x)*c-(sp.y-b.position.y)*s+b.ww/2,ly=(sp.x-b.position.x)*s+(sp.y-b.position.y)*c+b.wh/2;
  var ix=clamp(Math.round((lx-10)/20),0,Math.floor((b.ww-10)/20)),iy=clamp(Math.round((ly-10)/20),0,Math.floor((b.wh-10)/20)),key=ix+','+iy;if(b.pops.indexOf(key)<0){b.pops.push(key);b.dirty=1;SFX.pop();sparks(sp.x,sp.y,4,'#dff4ff')}}

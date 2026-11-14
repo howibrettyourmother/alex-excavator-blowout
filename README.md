@@ -72,3 +72,13 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - **Caps**: whoopie, silly string, trampoline, chicken, banana, frog, horn, goat, leaf blower: 10 each. Portals: 4 pairs. Total pieces per level: 30 (was 20). Gems 8, ring 1.
 - Toy sounds: each piece 400 ms throttle, plus at most 4 toy sounds per 250 ms overall. Particles stay capped (220, 140 on slow devices; silly string 48 streamers).
 - **Beat my score**: when Alex beats his own level with ▶ Test it!, his best throw count is saved. Challenge Dad puts it in the link (`*N` after the name, e.g. `...Mega_Mess*3`), the challenge card shows "Alex did it in N throws", and Dad's win screen says whether he beat, tied, or lost to Alex. Editing the level clears the old best. Old codes still load.
+
+## v1.6.2: polish
+- Juice: hit squash-stretch, dust and a low thump on hard hits, tiny pitch variation on repeats; short confetti + party-horn level-clear celebration.
+- Toots: random pick from 7 dry CC0 clips (4 Flatulence + 3 new) with rate variation and the odd double toot. The wet Gastric Distress clip is never loaded.
+- Real CC0 recordings for the rubber chicken (long shriek), goat, burp frog, clown horn, banana slide whistle, trampoline, bouncy pad, portals, silly string, leaf blower and the blow-up boom. All are decoded right after the first tap, with synth fallback (see CREDITS.md).
+- Blow it up!: the excavator rolls in and scoops, then EVERY piece (fixed ones too) becomes dynamic and flies, with dust, debris, a CC0 boom, and a shake of 0.6 s or less. It's done in about 2-3 s, a tap skips it, and the layout and undo history come back exactly.
+- Bouncy pad is now the punchy one: boost x1.8 (20-30) on the first 3 hits, then plain rubber, plus a big spring-compress. The trampoline keeps its own softer, steady launch. Bubble wrap physics are unchanged.
+- Leaf blower is about 4.7x stronger up close (0.52 vs 0.11 peak) and fades with distance; reach is 420 px, matching the airflow. Lift is capped below gravity, so the ball can't hover.
+- Portals: each portal has an arrow showing its exit direction (8 directions, 45° apart). Tap the arrow, or the ➜ button, to turn it. The ball leaves along the arrow at its entry speed. Codes save it as `-N`. Old codes have no arrow and keep the old turn-based exit.
+- Builder: ↺ and ↻ buttons, a name tag on the selected piece, snap ticks, a drop ring, and starter pieces that snap to the grid (fixes the 5px Clear→Undo offset).

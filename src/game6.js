@@ -227,7 +227,7 @@ function updHelp(){var b=$('help'),v=needHelp()?'flex':'none';if(b.style.display
 function startMouse(){if(state!=='aim'||AS.on)return;aInit();state='mouse';AS.on=true;MS.on=true;MS.t=0;MS.stay=false;MS.spd=1;$('help').style.display='none';$('skip').style.display='block';CSND.squeak();crowdEv('mouse');MS.done={}}
 function assistGeom(){ // clear the path: remove obstacles + movers (keep ledges), freeze + widen the hole
  statics.slice().forEach(function(b){if(b.isLedge)return;dust(b.position.x,b.position.y,6);Composite.remove(world,b);statics.splice(statics.indexOf(b),1)});
- movers.forEach(function(b){dust(b.position.x,b.position.y,6);Composite.remove(world,b)});movers=[];
+ movers.forEach(function(b){dust(b.position.x,b.position.y,6);Composite.remove(world,b)});movers=[];FANL=FANL.filter(function(f){return statics.indexOf(f)>=0});
  if(HOLE.mv){var m=HOLE.mv;HOLE.mv=null;setHole(m[0]-m[2]/2-15,m[0]+m[2]/2+15)}else setHole(HOLE.y0-30,HOLE.y1)}
 function tossDeb(b){if(b.isStatic)Body.setStatic(b,false);b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);Body.setVelocity(b,{x:2+rnd()*5,y:-30-rnd()*8});Body.setAngularVelocity(b,(rnd()-.5)*.6);b.gone=gt;flying.push(b);debris.splice(debris.indexOf(b),1);dust(b.position.x,FLOOR,4)}
 function simBall(deg,p,rec){var a=deg*PI/180,v=9+25*p,b=mkBall(LX,LY);SIMB=true;Composite.add(world,b);Body.setVelocity(b,{x:Math.cos(a)*v,y:-Math.sin(a)*v});

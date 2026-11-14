@@ -5,7 +5,7 @@ function wrapCanvas(b){if(b.wc&&!b.dirty&&b.wk===K)return b.wc;var w=b.ww,h=b.wh
   if(popped){g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=1.2;g.beginPath();g.moveTo(x-6,y);g.lineTo(x-2,y-3);g.lineTo(x+2,y+2);g.lineTo(x+6,y-1);g.stroke()}
   else{g.beginPath();g.arc(x,y,7.5,0,2*PI);g.fillStyle='rgba(255,255,255,.4)';g.fill();g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=1;g.stroke();g.fillStyle='#fff';g.beginPath();g.arc(x-3,y-3,1.8,0,2*PI);g.fill()}}
  b.wc=c;b.wk=K;b.dirty=0;return c}
-function drawBody(g,b,sc){var p=b.position;g.save();g.translate(p.x,p.y);g.rotate(b.angle);if(sc!=null&&sc<1)g.scale(sc,sc);
+function drawBody(g,b,sc){var p=b.position;g.save();g.translate(p.x,p.y);if(b.sq&&!b.isStatic)squashXf(g,b);g.rotate(b.angle);if(sc!=null&&sc<1)g.scale(sc,sc);
  if(b.toy)drawToy(g,b);
  else if(b.kind==='wrap'){var c=wrapCanvas(b);g.drawImage(c,-b.ww/2,-b.wh/2,b.ww+2/K,b.wh+2/K);shimmer(g,b.ww,b.wh)}
  else{var s=b.soggy?wetSpr(b.sk):spr(b.sk);if(s){var o=b.ofs||{x:0,y:0};g.drawImage(s.c,o.x-b.sw/2-2/K,o.y-b.sh/2-2/K,s.w,s.h)}}g.restore()}
@@ -71,7 +71,7 @@ var last=0,acc=0,FR=[],paused=false,titleOn=true;
 function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:16.7);last=ts;FR.push(dt);if(FR.length>120)FR.shift();decShk(dt/1000);
  if(titleOn){if(render.off&&(render.off[0]||render.off[1]))render(ts/1000);return}
  if(state==='edit'){var se=dt/1000;gt+=se;updTM(se);updP(se);render(ts/1000);drawEdit(ctx,ts/1000);return}
- var sd=dt/1000;updTM(sd);runQ(sd*EX.speed);updP(sd);updCrowd(sd);updMouse(sd);updFart(sd);if(lim('help',250))updHelp();
+ var sd=dt/1000;updTM(sd);runQ(sd*EX.speed);if(state==='edblow')edBlowStep(sd);updP(sd);updCrowd(sd);updMouse(sd);updFart(sd);if(lim('help',250))updHelp();
  if(state==='settle'){settleT+=sd;var mv=debris.some(function(b){return !b.isSleeping&&b.speed>.5});if(settleT>.5&&(!mv||settleT>2.2))newRound()}
  if(dispTk!==save.tk){var df=save.tk-dispTk;dispTk+=df>0?Math.max(1,Math.round(df/12)):Math.min(-1,Math.round(df/12));if(lim('tkt',60))SFX.tick(dispTk);$('tk').textContent=dispTk}
  acc+=dt*slowTS(sd);var n=0;while(acc>=FIXED&&n<5){physStep();acc-=FIXED;n++}if(n>=5)acc=0;

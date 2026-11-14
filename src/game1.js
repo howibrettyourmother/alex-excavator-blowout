@@ -20,7 +20,7 @@ function persist(){try{localStorage.setItem(SK,JSON.stringify(save))}catch(e){}}
 var muted=false;try{muted=localStorage.getItem('aeb_mute')==='1'}catch(e){}
 /* ---------- audio (all synthesized) ---------- */
 var AC=null,master=null,sfxBus=null,musBus=null,crowdBus=null,NB=null,lastS={};
-function aInit(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(!C)return;AC=new C();master=AC.createGain();master.gain.value=muted?0:.9;master.connect(AC.destination);
+function aInit(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(!C)return;AC=new C();master=AC.createGain();master.gain.value=muted?0:.9;master.connect(AC.destination);setTimeout(function(){try{loadFarts();loadSamples()}catch(e){}},0);
  var comp=AC.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;comp.connect(master);
  sfxBus=AC.createGain();sfxBus.gain.value=.85;sfxBus.connect(comp);musBus=AC.createGain();musBus.gain.value=.15;musBus.connect(comp);crowdBus=AC.createGain();crowdBus.gain.value=.75;crowdBus.connect(comp);
  NB=AC.createBuffer(1,AC.sampleRate,AC.sampleRate);var d=NB.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1}
