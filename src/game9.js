@@ -305,9 +305,10 @@ function portalTP(b,sim){if(!PORT.length||!b)return false;if(b.ptCd>0)b.ptCd--;v
   if(!sim){A.fl=B.fl=gt;vwoop();[A,B].forEach(function(q){for(var i=0;i<12;i++){var an=i/12*2*PI+gt*3;emit({k:'sp',x:q.x+Math.cos(an)*30,y:q.y+Math.sin(an)*44,vx:-Math.sin(an)*220,vy:Math.cos(an)*220-60,m:.45,c:pCol(k),s:4})}})}
   return true}return false}
 var PEXO=22;/* v1.6.2 exit arrow: ball leaves along the arrow at its entry speed, 22px out from the centre */
+/* v1.6.6: in play the arrow is drawn at 60% size and 40% opacity; builder arrows are unchanged */
 function arrowAt(q){var a=(q.d==null?-2:q.d)*PI/4;return{x:q.x+Math.cos(a)*74,y:q.y+Math.sin(a)*74}}
 function drawPArrow(g,q,col,t,ed){if(q.d==null){if(!ed)return;var p=arrowAt(q);g.save();g.translate(p.x,p.y);g.globalAlpha=.85;g.strokeStyle='#fff';g.lineWidth=5;g.beginPath();g.arc(0,0,14,.4,5.6);g.stroke();g.fillStyle='#fff';g.font='bold 16px sans-serif';g.textAlign='center';g.fillText('auto',0,34);g.restore();return}
- var a=q.d*PI/4,pu=ed?1+.06*Math.sin(t*5):1;g.save();g.translate(q.x,q.y);g.rotate(a);g.scale(pu,pu);g.lineJoin='round';g.beginPath();g.moveTo(34,-9);g.lineTo(62,-9);g.lineTo(62,-22);g.lineTo(92,0);g.lineTo(62,22);g.lineTo(62,9);g.lineTo(34,9);g.closePath();
+ var a=q.d*PI/4,pu=ed?1+.06*Math.sin(t*5):.6;g.save();g.translate(q.x,q.y);g.rotate(a);g.scale(pu,pu);if(!ed)g.globalAlpha=.4;g.lineJoin='round';g.beginPath();g.moveTo(34,-9);g.lineTo(62,-9);g.lineTo(62,-22);g.lineTo(92,0);g.lineTo(62,22);g.lineTo(62,9);g.lineTo(34,9);g.closePath();
  g.fillStyle='#fff';g.strokeStyle=col;g.lineWidth=6;g.stroke();g.fill();g.restore()}
 function vwoop(){tone(240,.26,{to:950,type:'sine',vol:.16});tone(480,.2,{to:1600,type:'triangle',vol:.05,at:.05})}
 function drawPortalShape(g,x,y,a,col,t,sc,soft){g.save();g.translate(x,y);g.rotate(a);if(sc)g.scale(sc,sc);

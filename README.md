@@ -94,3 +94,6 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 ## v1.6.5
 - Portal matching cues (big numbers, dotted partner line, bright pair colors) stay in the builder, where they are needed.
 - In play (built-in levels, Test it!, and shared levels) the numbers, dotted line, and teleport pulse/flash are gone. Each pair still shares a color, softened to sit closer to the original portal look. Exit arrows are unchanged from 1.6.3.
+
+## v1.6.6
+- In play, portal exit arrows are smaller and fainter (about 60% size and 40% opacity). Builder arrows are unchanged.
