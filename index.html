@@ -162,7 +162,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
  <div class="row"><button id="play" class="btn mk">▶ Play!</button></div>
  <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button><button id="tmodes" class="btn alt">🎮 Bonus Modes</button></div>
  <div id="how">Pull the ball back and let go (or flick it!) to throw it through the blue hole, past the junk, into the prize hole.</div>
- <div id="ld">v1.10.0-20261114</div>
+ <div id="ld">v1.11.0-20261114</div>
 </div>
 <script>/*!
  * matter-js 0.20.0 by @liabru
@@ -173,7 +173,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 <script>(function(){
 'use strict';
 var M=window.Matter,Engine=M.Engine,Bodies=M.Bodies,Body=M.Body,Composite=M.Composite,Events=M.Events,Sleeping=M.Sleeping;
-var VER='1.10.0-20261114';
+var VER='1.11.0-20261114';
 var W=1500,H=1000,FLOOR=880,TABLE=900,TOP=380,FX0=470,FX1=515,BX0=1360,BX1=1400,GAP0=549,GAP1=813,BR=21,LX=210,LY=724;
 var L1=330,L2=290,EXMIN=840,EXMAX=1290,EXPARK=1235;
 function $(id){return document.getElementById(id)}
@@ -1172,8 +1172,8 @@ function mkEl(tag,id,cls,html,parent){var e=document.createElement(tag);if(id)e.
 var edTop=mkEl('div','edTop'),edPal=mkEl('div','edPal'),edMore=mkEl('div','edMore'),edTools=mkEl('div','edTools'),edHint=mkEl('div','edHint','mk'),edToast=mkEl('div','edToast','mk');
 edPal.addEventListener('pointerdown',function(e){e.stopPropagation()});edTop.addEventListener('pointerdown',function(e){e.stopPropagation()});edMore.addEventListener('pointerdown',function(e){e.stopPropagation()});
 /* v1.9.0: full-screen builder. Slim top bar (over the ceiling, never the box) + toy shelf on the left (over the crowd/table, never the box) + a More menu that closes itself. */
-edTop.innerHTML='<div class="grp"><button class="tag cb mk" id="edBack">◀ Back</button><button class="tag cb mk off" id="edUndo" aria-label="Undo">↶ Undo</button></div>'+
- '<div class="grp"><button class="tag mk dadb" id="edDad" aria-label="Challenge Dad">📣 Dad</button><button class="tag mk boom" id="edBlow">💥 Blow it up!</button><button class="tag mk go" id="edTest">▶ Test it!</button><button class="tag cb mk" id="edMoreB" aria-label="More">☰ More</button></div>';
+edTop.innerHTML='<div class="grp"><button class="tag cb mk" id="edBack" aria-label="Back">◀<span class="lbl">&nbsp;Back</span></button><button class="tag cb mk off" id="edUndo" aria-label="Undo">↶<span class="lbl">&nbsp;Undo</span></button></div>'+
+ '<div class="grp"><button class="tag mk dadb" id="edDad" aria-label="Challenge Dad">📣<span class="lbl">&nbsp;Dad</span></button><button class="tag mk boom" id="edBlow" aria-label="Blow it up!">💥<span class="lbl">&nbsp;Blow it up!</span></button><button class="tag mk go" id="edTest" aria-label="Test it!">▶<span class="lbl">&nbsp;Test it!</span></button><button class="tag cb mk" id="edMoreB" aria-label="More">☰<span class="lbl">&nbsp;More</span></button></div>';
 edMore.innerHTML='<button class="tag cb mk wide" id="edName">✏️ My Level</button><button class="tag cb mk" id="edDice" aria-label="Random name">🎲 New name</button><button class="tag cb mk" id="edSave">💾 Save</button>'+
  '<button class="tag cb mk" id="edHole">🕳️ Hole: Medium</button><button class="tag cb mk" id="edMove">↕️ Moving: off</button><button class="tag cb mk" id="edClear">🧹 Clear all</button>'+
  '<button class="tag cb mk" id="edSet">🔊 Sounds</button><button class="tag cb mk" id="edLink" aria-label="Share link for grown-ups">🔗 Share link</button><button class="tag mk dadb wide" id="edDad2">📣 Challenge Dad</button><button class="tag cb mk wide" id="edMoreX">✖ Close</button>';
@@ -1233,11 +1233,11 @@ function edOn(){return edPal&&edPal.style.display==='flex'}
 function barBot(){try{if(edTop.style.display==='flex'){var b=0;[].forEach.call(edTop.querySelectorAll('.tag'),function(x){b=Math.max(b,x.getBoundingClientRect().bottom)});return b}}catch(e){}return 0}
 function shelfR(){try{if(edOn())return edPal.getBoundingClientRect().right}catch(e){}return 0}
 /* shelf sits left of the box's front panel (world x~415) so it never covers build space */
-function edLayout(){if(!edOn())return;var bb=Math.round(barBot()||70),top=bb+8,sl=(parseFloat(getComputedStyle(edPal).left)||6),w=Math.round(Math.max(240,Math.min(360,OX+415*S-sl-8)));
- edPal.style.top=top+'px';edPal.style.width=w+'px';edPal.style.maxHeight=Math.max(200,CH-top-8)+'px';
+function edLayout(){if(!edOn())return;var bb=Math.round(barBot()||70),top=bb+8,sl=(parseFloat(getComputedStyle(edPal).left)||6),ph=Math.min(CW,CH)<=500,w=Math.round(ph?Math.max(170,Math.min(230,OX+415*S-sl-6)):Math.max(240,Math.min(360,OX+415*S-sl-8)));
+ edPal.style.top=top+'px';edPal.style.width=w+'px';edPal.style.maxHeight=Math.max(ph?120:200,CH-top-(ph?4+sai('bottom'):8))+'px';
  var r=sl+w,cx=OX+937*S;edHint.style.left=Math.round(Math.max(r+10+Math.min(CW*.3,280),cx))+'px';edHint.style.top=top+4+'px';edHint.style.maxWidth=Math.round(Math.max(200,CW-r-30))+'px';
  if(edMore.style.display==='grid')placeMore();placeTools()}
-function placeMore(){var b=$('edMoreB').getBoundingClientRect();edMore.style.top=Math.round(b.bottom+8)+'px';edMore.style.right=Math.max(8,Math.round(CW-b.right))+'px'}
+function placeMore(){var b=$('edMoreB').getBoundingClientRect();edMore.style.top=Math.round(b.bottom+8)+'px';edMore.style.maxHeight=Math.max(150,CH-b.bottom-16-sai('bottom'))+'px';edMore.style.right=Math.max(8,Math.round(CW-b.right))+'px'}
 function moreOn(on){if(on==null)on=edMore.style.display!=='grid';edMore.style.display=on?'grid':'none';$('edMoreB').classList.toggle('on',on);if(on){placeMore();updPal()}}
 function openEditor(lv){aInit();resetPlay();if(lv||(!ED.items.length&&!ED.id))ED.hist=[];titleOn=false;$('title').classList.add('off');if(!edPal.children.length)buildPal();
  if(lv){ED.items=lv.items.map(function(it){var o={t:it.t,x:it.x,y:it.y,a:it.a||0,col:it.col};if(it.t==='portal'){o.pr=it.pr|0;if(it.d!=null)o.d=it.d}return fit(o)});ED.hole={y1:lv.hole.y1,sz:lv.hole.sz,mv:!!lv.hole.mv};ED.name=lv.name;ED.id=lv.id||null}
@@ -2656,10 +2656,20 @@ function dqStatus(){if(!DQ.cur||!$('dadcel').classList.contains('on'))return;var
 function dqFlush(){if(DQ.busy)return;var q=dqList();if(!q.length){dqStatus();return}
  var wait=(+lsG(DLK,0)||0)+DCAP-Date.now();if(wait>0){clearTimeout(DQ.t);DQ.t=setTimeout(dqFlush,Math.min(wait,DCAP)+60);dqStatus();return}
  if(navigator.onLine===false){dqStatus();return}
- var m=q[0];DQ.busy=true;lsS(DLK,Date.now());
- var done=function(ok){DQ.busy=false;var q2=dqList();if(ok)q2=q2.filter(function(x){return x.p.cid!==m.p.cid});else q2.forEach(function(x){if(x.p.cid===m.p.cid){x.fail=(x.fail||0)+1}});lsS(DQK,q2);dqStatus();
+ var m=q.filter(function(x){return !x.lo})[0]||q[0];DQ.busy=true;lsS(DLK,Date.now());
+ var done=function(ok){DQ.busy=false;if(ok)sentMark(m.p);var q2=dqList();if(ok)q2=q2.filter(function(x){return x.p.cid!==m.p.cid});else q2.forEach(function(x){if(x.p.cid===m.p.cid){x.fail=(x.fail||0)+1}});lsS(DQK,q2);dqStatus();
   if(ok&&m.p.cid===DQ.cur)try{SFX.ok()}catch(e){}if(q2.length){clearTimeout(DQ.t);DQ.t=setTimeout(dqFlush,ok?DCAP+60:60000)}};
  try{fetch(DADURL,{method:'POST',body:JSON.stringify(m.p),cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'}).then(function(r){done(!!(r&&r.ok))},function(){done(false)})}catch(e){done(false)}}
+/* ---------- v1.11.0: beat the 12h ntfy expiry. The sender re-publishes un-acked challenges (same cid) when the game opens. ---------- */
+var DSTK='aeb_dadsent',H10=10*3600e3,D7=7*24*3600e3;
+function sentList(){var a=lsG(DSTK,[]);return Array.isArray(a)?a:[]}
+function sentMark(p){var a=sentList(),now=Date.now(),its=p.items||(p.code?[p]:[]);its.forEach(function(it){var e=null;a.forEach(function(x){if(x.cid===it.cid)e=x});
+ if(!e){e={cid:it.cid,p:{v:1,code:it.code,name:it.name,score:it.score,kid:it.kid,cid:it.cid},first:now,acked:0};a.push(e)}e.lastPub=now});lsS(DSTK,a.slice(-40))}
+function dadRepub(){var now=Date.now(),a=sentList().filter(function(x){return now-(x.first||0)<D7});lsS(DSTK,a);
+ var due=a.filter(function(x){return !x.acked&&now-(x.lastPub||0)>H10}).map(function(x){return x.p});if(!due.length)return 0;
+ var q=dqList().filter(function(x){return !(x.lo&&x.p.t==='re')});q.push({lo:1,p:{v:1,t:'re',from:DEV,cid:'r'+rid(9),items:due},at:now});lsS(DQK,q.slice(-20));dqFlush();return due.length}
+function dadAck(cid){if(!cid)return;var q=dqList();q.push({lo:1,p:{v:1,t:'played',cid:cid,from:DEV},at:Date.now()});lsS(DQK,q.slice(-20));dqFlush()}
+setTimeout(dadRepub,2500);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(dadRepub,1500)});
 function dadChallenge(lv){aInit();var bst=0;try{bst=lvBest(lv)||0}catch(e){}var code=enc(lv.items,lv.hole,lv.name,bst),nm=cleanName(lv.name)||'My Level';
  var q=dqList(),ex=null;q.forEach(function(x){if(x.p.code===code)ex=x});
  if(!ex){ex={p:{v:1,code:code,name:nm,score:bst,kid:sndKid(),from:DEV,cid:rid(10)},at:Date.now()};q.push(ex);lsS(DQK,q.slice(-20))}
@@ -2676,9 +2686,10 @@ function inbList(){var a=lsG(DIK,[]);return Array.isArray(a)?a:[]}
 function tally(){var t={alex:0,dad:0,tie:0};inbList().forEach(function(x){if(x.res&&t[x.res]!=null)t[x.res]++});return t}
 function inbPoll(){if(INB.busy||navigator.onLine===false)return;INB.busy=true;var since=lsG(DSK,null)||'12h';
  try{fetch(DADURL+'/json?poll=1&since='+encodeURIComponent(since),{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){var a=inbList(),ids={},last=null,add=0;a.forEach(function(x){ids[x.id]=1;if(x.cid)ids['c:'+x.cid]=1});
-  String(t).split('\n').forEach(function(ln){if(!ln.trim())return;try{var m=JSON.parse(ln);if(m.event!=='message'||!m.id)return;last=m.id;if(ids[m.id])return;var p=JSON.parse(m.message);
-   if(!p||typeof p.code!=='string'||p.from===DEV||(p.cid&&ids['c:'+p.cid]))return;var lv=dec(p.code);if(!lv)return;
-   a.push({id:m.id,time:+m.time||0,cid:p.cid||'',code:p.code,name:cleanName(p.name)||lv.name||'Mystery Level',score:Math.max(0,p.score|0)||(lv.best|0),kid:p.kid==='zoe'?'zoe':'alex',played:0,res:null});ids[m.id]=1;if(p.cid)ids['c:'+p.cid]=1;add++}catch(e){}});
+  String(t).split('\n').forEach(function(ln){if(!ln.trim())return;try{var m=JSON.parse(ln);if(m.event!=='message'||!m.id)return;last=m.id;if(ids[m.id])return;var p=JSON.parse(m.message);if(!p)return;
+   if(p.t==='played'){if(p.cid){var sl=sentList(),hit=0;sl.forEach(function(x){if(x.cid===p.cid&&!x.acked){x.acked=Date.now();hit=1}});if(hit)lsS(DSTK,sl)}return}
+   if(p.from===DEV)return;(Array.isArray(p.items)?p.items:[p]).forEach(function(it,j){if(!it||typeof it.code!=='string'||(it.cid&&ids['c:'+it.cid]))return;var lv=dec(it.code);if(!lv)return;var id=p.items?m.id+':'+j:m.id;
+    a.push({id:id,time:+m.time||0,cid:it.cid||'',code:it.code,name:cleanName(it.name)||lv.name||'Mystery Level',score:Math.max(0,it.score|0)||(lv.best|0),kid:it.kid==='zoe'?'zoe':'alex',played:0,res:null});ids[id]=1;if(it.cid)ids['c:'+it.cid]=1;add++})}catch(e){}});
   if(last)lsS(DSK,last);lsS(DIK,a.slice(-60));INB.busy=false;inbBadge();if(add&&!$('title').classList.contains('off'))try{SFX.pop()}catch(e){}}).catch(function(){INB.busy=false})}catch(e){INB.busy=false}}
 function inbBadge(){var b=$('chBan');if(!b)return;var a=inbList(),nw=a.filter(function(x){return !x.played});
  if(!a.length){b.style.display='none';return}b.style.display='flex';b.classList.toggle('new',nw.length>0);b.classList.toggle('old',!nw.length);
@@ -2692,7 +2703,7 @@ function chlOpen(){aInit();var a=inbList().slice().reverse(),t=tally(),h='';$('c
 $('chBan').addEventListener('click',function(){SFX.click();chlOpen()});
 $('chlX').addEventListener('click',function(){SFX.click();$('chl').classList.remove('on')});
 $('chRows').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=inbList(),x=null;a.forEach(function(o){if(o.id===b.dataset.id)x=o});if(!x)return;var lv=dec(x.code);if(!lv){SFX.no();return}
- if(!lv.best&&x.score)lv.best=x.score;x.played=x.played||Date.now();lsS(DIK,a);inbBadge();SFX.click();$('chl').classList.remove('on');playCustom(lv,{challenge:true,inb:x.id})});
+ if(!lv.best&&x.score)lv.best=x.score;if(!x.played)dadAck(x.cid);x.played=x.played||Date.now();lsS(DIK,a);inbBadge();SFX.click();$('chl').classList.remove('on');playCustom(lv,{challenge:true,inb:x.id})});
 /* play hooks: remember which inbox challenge is being played, and score it on a win */
 var playCustom0=playCustom;playCustom=function(lv,o){playCustom0(lv,o);CUS.inb=(o&&o.inb)||null};
 var customWon0=customWon;customWon=function(){var n=CUS.on?stats.throws-CUS.th0:0,id=CUS.inb,lv=CUS.lv||{};customWon0();var r=$('dadRes');if(!r)return;if(!id||!CUS.on){r.style.display='none';return}
@@ -2706,8 +2717,55 @@ var customWon0=customWon;customWon=function(){var n=CUS.on?stats.throws-CUS.th0:
 /* poll on load, whenever the home screen comes back, and every 60s while it's showing */
 var chWasT=false;setInterval(function(){var tv=!$('title').classList.contains('off');if(tv&&!chWasT)inbPoll();chWasT=tv},1000);
 setInterval(function(){if(!$('title').classList.contains('off'))inbPoll()},60000);setTimeout(function(){inbBadge();inbPoll()},800);
-window.EBDAD={q:dqList,inb:inbList,tally:tally,poll:inbPoll,flush:dqFlush,dev:function(){return DEV},send:function(lv){dadChallenge(lv||edSnapshot());return DQ.cur},list:chlOpen,
+window.EBDAD={sent:sentList,repub:dadRepub,q:dqList,inb:inbList,tally:tally,poll:inbPoll,flush:dqFlush,dev:function(){return DEV},send:function(lv){dadChallenge(lv||edSnapshot());return DQ.cur},list:chlOpen,
  cap:function(ms){if(ms!=null)DCAP=ms;return DCAP},res:function(n){var x=null;inbList().forEach(function(o){if(o.id===n)x=o});return x}};
+/* ===== v1.11.0: iPhone landscape. Phone = shorter side <= 500 CSS px. The playfield crops a little sky (world y<150) and
+   floor (y>950) so it fills the phone screen; toolbars go compact/icon-only; every touch target >= 44pt; portrait shows a rotate prompt. ===== */
+function isPhone(){return Math.min(innerWidth,innerHeight)<=500}
+(function(){var st=document.createElement('style');st.textContent=
+ '#rot .ph{display:none}'+
+ '@media (orientation:portrait) and (max-width:500px){#rot{display:flex!important;position:fixed;inset:0;z-index:2147483001;flex-direction:column;align-items:center;justify-content:center;gap:14px;pointer-events:auto;background:repeating-linear-gradient(90deg,#6e0d18 0 6vw,#8d1622 6vw 10vw,#5e0a14 10vw 16vw);font-size:30px;padding:24px;text-align:center}'+
+ '#rot .ip{display:none}#rot .ph{display:block}#rot .phi{font-size:96px;line-height:1;animation:rotp 2.2s ease-in-out infinite}#rot b{font-size:34px;color:#ffde3b;-webkit-text-stroke:1px #3a1d00}#rot small{font-size:20px;color:#ffe9b8}}'+
+ '@keyframes rotp{0%,25%{transform:rotate(0)}55%,100%{transform:rotate(-90deg)}}'+
+ '@media (max-height:500px) and (orientation:landscape){'+
+ '#hubHome{transform:scale(1.2);transform-origin:top left}'+
+ /* HUD */
+ '#hud{gap:6px;padding:calc(4px + env(safe-area-inset-top)) calc(6px + env(safe-area-inset-right)) 0 calc(58px + env(safe-area-inset-left))}'+
+ '#hud .tag{font-size:15px;min-height:44px;min-width:44px;padding:4px 8px;display:flex;align-items:center;justify-content:center}#hud #lvl{max-width:24vw;display:block;line-height:36px}#mbadge span{display:none}#mbadge{max-width:none}'+
+ '#balls i{width:20px;height:20px}#tix b,#pbtn b{font-size:17px}#mute{width:44px}#gear{width:44px!important;font-size:18px!important}#edbtn{font-size:15px!important}'+
+ '#skip,#help{font-size:17px;min-height:44px;padding:8px 12px}'+
+ '#banner{font-size:min(11vmin,60px)}'+
+ /* overlays + cards */
+ '.card{padding:10px 14px;max-height:calc(100% - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-width:calc(100vw - 20px - env(safe-area-inset-left) - env(safe-area-inset-right))}'+
+ '.card h2{font-size:28px;margin-bottom:2px}.btn{font-size:19px;padding:8px 14px;margin:4px;min-height:44px}'+
+ '#prizeBig{font-size:54px}#prizeName{font-size:22px;margin-bottom:2px}#tkRows{font-size:15px;line-height:1.3;margin:2px 0}#stk{font-size:16px}#math{padding:4px 8px;margin:4px auto}#math .q{font-size:18px}#math .ch{font-size:22px;min-width:56px;min-height:44px;padding:4px 10px;margin:3px}#math .r{font-size:17px;min-height:20px}'+
+ '#grandMsg{font-size:18px!important}#dadRes .big{font-size:30px}#dadRes .sub{font-size:16px}'+
+ '#shelfGrid{grid-template-columns:repeat(8,1fr)}#mgrid{grid-template-columns:repeat(4,1fr)}.mt{min-height:110px}.mt img{width:40px;height:40px}'+
+ /* title */
+ '#title .small .btn{min-height:44px;font-size:16px}#play{min-height:52px}#tgear{width:52px!important;height:52px!important;font-size:24px!important}#how{font-size:13px}'+
+ '#chBan{font-size:18px;min-height:50px;padding:4px 14px;top:calc(6px + env(safe-area-inset-top))}#chBan.old{font-size:15px}#chBan .cnt{min-width:34px;height:34px;line-height:34px;font-size:20px}'+
+ /* challenge list + celebration */
+ '#chl h2{font-size:24px}#chTal{font-size:20px;margin:0 0 4px}#chRows{max-height:calc(100vh - 170px)}.chr{padding:4px 8px}.chr b{font-size:19px}.chr small{font-size:14px}.chr .btn{min-width:56px;min-height:48px;font-size:22px}.chr .tagr,.chr .tagn{font-size:14px}'+
+ '#dadcel .card>div:first-child{font-size:40px!important}#dadcel h2{font-size:30px}#dcName{font-size:22px}#dcScore{font-size:19px;margin:2px 0}#dcStat{font-size:17px;min-height:22px;margin:2px 0}#dcOk{font-size:21px;min-height:48px}'+
+ /* settings */
+ '.srow{margin:6px 4px;font-size:20px}.stg{width:52px;height:46px;font-size:22px}'+
+ /* builder: icon-only bar, compact shelf, 44pt tools */
+ '#edTop{padding:calc(4px + env(safe-area-inset-top)) calc(6px + env(safe-area-inset-right)) 0 calc(58px + env(safe-area-inset-left))}#edTop .grp{gap:6px}#edTop .lbl{display:none}'+
+ '#edTop .tag,#edMore .tag,#edTools .tag{font-size:19px;min-height:44px;min-width:48px;padding:2px 8px}#edMore .tag{font-size:15px}#edMore{gap:6px;padding:8px;width:min(400px,62vw);overflow:auto}'+
+ '#edPal{padding:5px;gap:5px;border-radius:14px}#edPal .shelfT{display:none}#edTabs{gap:4px}#edTabs .tab{min-height:44px;min-width:44px;padding:2px}#edTabs .tab span{display:none}#edTabs .tab b{font-size:22px}'+
+ '#edPcs{gap:5px}#edPal .pc{min-height:52px;min-width:44px;padding:3px 1px}#edPal .pc img{width:36px;height:36px}#edPal .pc .pn{display:none}#edPal .pc .left{font-size:12px;height:18px;line-height:18px;min-width:18px;padding:0 4px}'+
+ '#edHint{font-size:15px}#edTools{gap:5px}'+
+ '#edMore{grid-template-columns:1fr 1fr 1fr;width:min(560px,72vw)}#edMore .wide{grid-column:auto}#edMore #edName,#edMore #edMoreX{grid-column:1/4}'+
+ '.ov{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}'+
+ /* win card: two columns so the result + buttons fit without scrolling */
+ '#win .card{display:flex;align-items:center;gap:14px;width:760px}#wL,#wR{display:flex!important;flex-direction:column;align-items:center;justify-content:center}#wL{flex:0 0 36%}#wR{flex:1 1 auto;min-width:0}#wbtns .btn{margin:3px}'+
+ '}';document.head.appendChild(st);
+ /* wrap the win card's buttons in one row (same look on iPad; lets the phone layout place them as a group) */
+ try{var wc=$('next').parentNode,wb=document.createElement('div');wb.id='wbtns';var bs=[].filter.call(wc.children,function(e){return e.tagName==='BUTTON'||e.id==='rpCard'});if(bs.length){wc.insertBefore(wb,bs[0]);bs.forEach(function(e){wb.appendChild(e)})}
+  /* two column wrappers: display:contents on iPad (layout unchanged), real columns on phone */
+  var wl=document.createElement('div'),wr=document.createElement('div');wl.id='wL';wr.id='wR';wl.style.display=wr.style.display='contents';
+  var kids=[].slice.call(wc.children);wc.insertBefore(wl,kids[0]);wc.appendChild(wr);kids.forEach(function(e){(/^(H2)$/.test(e.tagName)||/^(prizeBig|prizeName|tkRows|stk)$/.test(e.id)?wl:wr).appendChild(e)})}catch(e){}
+ var r=$('rot');if(r)r.innerHTML='<span class="ip">'+r.innerHTML+'</span><div class="ph phi">📱</div><b class="ph mk">Turn your phone sideways!</b><small class="ph mk">Excavator Blowout plays best in landscape.</small>'})();
 /* ---------- rendering ---------- */
 function wrapCanvas(b){if(b.wc&&!b.dirty&&b.wk===K)return b.wc;var w=b.ww,h=b.wh,c=mkc(w*K+2,h*K+2),g=c.getContext('2d');g.scale(K,K);
  drawBubbleSheet(g,0,0,w,h,b.pops);
@@ -2776,9 +2834,11 @@ document.addEventListener('touchmove',function(e){if(e.target===cv)e.preventDefa
 document.addEventListener('gesturestart',function(e){e.preventDefault()});
 /* ---------- resize + loop ---------- */
 /* v1.9.0: builder uses the same scale as play mode. Only on very narrow screens is the playfield nudged/shrunk so the left toy shelf (min 252px) stays off the box. */
-function edPad(){var l=0;try{if(edPal&&edPal.style.display==='flex')l=252}catch(e){}return{t:0,b:0,l:l}}
+function edPad(){var l=0;try{if(edPal&&edPal.style.display==='flex')l=Math.min(innerWidth,innerHeight)<=500?190+sai('left'):252}catch(e){}return{t:0,b:0,l:l}}
+/* safe-area inset in px (read once per call from a probe element) */
+function sai(side){try{var d=sai.d;if(!d){d=sai.d=document.createElement('div');d.style.cssText='position:fixed;visibility:hidden;pointer-events:none;left:0;top:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';document.body.appendChild(d)}return parseFloat(getComputedStyle(d)['padding-'+side])||0}catch(e){return 0}}
 function resize(){CW=Math.max(1,innerWidth);CH=Math.max(1,innerHeight);DPR=Math.min(window.devicePixelRatio||1,2)*qual;cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);cv.style.width=CW+'px';cv.style.height=CH+'px';
- var pad=edPad(),availH=Math.max(160,CH-pad.t-pad.b);S=Math.min(CW/W,availH/H);if(pad.l)S=Math.max(.1,Math.min(S,(CW-pad.l)/(W-415)));OX=(CW-W*S)/2;if(pad.l)OX=Math.min(CW-W*S,Math.max(OX,pad.l-415*S));OY=pad.t+(availH-H*S)/2;K=S*DPR;SPR={};drawBG();mkPanel();mkSign();mkCeil();CBP=ctx.createPattern(CBT,'repeat');try{if(typeof edLayout==='function')edLayout()}catch(e){}}
+ var pad=edPad(),availH=Math.max(160,CH-pad.t-pad.b);var ph=Math.min(CW,CH)<=500&&CW>CH;S=ph?Math.min(CW/1460,CH/800):Math.min(CW/W,availH/H);if(pad.l)S=Math.max(.1,Math.min(S,(CW-pad.l)/(W-415)));OX=(CW-W*S)/2;if(pad.l)OX=Math.min(CW-W*S,Math.max(OX,pad.l-415*S));OY=ph?CH-950*S:pad.t+(availH-H*S)/2;K=S*DPR;SPR={};drawBG();mkPanel();mkSign();mkCeil();CBP=ctx.createPattern(CBT,'repeat');try{if(typeof edLayout==='function')edLayout()}catch(e){}}
 addEventListener('resize',function(){clearTimeout(resize.t);resize.t=setTimeout(resize,120)});addEventListener('orientationchange',function(){setTimeout(resize,300)});
 var last=0,acc=0,FR=[],paused=false,titleOn=true;
 function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:16.7);last=ts;FR.push(dt);if(FR.length>120)FR.shift();decShk(dt/1000);
@@ -2859,7 +2919,7 @@ setupLevel(save.lv||0,true);requestAnimationFrame(frame);
 addEventListener('pagehide',persist);document.addEventListener('visibilitychange',function(){if(document.hidden){persist();drag=null}else{last=0}});
 })();
 </script>
-<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.10.0-20261114').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.11.0-20261114').catch(function(){})})}</script>
 <script>/*hub-home*/(function(){var own='alex',k;try{k=localStorage.kidsHub}catch(e){}if(k!=='zoe'&&k!=='alex')k=own;
 var u=k==='zoe'?'/doodle-and-zoe/':'/alex-games/',b=document.createElement('div');b.id='hubHome';b.setAttribute('role','button');b.setAttribute('aria-label','hold to go home');
 b.innerHTML='<svg width="38" height="38" viewBox="0 0 38 38" style="position:absolute;left:0;top:0;pointer-events:none"><circle cx="19" cy="19" r="16" fill="none" stroke="#ffd54a" stroke-width="4" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 19 19)"/></svg><span style="position:relative;pointer-events:none">🏠</span>';

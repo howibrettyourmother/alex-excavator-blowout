@@ -66,9 +66,11 @@ document.addEventListener('touchmove',function(e){if(e.target===cv)e.preventDefa
 document.addEventListener('gesturestart',function(e){e.preventDefault()});
 /* ---------- resize + loop ---------- */
 /* v1.9.0: builder uses the same scale as play mode. Only on very narrow screens is the playfield nudged/shrunk so the left toy shelf (min 252px) stays off the box. */
-function edPad(){var l=0;try{if(edPal&&edPal.style.display==='flex')l=252}catch(e){}return{t:0,b:0,l:l}}
+function edPad(){var l=0;try{if(edPal&&edPal.style.display==='flex')l=Math.min(innerWidth,innerHeight)<=500?190+sai('left'):252}catch(e){}return{t:0,b:0,l:l}}
+/* safe-area inset in px (read once per call from a probe element) */
+function sai(side){try{var d=sai.d;if(!d){d=sai.d=document.createElement('div');d.style.cssText='position:fixed;visibility:hidden;pointer-events:none;left:0;top:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';document.body.appendChild(d)}return parseFloat(getComputedStyle(d)['padding-'+side])||0}catch(e){return 0}}
 function resize(){CW=Math.max(1,innerWidth);CH=Math.max(1,innerHeight);DPR=Math.min(window.devicePixelRatio||1,2)*qual;cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);cv.style.width=CW+'px';cv.style.height=CH+'px';
- var pad=edPad(),availH=Math.max(160,CH-pad.t-pad.b);S=Math.min(CW/W,availH/H);if(pad.l)S=Math.max(.1,Math.min(S,(CW-pad.l)/(W-415)));OX=(CW-W*S)/2;if(pad.l)OX=Math.min(CW-W*S,Math.max(OX,pad.l-415*S));OY=pad.t+(availH-H*S)/2;K=S*DPR;SPR={};drawBG();mkPanel();mkSign();mkCeil();CBP=ctx.createPattern(CBT,'repeat');try{if(typeof edLayout==='function')edLayout()}catch(e){}}
+ var pad=edPad(),availH=Math.max(160,CH-pad.t-pad.b);var ph=Math.min(CW,CH)<=500&&CW>CH;S=ph?Math.min(CW/1460,CH/800):Math.min(CW/W,availH/H);if(pad.l)S=Math.max(.1,Math.min(S,(CW-pad.l)/(W-415)));OX=(CW-W*S)/2;if(pad.l)OX=Math.min(CW-W*S,Math.max(OX,pad.l-415*S));OY=ph?CH-950*S:pad.t+(availH-H*S)/2;K=S*DPR;SPR={};drawBG();mkPanel();mkSign();mkCeil();CBP=ctx.createPattern(CBT,'repeat');try{if(typeof edLayout==='function')edLayout()}catch(e){}}
 addEventListener('resize',function(){clearTimeout(resize.t);resize.t=setTimeout(resize,120)});addEventListener('orientationchange',function(){setTimeout(resize,300)});
 var last=0,acc=0,FR=[],paused=false,titleOn=true;
 function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:16.7);last=ts;FR.push(dt);if(FR.length>120)FR.shift();decShk(dt/1000);

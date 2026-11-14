@@ -106,8 +106,8 @@ function mkEl(tag,id,cls,html,parent){var e=document.createElement(tag);if(id)e.
 var edTop=mkEl('div','edTop'),edPal=mkEl('div','edPal'),edMore=mkEl('div','edMore'),edTools=mkEl('div','edTools'),edHint=mkEl('div','edHint','mk'),edToast=mkEl('div','edToast','mk');
 edPal.addEventListener('pointerdown',function(e){e.stopPropagation()});edTop.addEventListener('pointerdown',function(e){e.stopPropagation()});edMore.addEventListener('pointerdown',function(e){e.stopPropagation()});
 /* v1.9.0: full-screen builder. Slim top bar (over the ceiling, never the box) + toy shelf on the left (over the crowd/table, never the box) + a More menu that closes itself. */
-edTop.innerHTML='<div class="grp"><button class="tag cb mk" id="edBack">◀ Back</button><button class="tag cb mk off" id="edUndo" aria-label="Undo">↶ Undo</button></div>'+
- '<div class="grp"><button class="tag mk dadb" id="edDad" aria-label="Challenge Dad">📣 Dad</button><button class="tag mk boom" id="edBlow">💥 Blow it up!</button><button class="tag mk go" id="edTest">▶ Test it!</button><button class="tag cb mk" id="edMoreB" aria-label="More">☰ More</button></div>';
+edTop.innerHTML='<div class="grp"><button class="tag cb mk" id="edBack" aria-label="Back">◀<span class="lbl">&nbsp;Back</span></button><button class="tag cb mk off" id="edUndo" aria-label="Undo">↶<span class="lbl">&nbsp;Undo</span></button></div>'+
+ '<div class="grp"><button class="tag mk dadb" id="edDad" aria-label="Challenge Dad">📣<span class="lbl">&nbsp;Dad</span></button><button class="tag mk boom" id="edBlow" aria-label="Blow it up!">💥<span class="lbl">&nbsp;Blow it up!</span></button><button class="tag mk go" id="edTest" aria-label="Test it!">▶<span class="lbl">&nbsp;Test it!</span></button><button class="tag cb mk" id="edMoreB" aria-label="More">☰<span class="lbl">&nbsp;More</span></button></div>';
 edMore.innerHTML='<button class="tag cb mk wide" id="edName">✏️ My Level</button><button class="tag cb mk" id="edDice" aria-label="Random name">🎲 New name</button><button class="tag cb mk" id="edSave">💾 Save</button>'+
  '<button class="tag cb mk" id="edHole">🕳️ Hole: Medium</button><button class="tag cb mk" id="edMove">↕️ Moving: off</button><button class="tag cb mk" id="edClear">🧹 Clear all</button>'+
  '<button class="tag cb mk" id="edSet">🔊 Sounds</button><button class="tag cb mk" id="edLink" aria-label="Share link for grown-ups">🔗 Share link</button><button class="tag mk dadb wide" id="edDad2">📣 Challenge Dad</button><button class="tag cb mk wide" id="edMoreX">✖ Close</button>';
@@ -167,11 +167,11 @@ function edOn(){return edPal&&edPal.style.display==='flex'}
 function barBot(){try{if(edTop.style.display==='flex'){var b=0;[].forEach.call(edTop.querySelectorAll('.tag'),function(x){b=Math.max(b,x.getBoundingClientRect().bottom)});return b}}catch(e){}return 0}
 function shelfR(){try{if(edOn())return edPal.getBoundingClientRect().right}catch(e){}return 0}
 /* shelf sits left of the box's front panel (world x~415) so it never covers build space */
-function edLayout(){if(!edOn())return;var bb=Math.round(barBot()||70),top=bb+8,sl=(parseFloat(getComputedStyle(edPal).left)||6),w=Math.round(Math.max(240,Math.min(360,OX+415*S-sl-8)));
- edPal.style.top=top+'px';edPal.style.width=w+'px';edPal.style.maxHeight=Math.max(200,CH-top-8)+'px';
+function edLayout(){if(!edOn())return;var bb=Math.round(barBot()||70),top=bb+8,sl=(parseFloat(getComputedStyle(edPal).left)||6),ph=Math.min(CW,CH)<=500,w=Math.round(ph?Math.max(170,Math.min(230,OX+415*S-sl-6)):Math.max(240,Math.min(360,OX+415*S-sl-8)));
+ edPal.style.top=top+'px';edPal.style.width=w+'px';edPal.style.maxHeight=Math.max(ph?120:200,CH-top-(ph?4+sai('bottom'):8))+'px';
  var r=sl+w,cx=OX+937*S;edHint.style.left=Math.round(Math.max(r+10+Math.min(CW*.3,280),cx))+'px';edHint.style.top=top+4+'px';edHint.style.maxWidth=Math.round(Math.max(200,CW-r-30))+'px';
  if(edMore.style.display==='grid')placeMore();placeTools()}
-function placeMore(){var b=$('edMoreB').getBoundingClientRect();edMore.style.top=Math.round(b.bottom+8)+'px';edMore.style.right=Math.max(8,Math.round(CW-b.right))+'px'}
+function placeMore(){var b=$('edMoreB').getBoundingClientRect();edMore.style.top=Math.round(b.bottom+8)+'px';edMore.style.maxHeight=Math.max(150,CH-b.bottom-16-sai('bottom'))+'px';edMore.style.right=Math.max(8,Math.round(CW-b.right))+'px'}
 function moreOn(on){if(on==null)on=edMore.style.display!=='grid';edMore.style.display=on?'grid':'none';$('edMoreB').classList.toggle('on',on);if(on){placeMore();updPal()}}
 function openEditor(lv){aInit();resetPlay();if(lv||(!ED.items.length&&!ED.id))ED.hist=[];titleOn=false;$('title').classList.add('off');if(!edPal.children.length)buildPal();
  if(lv){ED.items=lv.items.map(function(it){var o={t:it.t,x:it.x,y:it.y,a:it.a||0,col:it.col};if(it.t==='portal'){o.pr=it.pr|0;if(it.d!=null)o.d=it.d}return fit(o)});ED.hole={y1:lv.hole.y1,sz:lv.hole.sz,mv:!!lv.hole.mv};ED.name=lv.name;ED.id=lv.id||null}

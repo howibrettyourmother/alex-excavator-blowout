@@ -46,10 +46,20 @@ function dqStatus(){if(!DQ.cur||!$('dadcel').classList.contains('on'))return;var
 function dqFlush(){if(DQ.busy)return;var q=dqList();if(!q.length){dqStatus();return}
  var wait=(+lsG(DLK,0)||0)+DCAP-Date.now();if(wait>0){clearTimeout(DQ.t);DQ.t=setTimeout(dqFlush,Math.min(wait,DCAP)+60);dqStatus();return}
  if(navigator.onLine===false){dqStatus();return}
- var m=q[0];DQ.busy=true;lsS(DLK,Date.now());
- var done=function(ok){DQ.busy=false;var q2=dqList();if(ok)q2=q2.filter(function(x){return x.p.cid!==m.p.cid});else q2.forEach(function(x){if(x.p.cid===m.p.cid){x.fail=(x.fail||0)+1}});lsS(DQK,q2);dqStatus();
+ var m=q.filter(function(x){return !x.lo})[0]||q[0];DQ.busy=true;lsS(DLK,Date.now());
+ var done=function(ok){DQ.busy=false;if(ok)sentMark(m.p);var q2=dqList();if(ok)q2=q2.filter(function(x){return x.p.cid!==m.p.cid});else q2.forEach(function(x){if(x.p.cid===m.p.cid){x.fail=(x.fail||0)+1}});lsS(DQK,q2);dqStatus();
   if(ok&&m.p.cid===DQ.cur)try{SFX.ok()}catch(e){}if(q2.length){clearTimeout(DQ.t);DQ.t=setTimeout(dqFlush,ok?DCAP+60:60000)}};
  try{fetch(DADURL,{method:'POST',body:JSON.stringify(m.p),cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'}).then(function(r){done(!!(r&&r.ok))},function(){done(false)})}catch(e){done(false)}}
+/* ---------- v1.11.0: beat the 12h ntfy expiry. The sender re-publishes un-acked challenges (same cid) when the game opens. ---------- */
+var DSTK='aeb_dadsent',H10=10*3600e3,D7=7*24*3600e3;
+function sentList(){var a=lsG(DSTK,[]);return Array.isArray(a)?a:[]}
+function sentMark(p){var a=sentList(),now=Date.now(),its=p.items||(p.code?[p]:[]);its.forEach(function(it){var e=null;a.forEach(function(x){if(x.cid===it.cid)e=x});
+ if(!e){e={cid:it.cid,p:{v:1,code:it.code,name:it.name,score:it.score,kid:it.kid,cid:it.cid},first:now,acked:0};a.push(e)}e.lastPub=now});lsS(DSTK,a.slice(-40))}
+function dadRepub(){var now=Date.now(),a=sentList().filter(function(x){return now-(x.first||0)<D7});lsS(DSTK,a);
+ var due=a.filter(function(x){return !x.acked&&now-(x.lastPub||0)>H10}).map(function(x){return x.p});if(!due.length)return 0;
+ var q=dqList().filter(function(x){return !(x.lo&&x.p.t==='re')});q.push({lo:1,p:{v:1,t:'re',from:DEV,cid:'r'+rid(9),items:due},at:now});lsS(DQK,q.slice(-20));dqFlush();return due.length}
+function dadAck(cid){if(!cid)return;var q=dqList();q.push({lo:1,p:{v:1,t:'played',cid:cid,from:DEV},at:Date.now()});lsS(DQK,q.slice(-20));dqFlush()}
+setTimeout(dadRepub,2500);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(dadRepub,1500)});
 function dadChallenge(lv){aInit();var bst=0;try{bst=lvBest(lv)||0}catch(e){}var code=enc(lv.items,lv.hole,lv.name,bst),nm=cleanName(lv.name)||'My Level';
  var q=dqList(),ex=null;q.forEach(function(x){if(x.p.code===code)ex=x});
  if(!ex){ex={p:{v:1,code:code,name:nm,score:bst,kid:sndKid(),from:DEV,cid:rid(10)},at:Date.now()};q.push(ex);lsS(DQK,q.slice(-20))}
@@ -66,9 +76,10 @@ function inbList(){var a=lsG(DIK,[]);return Array.isArray(a)?a:[]}
 function tally(){var t={alex:0,dad:0,tie:0};inbList().forEach(function(x){if(x.res&&t[x.res]!=null)t[x.res]++});return t}
 function inbPoll(){if(INB.busy||navigator.onLine===false)return;INB.busy=true;var since=lsG(DSK,null)||'12h';
  try{fetch(DADURL+'/json?poll=1&since='+encodeURIComponent(since),{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){var a=inbList(),ids={},last=null,add=0;a.forEach(function(x){ids[x.id]=1;if(x.cid)ids['c:'+x.cid]=1});
-  String(t).split('\n').forEach(function(ln){if(!ln.trim())return;try{var m=JSON.parse(ln);if(m.event!=='message'||!m.id)return;last=m.id;if(ids[m.id])return;var p=JSON.parse(m.message);
-   if(!p||typeof p.code!=='string'||p.from===DEV||(p.cid&&ids['c:'+p.cid]))return;var lv=dec(p.code);if(!lv)return;
-   a.push({id:m.id,time:+m.time||0,cid:p.cid||'',code:p.code,name:cleanName(p.name)||lv.name||'Mystery Level',score:Math.max(0,p.score|0)||(lv.best|0),kid:p.kid==='zoe'?'zoe':'alex',played:0,res:null});ids[m.id]=1;if(p.cid)ids['c:'+p.cid]=1;add++}catch(e){}});
+  String(t).split('\n').forEach(function(ln){if(!ln.trim())return;try{var m=JSON.parse(ln);if(m.event!=='message'||!m.id)return;last=m.id;if(ids[m.id])return;var p=JSON.parse(m.message);if(!p)return;
+   if(p.t==='played'){if(p.cid){var sl=sentList(),hit=0;sl.forEach(function(x){if(x.cid===p.cid&&!x.acked){x.acked=Date.now();hit=1}});if(hit)lsS(DSTK,sl)}return}
+   if(p.from===DEV)return;(Array.isArray(p.items)?p.items:[p]).forEach(function(it,j){if(!it||typeof it.code!=='string'||(it.cid&&ids['c:'+it.cid]))return;var lv=dec(it.code);if(!lv)return;var id=p.items?m.id+':'+j:m.id;
+    a.push({id:id,time:+m.time||0,cid:it.cid||'',code:it.code,name:cleanName(it.name)||lv.name||'Mystery Level',score:Math.max(0,it.score|0)||(lv.best|0),kid:it.kid==='zoe'?'zoe':'alex',played:0,res:null});ids[id]=1;if(it.cid)ids['c:'+it.cid]=1;add++})}catch(e){}});
   if(last)lsS(DSK,last);lsS(DIK,a.slice(-60));INB.busy=false;inbBadge();if(add&&!$('title').classList.contains('off'))try{SFX.pop()}catch(e){}}).catch(function(){INB.busy=false})}catch(e){INB.busy=false}}
 function inbBadge(){var b=$('chBan');if(!b)return;var a=inbList(),nw=a.filter(function(x){return !x.played});
  if(!a.length){b.style.display='none';return}b.style.display='flex';b.classList.toggle('new',nw.length>0);b.classList.toggle('old',!nw.length);
@@ -82,7 +93,7 @@ function chlOpen(){aInit();var a=inbList().slice().reverse(),t=tally(),h='';$('c
 $('chBan').addEventListener('click',function(){SFX.click();chlOpen()});
 $('chlX').addEventListener('click',function(){SFX.click();$('chl').classList.remove('on')});
 $('chRows').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=inbList(),x=null;a.forEach(function(o){if(o.id===b.dataset.id)x=o});if(!x)return;var lv=dec(x.code);if(!lv){SFX.no();return}
- if(!lv.best&&x.score)lv.best=x.score;x.played=x.played||Date.now();lsS(DIK,a);inbBadge();SFX.click();$('chl').classList.remove('on');playCustom(lv,{challenge:true,inb:x.id})});
+ if(!lv.best&&x.score)lv.best=x.score;if(!x.played)dadAck(x.cid);x.played=x.played||Date.now();lsS(DIK,a);inbBadge();SFX.click();$('chl').classList.remove('on');playCustom(lv,{challenge:true,inb:x.id})});
 /* play hooks: remember which inbox challenge is being played, and score it on a win */
 var playCustom0=playCustom;playCustom=function(lv,o){playCustom0(lv,o);CUS.inb=(o&&o.inb)||null};
 var customWon0=customWon;customWon=function(){var n=CUS.on?stats.throws-CUS.th0:0,id=CUS.inb,lv=CUS.lv||{};customWon0();var r=$('dadRes');if(!r)return;if(!id||!CUS.on){r.style.display='none';return}
@@ -96,5 +107,5 @@ var customWon0=customWon;customWon=function(){var n=CUS.on?stats.throws-CUS.th0:
 /* poll on load, whenever the home screen comes back, and every 60s while it's showing */
 var chWasT=false;setInterval(function(){var tv=!$('title').classList.contains('off');if(tv&&!chWasT)inbPoll();chWasT=tv},1000);
 setInterval(function(){if(!$('title').classList.contains('off'))inbPoll()},60000);setTimeout(function(){inbBadge();inbPoll()},800);
-window.EBDAD={q:dqList,inb:inbList,tally:tally,poll:inbPoll,flush:dqFlush,dev:function(){return DEV},send:function(lv){dadChallenge(lv||edSnapshot());return DQ.cur},list:chlOpen,
+window.EBDAD={sent:sentList,repub:dadRepub,q:dqList,inb:inbList,tally:tally,poll:inbPoll,flush:dqFlush,dev:function(){return DEV},send:function(lv){dadChallenge(lv||edSnapshot());return DQ.cur},list:chlOpen,
  cap:function(ms){if(ms!=null)DCAP=ms;return DCAP},res:function(n){var x=null;inbList().forEach(function(o){if(o.id===n)x=o});return x}};
