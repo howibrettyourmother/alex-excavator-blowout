@@ -290,8 +290,10 @@ function toyHit(b,rv,sp){if(b.kind==='goat'&&gt-b.hitT<GOATL-.08){b.lastHit=gt;r
   for(var j=0;j<n;j++){var a=-PI/2+(rnd()-.5)*1.3,sp2=420+rnd()*380;emit({k:'ss',x:x+3,y:y-b.sh/2-4,vx:Math.cos(a)*sp2,vy:Math.sin(a)*sp2,m:1.4+rnd()*.7,c:cols[j%6],ph:rnd()*6})}}}
 /* ===== v1.6.0 portal pair. Pure geometry, no bodies: also runs inside the shot solver + helper sims ===== */
 /* v1.6.4: both ends of a pair share a color + a big number 1-4 (pair index from pr / share-code order, so old codes keep the same pairing). */
-var PORT=[],PCOL=['#ff7a12','#2480ff','#1ec94a','#b44dff'],PTN=[0,0],PLINK=null;
-function pCol(k){return PCOL[(k>>1)&3]}
+/* v1.6.5: numbers, dotted partner line, and the teleport pulse are builder-only. Play keeps matching colors, softened, plus the 1.6.3 exit arrows. */
+var PORT=[],PCOL=['#ff7a12','#2480ff','#1ec94a','#b44dff'],PSOFT=['#e0914a','#5a9ad4','#55b56e','#9a7cc8'],PTN=[0,0],PLINK=null;
+function pEd(){return state==='edit'}
+function pCol(k,soft){return (soft?PSOFT:PCOL)[(k>>1)&3]}
 function pNo(k){return ((k>>1)&3)+1}
 function linkPair(k){PLINK={p:(k>>1)&3,t:gt}}
 function inPortal(p,q){var c=Math.cos(-q.a),s=Math.sin(-q.a),dx=p.x-q.x,dy=p.y-q.y,lx=dx*c-dy*s,ly=dx*s+dy*c;return lx*lx/900+ly*ly/2704<1}
@@ -308,20 +310,20 @@ function drawPArrow(g,q,col,t,ed){if(q.d==null){if(!ed)return;var p=arrowAt(q);g
  var a=q.d*PI/4,pu=ed?1+.06*Math.sin(t*5):1;g.save();g.translate(q.x,q.y);g.rotate(a);g.scale(pu,pu);g.lineJoin='round';g.beginPath();g.moveTo(34,-9);g.lineTo(62,-9);g.lineTo(62,-22);g.lineTo(92,0);g.lineTo(62,22);g.lineTo(62,9);g.lineTo(34,9);g.closePath();
  g.fillStyle='#fff';g.strokeStyle=col;g.lineWidth=6;g.stroke();g.fill();g.restore()}
 function vwoop(){tone(240,.26,{to:950,type:'sine',vol:.16});tone(480,.2,{to:1600,type:'triangle',vol:.05,at:.05})}
-function drawPortalShape(g,x,y,a,col,t,sc){g.save();g.translate(x,y);g.rotate(a);if(sc)g.scale(sc,sc);
- g.shadowColor=col;g.shadowBlur=18;g.fillStyle='#120a24';g.strokeStyle=col;g.lineWidth=7;g.beginPath();g.ellipse(0,0,26,48,0,0,2*PI);g.fill();g.stroke();g.shadowBlur=0;
- g.lineWidth=3;g.globalAlpha=.85;for(var i=0;i<3;i++){g.strokeStyle=i%2?'#fff':col;g.beginPath();var r=1-i*.28;g.ellipse(0,0,22*r,42*r,0,t*(3+i)+i*2,t*(3+i)+i*2+3.6);g.stroke()}g.globalAlpha=1;g.restore()}
+function drawPortalShape(g,x,y,a,col,t,sc,soft){g.save();g.translate(x,y);g.rotate(a);if(sc)g.scale(sc,sc);
+ g.shadowColor=col;g.shadowBlur=soft?10:18;g.fillStyle='#120a24';g.strokeStyle=col;g.lineWidth=soft?6:7;g.beginPath();g.ellipse(0,0,26,48,0,0,2*PI);g.fill();g.stroke();g.shadowBlur=0;
+ g.lineWidth=3;g.globalAlpha=soft?.7:.85;for(var i=0;i<3;i++){g.strokeStyle=i%2?'#fff':col;g.beginPath();var r=1-i*.28;g.ellipse(0,0,22*r,42*r,0,t*(3+i)+i*2,t*(3+i)+i*2+3.6);g.stroke()}g.globalAlpha=1;g.restore()}
 function drawPNum(g,x,y,n,sc){g.save();g.translate(x,y);if(sc&&sc!==1)g.scale(sc,sc);g.lineJoin='round';g.lineCap='round';
  g.fillStyle='rgba(8,4,12,.72)';g.beginPath();g.ellipse(0,1,16,20,0,0,2*PI);g.fill();
  if(n===1){function stem(col,w){g.strokeStyle=col;g.lineWidth=w;g.beginPath();g.moveTo(-11,-6);g.lineTo(1,-18);g.lineTo(1,15);g.moveTo(-11,16);g.lineTo(13,16);g.stroke()}stem('#1a0a08',13);stem('#fff',7)}
  else{g.font='900 40px '+MK;g.textAlign='center';g.textBaseline='middle';g.lineWidth=9;g.strokeStyle='#1a0a08';g.strokeText(n,0,2);g.fillStyle='#fff';g.fillText(n,0,2)}g.restore()}
-function pairFade(p){var A=PORT[p*2],B=PORT[p*2+1],f=0;if(A&&A.fl!=null)f=Math.max(f,clamp(1-(gt-A.fl)/.55,0,1));if(B&&B.fl!=null)f=Math.max(f,clamp(1-(gt-B.fl)/.55,0,1));return f}
-function pairLinked(p){if(PLINK&&PLINK.p===p&&gt-PLINK.t<1.45)return clamp(1-(gt-PLINK.t-1.05)/.4,0,1);if(state==='edit'&&ED.drag&&!ED.drag.hole){var it=ED.items[ED.drag.i];if(it&&it.t==='portal'&&((it.pr|0)>>1)===p)return 1}return pairFade(p)}
+function pairLinked(p){if(!pEd())return 0;if(PLINK&&PLINK.p===p&&gt-PLINK.t<1.45)return clamp(1-(gt-PLINK.t-1.05)/.4,0,1);if(ED.drag&&!ED.drag.hole){var it=ED.items[ED.drag.i];if(it&&it.t==='portal'&&((it.pr|0)>>1)===p)return 1}return 0}
 function drawPairLine(g,A,B,col,t,al){if(!A||!B||al<=0)return;g.save();g.globalAlpha=al;g.lineCap='round';g.setLineDash([16,12]);g.lineDashOffset=-t*90;g.strokeStyle='#fff';g.lineWidth=10;g.beginPath();g.moveTo(A.x,A.y);g.lineTo(B.x,B.y);g.stroke();g.strokeStyle=col;g.lineWidth=6;g.stroke();g.restore()}
-function drawPortals(g,t){var p;for(p=0;p<4;p++){var al=pairLinked(p);if(al)drawPairLine(g,PORT[p*2],PORT[p*2+1],PCOL[p],t,al)}
- for(var k=0;k<PORT.length;k++){var q=PORT[k];if(!q)continue;var f=q.fl!=null?clamp(1-(gt-q.fl)/.55,0,1):0,sc=1+.42*f,col=pCol(k);
-  if(f>0){g.save();g.translate(q.x,q.y);g.rotate(q.a);g.globalAlpha=.3+.7*f;g.strokeStyle='#fff';g.shadowColor=col;g.shadowBlur=28;g.lineWidth=4+14*f;g.beginPath();g.ellipse(0,0,28+8*f,50+10*f,0,0,2*PI);g.stroke();g.restore()}
-  drawPortalShape(g,q.x,q.y,q.a,col,t,sc);drawPNum(g,q.x,q.y,pNo(k),sc);drawPArrow(g,q,col,t,state==='edit')}}
+function drawPortals(g,t){var ed=pEd(),p;
+ if(ed){for(p=0;p<4;p++){var al=pairLinked(p);if(al)drawPairLine(g,PORT[p*2],PORT[p*2+1],PCOL[p],t,al)}}
+ for(var k=0;k<PORT.length;k++){var q=PORT[k];if(!q)continue;var col=pCol(k,!ed),sc=1;
+  if(ed){var f=q.fl!=null?clamp(1-(gt-q.fl)/.55,0,1):0;sc=1+.42*f;if(f>0){g.save();g.translate(q.x,q.y);g.rotate(q.a);g.globalAlpha=.3+.7*f;g.strokeStyle='#fff';g.shadowColor=col;g.shadowBlur=28;g.lineWidth=4+14*f;g.beginPath();g.ellipse(0,0,28+8*f,50+10*f,0,0,2*PI);g.stroke();g.restore()}}
+  drawPortalShape(g,q.x,q.y,q.a,col,t,sc,!ed);if(ed)drawPNum(g,q.x,q.y,pNo(k),sc);drawPArrow(g,q,col,t,ed)}}
 /* ===== v1.6.1: undo, blow-up-my-level, trampoline, rubber chicken + silly pieces (all sounds synthesized, mute-aware, 400ms throttle, no screen shake) ===== */
 ED.hist=[];
 function edState(){return JSON.stringify({items:edSnapshot().items,hole:{y1:ED.hole.y1,sz:ED.hole.sz,mv:!!ED.hole.mv}})}
@@ -489,7 +491,7 @@ ptTest:function(k,vx,vy){var q=PORT[k];if(!q)return null;var b=mkBall(q.x,q.y);S
  fanDev:function(a,p){var r1=simBall(a,p,true),sv=FANL;FANL=[];var r0=simBall(a,p,true);FANL=sv;var m=0,n=Math.min(r0.path.length,r1.path.length,40);for(var i=0;i<n;i++)m=Math.max(m,Math.hypot(r0.path[i].x-r1.path[i].x,r0.path[i].y-r1.path[i].y));return{dev:Math.round(m),win0:r0.res,win1:r1.res}},
  fanF:function(f,l){if(f!=null)FAN_F=f;if(l!=null)FAN_L=l;return[FAN_F,FAN_L]},edCode:function(c){var lv=dec(c);if(lv){ED.id=null;openEditor(lv)}return !!lv},st:function(){return{state:state,items:ED.items.length,sel:ED.sel,hole:ED.hole,name:ED.name,id:ED.id,cus:CUS.on,ch:CUS.challenge,levels:lvList().length}},
  items:function(){return JSON.parse(JSON.stringify(ED.items))},enc:function(){return enc(ED.items,ED.hole,ED.name)},dec:dec,url:function(){return shareURL(enc(ED.items,ED.hole,ED.name))},
- w2s:function(x,y){return{x:OX+x*S,y:OY+y*S}},sb:function(a,p){return simBall(a,p)},ports:function(){return{n:PORT.length,real:PTN[0],sim:PTN[1],p:PORT.map(function(q,k){return q?{x:q.x,y:q.y,a:q.a,fl:q.fl,d:q.d,col:pCol(k),n:pNo(k)}:null}),link:PLINK}},toys:function(){return{toys:statics.concat(debris).filter(function(b){return b.toy}).map(function(b){return{k:b.kind,last:+b.lastHit.toFixed(2),x:b.position.x,y:b.position.y,a:+b.angle.toFixed(2)}}),ss:sprayCount(),P:P.length,shk:shk,gt:gt}},save:function(){return edSave(true)},hist:function(){return ED.hist.length},pg:function(){return palPg},lvs:function(){return lvList()}};
+ w2s:function(x,y){return{x:OX+x*S,y:OY+y*S}},sb:function(a,p){return simBall(a,p)},ports:function(){return{n:PORT.length,real:PTN[0],sim:PTN[1],ed:pEd(),p:PORT.map(function(q,k){return q?{x:q.x,y:q.y,a:q.a,fl:q.fl,d:q.d,col:pCol(k,!pEd()),n:pNo(k)}:null}),link:pEd()?PLINK:null}},toys:function(){return{toys:statics.concat(debris).filter(function(b){return b.toy}).map(function(b){return{k:b.kind,last:+b.lastHit.toFixed(2),x:b.position.x,y:b.position.y,a:+b.angle.toFixed(2)}}),ss:sprayCount(),P:P.length,shk:shk,gt:gt}},save:function(){return edSave(true)},hist:function(){return ED.hist.length},pg:function(){return palPg},lvs:function(){return lvList()}};
 
 /* v1.6.2 recorded CC0 samples (CREDITS.md). Each synth sound stays as the automatic fallback if its file fails to load. */
 smpReg('chick',['chick1.mp3','chick2.mp3','chick3.mp3']);/* v1.6.3: the Screaming Sheep clip, every hit (owner's request; not CC0, see CREDITS.md) */var GOATL=1.8;smpReg('goat',['sheep_scream.mp3']);smpReg('burp',['burp1.mp3','burp2.mp3']);

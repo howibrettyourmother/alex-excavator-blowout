@@ -90,3 +90,7 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 - Each portal pair now shares one high-contrast color: orange (1), blue (2), green (3), purple (4). Both ends of a pair use the same color, with a big matching number on each portal. Pair color and number follow the pair's place in a save or share code, so they stay the same when you reload. Old codes still load.
 - In the builder, placing or tapping a portal briefly draws an animated dotted line to its partner. Dragging a portal keeps the line up so you can see where it goes.
 - During play, both ends pulse and flash when the ball goes in, with a dotted line to the exit. Exit arrows are unchanged.
+
+## v1.6.5
+- Portal matching cues (big numbers, dotted partner line, bright pair colors) stay in the builder, where they are needed.
+- In play (built-in levels, Test it!, and shared levels) the numbers, dotted line, and teleport pulse/flash are gone. Each pair still shares a color, softened to sit closer to the original portal look. Exit arrows are unchanged from 1.6.3.
