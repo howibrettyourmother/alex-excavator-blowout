@@ -85,3 +85,8 @@ kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps 
 
 ## v1.6.3
 - The screaming goat now plays the Screaming Sheep scream on every hit (see CREDITS.md). Its head is thrown back with the mouth wide open, held for the full 1.8 s scream. Hits during a scream don't restart it.
+
+## v1.6.4: portal pairs are easy to match
+- Each portal pair now shares one high-contrast color: orange (1), blue (2), green (3), purple (4). Both ends of a pair use the same color, with a big matching number on each portal. Pair color and number follow the pair's place in a save or share code, so they stay the same when you reload. Old codes still load.
+- In the builder, placing or tapping a portal briefly draws an animated dotted line to its partner. Dragging a portal keeps the line up so you can see where it goes.
+- During play, both ends pulse and flash when the ball goes in, with a dotted line to the exit. Exit arrows are unchanged.
