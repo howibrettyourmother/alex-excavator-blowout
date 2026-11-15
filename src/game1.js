@@ -56,7 +56,7 @@ var SFX={
  whoosh:function(){noise(.55,{f:300,fto:3200,q:.6,vol:.3})},
  ok:function(){tone(784,.12,{type:'triangle',vol:.16});tone(1175,.2,{type:'triangle',vol:.16,at:.1})},
  no:function(){tone(300,.25,{type:'triangle',vol:.12,to:220})},
- stretch:function(p){if(lim('st',80))tone(180+p*420,.06,{type:'triangle',vol:.035})}
+ stretch:function(p){if(lim('st',120))tone(1400,.025,{type:'triangle',vol:.1})}
 };
 var engS=null;
 function engSnd(on){if(!AC)return;try{if(on&&!engS&&aok()){if(typeof playLoop==='function'&&playLoop('engine',.18)){engS={sample:1};return}var o=AC.createOscillator(),l=AC.createOscillator(),lg=AC.createGain(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.value=50;l.frequency.value=11;lg.gain.value=9;l.connect(lg);lg.connect(o.frequency);f.type='lowpass';f.frequency.value=360;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.15,AC.currentTime+.3);o.connect(f);f.connect(g);g.connect(sfxBus);o.start();l.start();engS={o:o,l:l,g:g}}

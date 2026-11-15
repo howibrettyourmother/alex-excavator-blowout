@@ -864,7 +864,8 @@ function failPlay(){return memePlay(failPick(),2,.95)}
  SFX.fanfare=w('fanfare',SFX.fanfare,.9,null,true);SFX.boom=w('boom',SFX.boom,.95);SFX.thunk=w('thunk',SFX.thunk,.9);SFX.dump=w('dump',SFX.dump,.9);
  SFX.click=w('click',SFX.click,.8);SFX.beep=w('beep',SFX.beep,.7,null,true);SFX.whoosh=w('whoosh',SFX.whoosh,.8);SFX.ok=w('ok',SFX.ok,.85,null,true);SFX.no=w('no',SFX.no,.85);
  var tick0=SFX.tick;SFX.tick=function(i){if(!playSample('tick',.55))tick0(i)};
- var st0=SFX.stretch;SFX.stretch=function(p){if(!lim('st',80))return;if(!playSample('stretch',.12+.2*(p||0),null,.85+(p||0)*.4,0,true))tone(180+p*420,.06,{type:'triangle',vol:.035})};
+ /* v1.12.1: aiming uses a quiet short click (not the rubber-band creak), at most once every 120ms */
+ var st0=SFX.stretch;SFX.stretch=function(p){if(!lim('st',120))return;if(!playSample('click',.12,null,1,0,true))tone(1400,.025,{type:'triangle',vol:.1})};
  var hit0=SFX.hit;SFX.hit=function(mat,v){var a=clamp(v/16,.08,1);if(!lim(mat,50))return;var k={plate:'hit_plate',cup:'hit_cup',wrap:'hit_wrap',wall:'hit_wall',table:'hit_table'}[mat]||'hit_card';if(!playSample(k,.35+.6*a))SFX.hitS(mat,a);if(a>.7&&rnd()<.4)memePlay('hit',1,.85)};
  var aww0=SFX.aww;SFX.aww=function(){if(!failPlay())aww0()};
 })();

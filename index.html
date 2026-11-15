@@ -162,7 +162,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
  <div class="row"><button id="play" class="btn mk">▶ Play!</button></div>
  <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button><button id="tmodes" class="btn alt">🎮 Bonus Modes</button></div>
  <div id="how">Pull the ball back and let go (or flick it!) to throw it through the blue hole, past the junk, into the prize hole.</div>
- <div id="ld">v1.12.0-20261114</div>
+ <div id="ld">v1.12.1-20261115</div>
 </div>
 <script>/*!
  * matter-js 0.20.0 by @liabru
@@ -173,7 +173,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 <script>(function(){
 'use strict';
 var M=window.Matter,Engine=M.Engine,Bodies=M.Bodies,Body=M.Body,Composite=M.Composite,Events=M.Events,Sleeping=M.Sleeping;
-var VER='1.12.0-20261114';
+var VER='1.12.1-20261115';
 var W=1500,H=1000,FLOOR=880,TABLE=900,TOP=380,FX0=470,FX1=515,BX0=1360,BX1=1400,GAP0=549,GAP1=813,BR=21,LX=210,LY=724;
 var L1=330,L2=290,EXMIN=840,EXMAX=1290,EXPARK=1235;
 function $(id){return document.getElementById(id)}
@@ -228,7 +228,7 @@ var SFX={
  whoosh:function(){noise(.55,{f:300,fto:3200,q:.6,vol:.3})},
  ok:function(){tone(784,.12,{type:'triangle',vol:.16});tone(1175,.2,{type:'triangle',vol:.16,at:.1})},
  no:function(){tone(300,.25,{type:'triangle',vol:.12,to:220})},
- stretch:function(p){if(lim('st',80))tone(180+p*420,.06,{type:'triangle',vol:.035})}
+ stretch:function(p){if(lim('st',120))tone(1400,.025,{type:'triangle',vol:.1})}
 };
 var engS=null;
 function engSnd(on){if(!AC)return;try{if(on&&!engS&&aok()){if(typeof playLoop==='function'&&playLoop('engine',.18)){engS={sample:1};return}var o=AC.createOscillator(),l=AC.createOscillator(),lg=AC.createGain(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.value=50;l.frequency.value=11;lg.gain.value=9;l.connect(lg);lg.connect(o.frequency);f.type='lowpass';f.frequency.value=360;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.15,AC.currentTime+.3);o.connect(f);f.connect(g);g.connect(sfxBus);o.start();l.start();engS={o:o,l:l,g:g}}
@@ -2062,7 +2062,8 @@ function failPlay(){return memePlay(failPick(),2,.95)}
  SFX.fanfare=w('fanfare',SFX.fanfare,.9,null,true);SFX.boom=w('boom',SFX.boom,.95);SFX.thunk=w('thunk',SFX.thunk,.9);SFX.dump=w('dump',SFX.dump,.9);
  SFX.click=w('click',SFX.click,.8);SFX.beep=w('beep',SFX.beep,.7,null,true);SFX.whoosh=w('whoosh',SFX.whoosh,.8);SFX.ok=w('ok',SFX.ok,.85,null,true);SFX.no=w('no',SFX.no,.85);
  var tick0=SFX.tick;SFX.tick=function(i){if(!playSample('tick',.55))tick0(i)};
- var st0=SFX.stretch;SFX.stretch=function(p){if(!lim('st',80))return;if(!playSample('stretch',.12+.2*(p||0),null,.85+(p||0)*.4,0,true))tone(180+p*420,.06,{type:'triangle',vol:.035})};
+ /* v1.12.1: aiming uses a quiet short click (not the rubber-band creak), at most once every 120ms */
+ var st0=SFX.stretch;SFX.stretch=function(p){if(!lim('st',120))return;if(!playSample('click',.12,null,1,0,true))tone(1400,.025,{type:'triangle',vol:.1})};
  var hit0=SFX.hit;SFX.hit=function(mat,v){var a=clamp(v/16,.08,1);if(!lim(mat,50))return;var k={plate:'hit_plate',cup:'hit_cup',wrap:'hit_wrap',wall:'hit_wall',table:'hit_table'}[mat]||'hit_card';if(!playSample(k,.35+.6*a))SFX.hitS(mat,a);if(a>.7&&rnd()<.4)memePlay('hit',1,.85)};
  var aww0=SFX.aww;SFX.aww=function(){if(!failPlay())aww0()};
 })();
@@ -2986,7 +2987,7 @@ setupLevel(save.lv||0,true);requestAnimationFrame(frame);
 addEventListener('pagehide',persist);document.addEventListener('visibilitychange',function(){if(document.hidden){persist();drag=null}else{last=0}});
 })();
 </script>
-<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.12.0-20261114').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.12.1-20261115').catch(function(){})})}</script>
 <script>/*hub-home*/(function(){var own='alex',k;try{k=localStorage.kidsHub}catch(e){}if(k!=='zoe'&&k!=='alex')k=own;
 var u=k==='zoe'?'/doodle-and-zoe/':'/alex-games/',b=document.createElement('div');b.id='hubHome';b.setAttribute('role','button');b.setAttribute('aria-label','hold to go home');
 b.innerHTML='<svg width="38" height="38" viewBox="0 0 38 38" style="position:absolute;left:0;top:0;pointer-events:none"><circle cx="19" cy="19" r="16" fill="none" stroke="#ffd54a" stroke-width="4" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 19 19)"/></svg><span style="position:relative;pointer-events:none">🏠</span>';

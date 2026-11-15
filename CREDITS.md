@@ -113,7 +113,7 @@ The deferred premium real-sounds pass replaces the remaining synthesized one-sho
 - `sfx/dump.mp3` (0.28 s, mono 64 kbps): "Small cardboard box falling on mic" by cb9382, https://freesound.org/people/cb9382/sounds/875202/ (CC0) — trimmed 2.42-3.10 s
 - `sfx/click.mp3` (0.07 s, mono 64 kbps): "Soft UI Button Click" by Jummit, https://freesound.org/people/Jummit/sounds/528561/ (CC0) — trimmed 0.00-0.12 s
 - `sfx/beep.mp3` (0.42 s, mono 64 kbps): "truck backup beeps" by tambascot, https://freesound.org/people/tambascot/sounds/196567/ (CC0) — trimmed 1.12-1.55 s — one isolated backup beep, when the excavator rolls back
-- `sfx/stretch.mp3` (0.33 s, mono 64 kbps): "stretching a rubber band on a plastic box.mp3" by RossVanDerH, https://freesound.org/people/RossVanDerH/sounds/124756/ (CC0) — trimmed 8.08-8.42 s — a short rubber-band creak while pulling the sling
+- `sfx/stretch.mp3` (0.33 s, mono 64 kbps): "stretching a rubber band on a plastic box.mp3" by RossVanDerH, https://freesound.org/people/RossVanDerH/sounds/124756/ (CC0) — trimmed 8.08-8.42 s — unused as of v1.12.1 (aiming now uses a quiet `click.mp3` tick instead of this rubber-band creak)
 - `sfx/duck.mp3` (0.37 s, mono 64 kbps): "Rubber duck toy squeaking.wav" by panmaterac, https://freesound.org/people/panmaterac/sounds/201285/ (CC0) — trimmed 1.78-2.20 s
 - `sfx/spin.mp3` (0.90 s, mono 64 kbps): "Rotating fidget spinner on wooden table v1" by martin-bn, https://freesound.org/people/martin-bn/sounds/500315/ (CC0) — trimmed 1.64-2.55 s
 - `sfx/punch.mp3` (0.18 s, mono 64 kbps): "Punch Hit 1.wav" by joe_anderson22, https://freesound.org/people/joe_anderson22/sounds/439747/ (CC0) — trimmed 0.14-0.55 s — glove thud fallback when the Tom scream is gated

@@ -174,3 +174,6 @@ Extras:
 - Real construction sounds: diesel rev, backup beeper, hydraulic hiss and a debris crash on BLOWOUT.
 
 Every clip has its own cooldown and goes through the existing one-sting-at-a-time gate, so sounds don't pile up. Mute, the Sounds slider and the audio guard all apply. Sources are in CREDITS.md.
+
+## v1.12.1: quieter aim sound
+Pulling the sling no longer plays the rubber-band creak (`stretch.mp3`). That clip was 0.33 s and retriggered every 80 ms, so it stacked while you aimed. Aiming now plays a very short, quiet click (`click.mp3` at volume 0.12, or a soft synthesized tick if the sample is missing), at most once every 120 ms. Launch, hit, blowout and miss meme sounds are unchanged.
