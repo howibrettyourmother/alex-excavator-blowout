@@ -1,5 +1,5 @@
 {
-  "_help": "Theme-song drop-in config for Excavator Blowout. Steps: /workspace/kids_audio/excavator_theme/DROP_IN.md. Baked into index.html at build time (python3 src/build.py). A file that is missing from music/ is simply skipped (silence, no errors). v1.9.1: one approved file (alex_v4/theme_intro_v2) serves as sting AND full song. titleSong=true: the sting keeps playing over the title screen to its hard ending (no fade at the menu); if the intro ran without audio it starts from the top once audio unlocks. fullLoop=false: the song has a hard ending, so it is never looped; no loop file.",
+  "_help": "Theme music: original approved intro sting (theme_full) for the logo smash; new looping BGM in theme_loop.mp3 (Nov 15 2026).",
   "gain": 0.55,
   "sting": {
     "file": "theme_full.mp3",
@@ -7,9 +7,9 @@
     "gain": 0.85
   },
   "loop": {
-    "file": "",
-    "loopStart": 0.0,
-    "loopEnd": 0.0,
+    "file": "theme_loop.mp3",
+    "loopStart": 48.0,
+    "loopEnd": 96.0,
     "gain": 1.0
   },
   "full": {
@@ -18,5 +18,5 @@
   },
   "titleSong": true,
   "fullLoop": false,
-  "source": "alex_v4/theme_intro_v2.mp3 (approved by Brett 2026-11-14), re-encoded 160 kbps CBR"
+  "source": "loop: ElevenLabs Music v2.5 instrumental, 48s seamless loop at -18 LUFS, triple-written for MP3 padding safety. sting/full: alex_v4/theme_intro_v2 (approved 2026-11-14)."
 }
