@@ -23,8 +23,9 @@
     ],
     "goat": [
       "sheep_scream.mp3",
-      "meme-cc0/goat_baa.mp3",
-      "meme-cc0/goat_bleat.mp3"
+      "sheep_scream_hi.mp3",
+      "sheep_scream_lo.mp3",
+      "sheep_scream_short.mp3"
     ],
     "banana": [
       "badumtss.mp3",

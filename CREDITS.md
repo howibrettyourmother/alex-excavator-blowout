@@ -241,3 +241,9 @@ The intro artwork, the excavator and the logo are all drawn in code.
 
 ## v1.9.1 theme song
 - `music/theme_full.mp3`: "Excavator Blowout" intro theme ("Here comes Alex! … Go, Alex, go!"). AI-generated for the family by PM (ElevenLabs Music via fal), approved by Brett on 2026-11-14. Made for this family's game; not a third-party recording.
+
+## v1.11.1: the goat always screams
+At Brett's request, the goat's sound pool now has only scream takes; the two bleat clips (`meme-cc0/goat_baa.mp3`, `meme-cc0/goat_bleat.mp3`) were removed from it. Three light variants of the Screaming Sheep clip, made with ffmpeg from `sfx/sheep_scream.mp3` (same source and terms as above, family-only), keep it from sounding the same every time:
+- `sfx/sheep_scream_hi.mp3`: about 1.5 semitones higher, same length
+- `sfx/sheep_scream_lo.mp3`: about 1.5 semitones lower, same length
+- `sfx/sheep_scream_short.mp3`: trimmed to 1.46 s, slightly faster, with a fade-out

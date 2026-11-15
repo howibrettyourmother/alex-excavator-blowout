@@ -162,7 +162,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
  <div class="row"><button id="play" class="btn mk">▶ Play!</button></div>
  <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button><button id="tmodes" class="btn alt">🎮 Bonus Modes</button></div>
  <div id="how">Pull the ball back and let go (or flick it!) to throw it through the blue hole, past the junk, into the prize hole.</div>
- <div id="ld">v1.11.0-20261114</div>
+ <div id="ld">v1.11.1-20261114</div>
 </div>
 <script>/*!
  * matter-js 0.20.0 by @liabru
@@ -173,7 +173,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 <script>(function(){
 'use strict';
 var M=window.Matter,Engine=M.Engine,Bodies=M.Bodies,Body=M.Body,Composite=M.Composite,Events=M.Events,Sleeping=M.Sleeping;
-var VER='1.11.0-20261114';
+var VER='1.11.1-20261114';
 var W=1500,H=1000,FLOOR=880,TABLE=900,TOP=380,FX0=470,FX1=515,BX0=1360,BX1=1400,GAP0=549,GAP1=813,BR=21,LX=210,LY=724;
 var L1=330,L2=290,EXMIN=840,EXMAX=1290,EXPARK=1235;
 function $(id){return document.getElementById(id)}
@@ -1897,7 +1897,7 @@ ptTest:function(k,vx,vy){var q=PORT[k];if(!q)return null;var b=mkBall(q.x,q.y);S
  w2s:function(x,y){return{x:OX+x*S,y:OY+y*S}},sb:function(a,p){return simBall(a,p)},ports:function(){return{n:PORT.length,real:PTN[0],sim:PTN[1],ed:pEd(),p:PORT.map(function(q,k){return q?{x:q.x,y:q.y,a:q.a,fl:q.fl,d:q.d,col:pCol(k,!pEd()),n:pNo(k)}:null}),link:pEd()?PLINK:null}},toys:function(){return{toys:statics.concat(debris).filter(function(b){return b.toy}).map(function(b){return{k:b.kind,last:+b.lastHit.toFixed(2),x:b.position.x,y:b.position.y,a:+b.angle.toFixed(2)}}),ss:sprayCount(),P:P.length,shk:shk,gt:gt}},save:function(){return edSave(true)},hist:function(){return ED.hist.length},pg:function(){return palTab},tab:function(n){if(n!=null)showTab(n);return palTab},left:leftOf,add:function(t,x,y,a){if(state!=='edit')openEditor();var it={t:t,x:x,y:y};if(PT[t].flip||PT[t].rot)it.a=a||0;fit(it);ED.items.push(it);edBuild();return ED.items.length},playLv:function(lv){playCustom(lv,{fromEd:true});return true},erupt:function(){var t=statics.filter(function(b){return b.kind==='paste'})[0];if(!t)return false;t.erupt=gt;t.hitT=gt;t.foamN=0;pasteBurst(t,false);return true},foam:function(){return FOAM.length},lvs:function(){return lvList()}};
 
 /* v1.6.2 recorded CC0 samples (CREDITS.md). Each synth sound stays as the automatic fallback if its file fails to load. */
-smpReg('chick',['chick1.mp3','chick2.mp3','chick3.mp3']);/* v1.6.3: the Screaming Sheep clip, every hit (owner's request; not CC0, see CREDITS.md) */var GOATL=1.8;smpReg('goat',['sheep_scream.mp3']);smpReg('burp',['burp1.mp3','burp2.mp3']);
+smpReg('chick',['chick1.mp3','chick2.mp3','chick3.mp3']);/* v1.6.3: the Screaming Sheep clip, every hit (owner's request; not CC0, see CREDITS.md) */var GOATL=1.8;/* v1.11.1: the goat ALWAYS screams (Brett): scream takes only, never a baa/bleat */smpReg('goat',['sheep_scream.mp3','sheep_scream_hi.mp3','sheep_scream_lo.mp3','sheep_scream_short.mp3']);smpReg('burp',['burp1.mp3','burp2.mp3']);
 smpReg('honk',['honk1.mp3','honk2.mp3']);smpReg('whee',['whee1.mp3','whee2.mp3']);smpReg('tramp',['tramp1.mp3']);smpReg('boing',['boing1.mp3']);
 smpReg('portal',['portal1.mp3','portal2.mp3']);smpReg('toot',['toot6.mp3','toot7.mp3','toot8.mp3']);smpReg('boom',['boom1.mp3']);
 smpReg('spray',['spray1.mp3']);smpReg('blower',['blower1.mp3']);smpReg('fail',['fail.mp3']);smpReg('jello',['jello.mp3']);
@@ -1937,8 +1937,9 @@ var PACK={
     ],
     "goat": [
       "sheep_scream.mp3",
-      "meme-cc0/goat_baa.mp3",
-      "meme-cc0/goat_bleat.mp3"
+      "sheep_scream_hi.mp3",
+      "sheep_scream_lo.mp3",
+      "sheep_scream_short.mp3"
     ],
     "banana": [
       "badumtss.mp3",
@@ -2919,7 +2920,7 @@ setupLevel(save.lv||0,true);requestAnimationFrame(frame);
 addEventListener('pagehide',persist);document.addEventListener('visibilitychange',function(){if(document.hidden){persist();drag=null}else{last=0}});
 })();
 </script>
-<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.11.0-20261114').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.11.1-20261114').catch(function(){})})}</script>
 <script>/*hub-home*/(function(){var own='alex',k;try{k=localStorage.kidsHub}catch(e){}if(k!=='zoe'&&k!=='alex')k=own;
 var u=k==='zoe'?'/doodle-and-zoe/':'/alex-games/',b=document.createElement('div');b.id='hubHome';b.setAttribute('role','button');b.setAttribute('aria-label','hold to go home');
 b.innerHTML='<svg width="38" height="38" viewBox="0 0 38 38" style="position:absolute;left:0;top:0;pointer-events:none"><circle cx="19" cy="19" r="16" fill="none" stroke="#ffd54a" stroke-width="4" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 19 19)"/></svg><span style="position:relative;pointer-events:none">🏠</span>';
