@@ -162,7 +162,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
  <div class="row"><button id="play" class="btn mk">▶ Play!</button></div>
  <div class="row small"><button id="lv1" class="btn alt">Start at Level 1</button><button id="tshelf" class="btn alt">🏆 Prize shelf</button><button id="tmodes" class="btn alt">🎮 Bonus Modes</button></div>
  <div id="how">Pull the ball back and let go (or flick it!) to throw it through the blue hole, past the junk, into the prize hole.</div>
- <div id="ld">v1.11.1-20261114</div>
+ <div id="ld">v1.12.0-20261114</div>
 </div>
 <script>/*!
  * matter-js 0.20.0 by @liabru
@@ -173,7 +173,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 <script>(function(){
 'use strict';
 var M=window.Matter,Engine=M.Engine,Bodies=M.Bodies,Body=M.Body,Composite=M.Composite,Events=M.Events,Sleeping=M.Sleeping;
-var VER='1.11.1-20261114';
+var VER='1.12.0-20261114';
 var W=1500,H=1000,FLOOR=880,TABLE=900,TOP=380,FX0=470,FX1=515,BX0=1360,BX1=1400,GAP0=549,GAP1=813,BR=21,LX=210,LY=724;
 var L1=330,L2=290,EXMIN=840,EXMAX=1290,EXPARK=1235;
 function $(id){return document.getElementById(id)}
@@ -555,7 +555,7 @@ var flying=[];
 function blowout(cb){if(!debris.length&&!statics.length&&!movers.length){cb();return}exStart();
  try{memePlay('dundundun',1,.95)}catch(e){}
  act({d:.5,ex:1120,tx:900,ty:TOP-230,ba:.3});
- act({d:.2,tx:880,ty:FLOOR-90,ba:1.5,end:function(){SFX.boom();shake(26);banner('BLOWOUT!');dust(880,FLOOR,14);
+ act({d:.2,tx:880,ty:FLOOR-90,ba:1.5,end:function(){SFX.boom();memeEv('crash');shake(26);banner('BLOWOUT!');dust(880,FLOOR,14);
   chickBlow();debris.forEach(function(b){if(b.isStatic)Body.setStatic(b,false);b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);Body.setVelocity(b,{x:(rnd()-.5)*10,y:-32-rnd()*10});Body.setAngularVelocity(b,(rnd()-.5)*.6);b.gone=gt;flying.push(b)});debris=[];
   statics.concat(movers).forEach(function(b){dust(b.position.x,b.position.y,5)});crowdEv('blowout')}});
  act({d:.4,tx:900,ty:TOP-230,ba:.6,end:cb})}
@@ -563,7 +563,7 @@ function dumpLevel(cb){var defs=(LV.deb||[]).slice().sort(function(a,b){return a
  groups.forEach(function(gp,gi){var cx=gp.reduce(function(s,d){return s+d[1]},0)/gp.length,cy=Math.min.apply(null,gp.map(function(d){return d[2]})),ly=clamp(cy-150,TOP+70,640);
   act({d:.55,start:function(c){EX.load={seed:gi*31+7};var t=tipFor(cx,TOP-40,.5);c.tx=t.x;c.ty=t.y;c.ex=clamp(cx+270,EXMIN,EXMAX);c.ba=.5}});
   act({d:.35,start:function(c){var t=tipFor(cx,ly,.5);c.tx=t.x;c.ty=t.y}});
-  act({d:.22,ba:-.5,end:function(){EX.load=null;SFX.dump();gp.forEach(function(d){var sd=Math.min(100,d[2]-(TOP+50));var b=mkDeb(d,sd);Body.setAngularVelocity(b,(rnd()-.5)*.15)});shake(5)}});
+  act({d:.22,ba:-.5,end:function(){EX.load=null;SFX.dump();memeEv('dump');gp.forEach(function(d){var sd=Math.min(100,d[2]-(TOP+50));var b=mkDeb(d,sd);Body.setAngularVelocity(b,(rnd()-.5)*.15)});shake(5)}});
   act({d:.3,start:function(c){c.tx=EX.tx;c.ty=TOP-60},ba:.5})});
  exPark(cb)}
 /* ---------- game flow ---------- */
@@ -582,19 +582,20 @@ function launch(deg,p){deg=clamp(deg,-25,75);p=clamp(p,0,1);var a=deg*PI/180,v=9
  if(!SIM){SFX.throw(p);if(p>=.8)memePlay('yeet',1,.95);hud();rpBegin('shot')}}
 function endThrow(){if(SIM){simRes='miss';state='simdone';return}state='between';rpReady();lvMiss++;
  var short=fly&&((fly.pow!=null&&fly.pow<.22)||(fly.maxD!=null&&fly.maxD<200));
- if(short){if(!memePlay('bruh',1,.95))failPlay()}else failPlay();
+ /* v1.12: last throw -> roundLost plays the sad trombone; near miss -> crowd OOOOH; touched nothing (or too short) -> bruh; else the fail pool */
+ if(throwsLeft>0){if(fly&&fly.minD<95){if(!memeEv('near'))failPlay()}else if(short||(fly&&!fly.touch)){if(!memeEv('miss'))failPlay()}else failPlay()}
  crowdEv(fly&&fly.minD<95?'near':'miss');var b=ball;if(b){dust(b.position.x,b.position.y,3)}
  after(.35,function(){if(ball){Composite.remove(world,ball);ball=null}clearXB();if(throwsLeft>0){spawnAim();banner('Throw '+(4-throwsLeft)+' of 3',1)}else roundLost()})}
-function roundLost(){state='lost';lvLost++;banner('So close! Try again!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
+function roundLost(){state='lost';lvLost++;memeEv('levelfail');banner('So close! Try again!');after(1.3,function(){shuffle(3,function(){state='settle';settleT=0;LV._round=1})})}
 var lastWin=null;
 function partyHorn(k){if(playSample(k?'horn2':'horn1',.7,null,1,0,true))return;tone(k?660:520,.32,{to:k?880:700,type:'sawtooth',vol:.05});noise(.25,{ft:'bandpass',f:k?2400:1800,q:2,vol:.05})}
 function win(){if(SIM){simRes='win';state='simdone';return}state='won';rpReady();stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
  SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');after(.22,function(){confetti(FX1+90,TOP+30,45);partyHorn(0)});after(.45,function(){confetti(BX0-80,TOP+30,45);partyHorn(1)});if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
- var allG=gems.length&&gems.every(function(g){return g.got});if((fly&&fly.bn>=3)||(fly&&fly.pt)||allG)memePlay('anime_wow',3,.95);else memePlay('win',3,.95);
- var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var before=save.tk;save.tk+=tot;
+ var allG=gems.length&&gems.every(function(g){return g.got});if(throwsLeft===2&&!AS.on&&!CUS.on)memeEv('perfect');else if((fly&&fly.bn>=3)||(fly&&fly.pt)||allG)memePlay('anime_wow',3,.95);else memePlay('win',3,.95);
+ var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var firstPz=save.pz[pr.id]===1;var before=save.tk;save.tk+=tot;
  save.st=save.st||{};var newMS=MODE!=='classic'&&!save.st['m_'+MODE];if(MODE!=='classic')save.st['m_'+MODE]=(save.st['m_'+MODE]||0)+1;var newSt=helped&&!(save.st&&save.st.mouse);if(helped){save.st=save.st||{};save.st.mouse=(save.st.mouse||0)+1}lvMiss=0;lvLost=0;
  var newG=GRAND.filter(function(gp){return !save.gp[gp.id]&&save.tk>=gp.at});newG.forEach(function(gp){save.gp[gp.id]=1});persist();
- lastWin={pr:pr,ex:ex,rt:roundTk,tot:tot,newG:newG,helped:helped,hp:hp,newSt:newSt,newMS:newMS,mode:MODE};after(1.5,showWin)}
+ lastWin={first:firstPz,pr:pr,ex:ex,rt:roundTk,tot:tot,newG:newG,helped:helped,hp:hp,newSt:newSt,newMS:newMS,mode:MODE};after(1.5,showWin)}
 var PRIZES=[{id:'coney',e:'🌭',n:'Detroit Coney Dog'},{id:'mitten',e:'🧤',n:'Michigan Mitten'},{id:'bridge',e:'🌉',n:'Mackinac Bridge'},{id:'car',e:'🏎️',n:'Motor City Race Car'},
  {id:'cherry',e:'🍒',n:'Traverse City Cherries'},{id:'paczki',e:'🍩',n:'Pączki Donut'},{id:'stone',e:'🪨',n:'Petoskey Stone'},{id:'boat',e:'⛵',n:'Great Lakes Sailboat'},
  {id:'deer',e:'🦌',n:'Up North Deer'},{id:'hockey',e:'🏒',n:'Hockeytown Stick'},{id:'dunes',e:'🏖️',n:'Sleeping Bear Dunes'},{id:'fish',e:'🐟',n:'Lake Michigan Trout'}];
@@ -604,7 +605,7 @@ function showWin(){var w=lastWin;$('prizeBig').textContent=w.pr.e;$('prizeName')
  var terms=[w.hp];if(w.ex)terms.push(w.ex);if(w.rt)terms.push(w.rt);var q,ans;if(terms.length===1){q='Double it! '+w.hp+' + '+w.hp+' = ?';ans=w.hp*2}else{q='Count your tickets! '+terms.join(' + ')+' = ?';ans=w.tot}
  var ch=[ans],tries=0;while(ch.length<3&&tries++<50){var c=ans+((rnd()*7)|0)-3;if(c>0&&ch.indexOf(c)<0)ch.push(c)}ch.sort(function(){return rnd()-.5});
  var m=$('math');m.innerHTML='<div class="q mk">🧮 '+q+'</div>'+ch.map(function(c){return'<button class="ch mk" data-v="'+c+'">'+c+'</button>'}).join('')+'<div class="r mk">Bonus math: get it right for +3 🎟️</div>';
- var done=false;m.querySelectorAll('.ch').forEach(function(bt){bt.addEventListener('click',function(){if(done)return;done=true;var v=+bt.dataset.v;if(v===ans){bt.classList.add('ok');SFX.ok();save.tk+=3;persist();m.querySelector('.r').textContent='Math whiz! +3 🎟️';confetti(W/2,H/2,30)}
+ var done=false;m.querySelectorAll('.ch').forEach(function(bt){bt.addEventListener('click',function(){if(done)return;done=true;var v=+bt.dataset.v;if(v===ans){bt.classList.add('ok');SFX.ok();memeEv('math');save.tk+=3;persist();m.querySelector('.r').textContent='Math whiz! +3 🎟️';confetti(W/2,H/2,30)}
   else{bt.classList.add('no');SFX.no();m.querySelectorAll('.ch').forEach(function(b2){if(+b2.dataset.v===ans)b2.classList.add('ok')});m.querySelector('.r').textContent='Nice try! It was '+ans+'.'}})});
  $('stk').innerHTML=w.helped?'<img alt="" src="'+stickerImg()+'"> '+(w.newSt?'New sticker: Mouse Buddy! Thanks for being a hero!':'Mouse Buddy helped! Hero teamwork!'):'';if(w.newMS)$('stk').innerHTML+=(w.helped?'<br>':'')+'<img alt="" src="'+modeSticker(w.mode)+'"> New sticker: '+modeOf(w.mode).n+'!';
  $('grandMsg').textContent=w.newG.length?('NEW GRAND PRIZE: '+w.newG.map(function(g){return g.e+' '+g.n}).join(', ')+'!'):'';
@@ -628,7 +629,7 @@ function physStep(){gt+=FIXED/1000;moveMovers();Engine.update(engine,FIXED);
  try{toyStep._did=0;toyStep(ball,SIM);for(var ti=0;ti<(XB||[]).length;ti++)toyStep(XB[ti],SIM)}catch(e){}
  if(PORT.length){if(ball&&portalTP(ball,SIM)&&fly)fly.px=ball.position.x;for(var xi=0;xi<XB.length;xi++)if(portalTP(XB[xi],SIM))XB[xi].px=XB[xi].position.x}
  for(var i=flying.length-1;i>=0;i--){var f=flying[i];if(f.position.y<-140||(f.velocity.y>0&&f.position.y>TABLE)||gt-f.gone>2.5){Composite.remove(world,f);flying.splice(i,1)}}
- for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3)}}}}
+ for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3);memeEv('junk')}}}}
  if(modeStep())return;
  if(state!=='fly'||!ball)return;var bp=ball.position;fly.t+=FIXED/1000;
  if(fly){var fd=Math.hypot(bp.x-(fly.x0||LX),bp.y-(fly.y0||LY));if(fd>(fly.maxD||0))fly.maxD=fd}
@@ -1030,7 +1031,8 @@ function loadFarts(){if(!AC||FA.load)return;FA.load=1;[1,2,3,4].forEach(/* fart5
 var SMPL={},SMP={},SMPN={};function smpReg(k,files){SMPL[k]=files}
 function loadSamples(){if(!AC||loadSamples.on)return;loadSamples.on=1;Object.keys(SMPL).forEach(function(k){SMP[k]=SMP[k]||[];SMPL[k].forEach(function(f,i){try{fetch('sfx/'+f).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(buf){buf.__i=i;SMP[k].push(buf);if(k==='toot'){buf.__n=6+i;FA.buf.push(buf)}},function(){})}).catch(function(){})}catch(e){}})})}
 function smpPick(k){var a=SMP[k];if(!a||!a.length)return null;var o=a.length>1?a.filter(function(x){return x.__i!==SMPN[k]}):a;var b=o[(rnd()*o.length)|0];SMPN[k]=b.__i;return b}
-function playSample(k,vol,fb,rate,at,lock,bus){if(!aok())return false;var b=smpPick(k);if(!b){if(fb)fb();return false}var r=rate||1;if(!lock)r*=(.95+rnd()*.1);tootBuf(b,r,vol==null?1:vol,at,bus);return true}
+function playSample(k,vol,fb,rate,at,lock,bus){if(!aok())return false;var b=smpPick(k);if(!b){if(fb)fb();return false}var r=rate||1;if(!lock)r*=(.95+rnd()*.1);tootBuf(b,r,vol==null?1:vol,at,bus);SLOG.push([k,SMPL[k][b.__i],Math.round(performance.now())]);if(SLOG.length>600)SLOG.shift();return true}
+/* test log of sample picks: [pool, file, ms] */var SLOG=[];
 var SMPLOOP={};
 function playLoop(k,vol,bus){if(!aok())return false;if(SMPLOOP[k])return true;var b=smpPick(k);if(!b)return false;try{var s=AC.createBufferSource(),g=AC.createGain();s.buffer=b;s.loop=true;s.playbackRate.value=1;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(vol==null?.2:vol,AC.currentTime+.3);s.connect(g);g.connect(bus||sfxBus);s.start();SMPLOOP[k]={s:s,g:g};return true}catch(e){return false}}
 function stopLoop(k){var e=SMPLOOP[k];if(!e)return;delete SMPLOOP[k];try{var n=AC.currentTime;e.g.gain.cancelScheduledValues(n);e.g.gain.setValueAtTime(Math.max(e.g.gain.value,.0001),n);e.g.gain.exponentialRampToValueAtTime(.0001,n+.3);e.s.stop(n+.35)}catch(x){}}
@@ -1475,7 +1477,7 @@ function edBlowUp(){if(state!=='edit')return;aInit();if(!ED.items.length){SFX.no
  exPark(edBlowDone)}
 /* v1.6.2: EVERY piece (fixed ones too) becomes dynamic for a moment and flies; portals/gems/ring/paper piles fly as pictures; the saved layout is untouched */
 var EDF=[];
-function edBoom(){if(state!=='edblow')return;playSample('boom',1,SFX.boom);shake(14);banner('BLOWOUT!');crowdEv('blowout');chickBlow();
+function edBoom(){if(state!=='edblow')return;playSample('boom',1,SFX.boom);memeEv('crash');shake(14);banner('BLOWOUT!');crowdEv('blowout');chickBlow();
  var all=debris.concat(statics.filter(function(b){return !b.holeLedge}),movers);
  all.forEach(function(b){var p=b.position;dust(p.x,p.y,6);sparks(p.x,p.y,6,'#ffe27a');for(var k=0;k<4;k++)emit({k:'conf',x:p.x,y:p.y,vx:(rnd()-.5)*500,vy:-300-rnd()*500,m:1+rnd()*.6,c:['#8a5a2b','#c8a070','#6b4520','#e0c090'][k],s:6+rnd()*6,r:rnd()*6,vr:(rnd()-.5)*12});
   if(b.isStatic){Body.setStatic(b,false);Body.setDensity(b,.001);Body.setPosition(b,{x:p.x,y:p.y});Body.setAngle(b,b.angle||0)}b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);
@@ -2048,8 +2050,8 @@ if(PACK)applyPack(PACK);
 /* meme clips: at most one every 1.5s; win > fail > others. Vocals play at recorded pitch (lock). */
 var MEME={t:0,pri:0};
 function memePlay(k,pri,vol){if(!aok())return false;var n=performance.now();if(n-MEME.t<1500&&pri<=(MEME.pri||0))return false;if(!playSample(k,vol==null?.95:vol,null,1,0,true))return false;MEME.t=n;MEME.pri=pri||1;return true}
-/* v1.7.3 fail pool: WA WA WA ~40%, the seven other approved miss lines share the rest; never repeat the last pick. */
-var FAILPOOL=[{k:'fail',w:.4},{k:'sad_guitar',w:.6/7},{k:'fail_aww',w:.6/7},{k:'okay',w:.6/7},{k:'what',w:.6/7},{k:'suspense',w:.6/7},{k:'omg',w:.6/7},{k:'god',w:.6/7}],FAILLAST=null;
+/* v1.7.3 fail pool: WA WA WA ~40%; v1.12.0 adds the real sad trombone and the other approved miss lines share the rest; never repeat the last pick. */
+var FAILPOOL=[{k:'fail',w:.4},{k:'sadtrombone',w:.6/8},{k:'sad_guitar',w:.6/8},{k:'fail_aww',w:.6/8},{k:'okay',w:.6/8},{k:'what',w:.6/8},{k:'suspense',w:.6/8},{k:'omg',w:.6/8},{k:'god',w:.6/8}],FAILLAST=null;
 function failPick(){var opts=FAILPOOL.filter(function(x){return x.k!==FAILLAST});if(!opts.length)opts=FAILPOOL.slice();var tw=0,i;for(i=0;i<opts.length;i++)tw+=opts[i].w;var r=rnd()*tw,acc=0;for(i=0;i<opts.length;i++){acc+=opts[i].w;if(r<=acc){FAILLAST=opts[i].k;return FAILLAST}}FAILLAST=opts[opts.length-1].k;return FAILLAST}
 function failPlay(){return memePlay(failPick(),2,.95)}
 (function(){var w=function(k,f,v,pick,lock){return function(a){var vol=typeof v==='function'?v(a):v;if(!playSample(pick?pick(a):k,vol,null,1,0,!!lock))f(a)}};
@@ -2767,6 +2769,70 @@ function isPhone(){return Math.min(innerWidth,innerHeight)<=500}
   var wl=document.createElement('div'),wr=document.createElement('div');wl.id='wL';wr.id='wR';wl.style.display=wr.style.display='contents';
   var kids=[].slice.call(wc.children);wc.insertBefore(wl,kids[0]);wc.appendChild(wr);kids.forEach(function(e){(/^(H2)$/.test(e.tagName)||/^(prizeBig|prizeName|tkRows|stk)$/.test(e.id)?wl:wr).appendChild(e)})}catch(e){}
  var r=$('rot');if(r)r.innerHTML='<span class="ip">'+r.innerHTML+'</span><div class="ph phi">📱</div><b class="ph mk">Turn your phone sideways!</b><small class="ph mk">Excavator Blowout plays best in landscape.</small>'})();
+/* ---------- v1.12.0 real meme clips + extras (sources and labels in CREDITS.md) ----------
+ Mapped memes go through memePlay (the 1.5 s sting gate + priority: win > fail > others) plus a per-clip cooldown.
+ Construction extras use fx(): per-clip cooldown + lim(). Everything plays via playSample, so aok() (audio guard / mute) and the Sounds slider apply. */
+smpReg('vboom',['family-only/vine_boom.mp3']);smpReg('mlg',['family-only/airhorn.mp3']);smpReg('slidew',['family-only/slide_whistle.mp3']);
+smpReg('bonk',['family-only/bonk.mp3']);smpReg('ohno',['family-only/oh_no_no_no.mp3']);smpReg('crowd_ooh',['family-only/crowd_ooh.mp3']);smpReg('rchicken',['family-only/rubber_chicken.mp3']);
+smpReg('zitem',['family-only/zelda_item.mp3']);smpReg('zsecret',['family-only/zelda_secret.mp3']);smpReg('powerup',['family-only/mario_powerup.mp3']);
+smpReg('noice',['family-only/noice.mp3']);smpReg('wilhelm',['family-only/wilhelm.mp3']);smpReg('itsame',['family-only/its_a_me.mp3']);smpReg('sadtrombone',['family-only/sad_trombone.mp3']);
+smpReg('diesel',['meme-cc0/diesel_rev.mp3']);smpReg('backup',['meme-cc0/backup_beep.mp3']);smpReg('hiss',['meme-cc0/hydraulic_hiss.mp3']);smpReg('crash',['meme-cc0/debris_crash.mp3']);
+/* add to Brett's existing ring pool rather than replacing it */
+SMPL.ring=(SMPL.ring||['ring.mp3']).concat(['family-only/sonic_ring.mp3']);
+var MCD={},MEV=[],MCFG={chP:.1,chEvery:25},MST={chT:0,chLv:-1,itsa:0};
+function mevLog(e,k,ok){MEV.push([e,k,ok?1:0,Math.round(performance.now())]);if(MEV.length>300)MEV.shift()}
+function mm(e,k,pri,vol,cd){if(SIM)return false;var n=performance.now();if(n-(MCD[k]||-1e9)<cd){mevLog(e,k,0);return false}var ok=memePlay(k,pri,vol);if(ok)MCD[k]=n;mevLog(e,k,ok);return ok}
+function fx(e,k,vol,cd){if(SIM||!aok())return false;var n=performance.now();if(n-(MCD[k]||-1e9)<cd){mevLog(e,k,0);return false}var ok=playSample(k,vol,null,1,0,true);if(ok)MCD[k]=n;mevLog(e,k,ok);return ok}
+/* inline hooks from the game code call memeEv(name) */
+function memeEv(e){try{
+ if(e==='miss')return mm(e,'bruh',1,.95,1200);
+ if(e==='near')return mm(e,'crowd_ooh',2,.95,2500);
+ if(e==='levelfail')return mm(e,'sadtrombone',3,.95,1500);/* real sad trombone; WA WA WA stays in the miss fail pool */
+ if(e==='perfect')return mm(e,'mlg',3,.9,0);
+ if(e==='math')return fx(e,'powerup',.85,1500);
+ if(e==='junk')return mm(e,'wilhelm',2,.85,8000);
+ if(e==='dump')return fx(e,'hiss',.6,2500);
+ if(e==='crash')return fx(e,'crash',.8,2500);
+}catch(x){}return false}
+/* bucket bonk (grab), hydraulic hiss (release), diesel rev (start), backup beeper (park) */
+(function(){var g0=grab;grab=function(b){g0(b);mm('bucket','bonk',1,.8,2500)};
+ var d0=drop;drop=function(){var had=!!EX.carry;d0();if(had)fx('drop','hiss',.55,2500)};
+ var s0=exStart;exStart=function(){var was=EX.on;s0();if(!was)fx('exstart','diesel',.5,20000)};
+ var p0=exPark;exPark=function(cb){act({d:.01,end:function(){fx('expark','backup',.4,20000)}});p0(cb)};
+ var r0=SFX.ring;SFX.ring=function(){r0.apply(this,arguments);after(.45,function(){mm('ring','noice',2,.9,15000)})};
+ var u0=uvSaveFound;uvSaveFound=function(id){var nw=!(UV.found&&UV.found[id]);u0(id);if(nw)mm('secret','zsecret',3,.9,3000)};
+ var w0=showWin;showWin=function(){w0();if(lastWin&&lastWin.first)mm('newprize','zitem',4,.9,0)};
+ var g1=startGame;startGame=function(n){var r=g1.apply(this,arguments);if(!MST.itsa){MST.itsa=1;after(.7,function(){mm('start','itsame',2,.9,0)})}return r};
+})();
+/* the body list at load time is the box shell + table: hitting only these = "missed everything" */
+Composite.allBodies(world).forEach(function(b){b.env=1});
+Events.on(engine,'collisionStart',function(ev){if(SIMB||SIM)return;var ps=ev.pairs;for(var i=0;i<ps.length;i++){var A=ps[i].bodyA.parent,B=ps[i].bodyB.parent;
+ if(ball&&(A===ball||B===ball)){var o=A===ball?B:A;if(!o.env&&fly)fly.touch=1;continue}
+ /* vine boom: a falling block lands on a character's head (goat, chicken, duck, frog) */
+ var t=A.toy?A:B.toy?B:null,d=t===A?B:A;if(!t||d.isStatic||d.toy||!/^(goat|chick|duck|frog)$/.test(t.kind))continue;
+ if(d.position.y<t.position.y-18&&d.velocity.y>3)mm('head','vboom',2,.95,6000)}});
+/* per-step watchers: slide whistle on long falls, "oh no no no" at a tower's tipping point, crowd heads, rare rubber chicken */
+function memeStep(){if(SIM||SIMB)return;var dt=FIXED/1000,i,d;
+ for(i=0;i<debris.length;i++){d=debris[i];if(d.isStatic||d===EX.carry){d.fy=null;continue}var vy=d.velocity.y;
+  if(vy>.6){if(d.fy==null)d.fy=d.position.y;if(!d.sw&&d.position.y-d.fy>200&&vy>6){d.sw=1;mm('fall','slidew',1,.85,3500)}}else if(vy<.2){d.fy=null;d.sw=0}
+  /* vine boom: a falling block is coming down onto a toy character's head (goat, chicken, duck, frog) */
+  if(vy>3){var toys=Composite.allBodies(world);for(var k=0;k<toys.length;k++){var t=toys[k];if(!t.toy||!/^(goat|chick|duck|frog)$/.test(t.kind))continue;if(d.position.y<t.position.y-18&&Math.abs(d.position.x-t.position.x)<((t.sw||80)/2+24)){mm('head','vboom',2,.95,6000);break}}}}
+ /* topple onset: a block resting up off the floor (on a stack or a ledge) for 1 s+ starts to tip; once per throw */
+ for(i=0;i<debris.length;i++){d=debris[i];if(d.isStatic)continue;var up=d.position.y<FLOOR-60;if(d.speed<.15&&Math.abs(d.angularVelocity)<.01){d.rt=(d.rt||0)+dt}else if(d.rt&&up&&fly&&!fly.ohno&&(state==='fly'||state==='between')&&d.rt>1&&Math.abs(d.angularVelocity)>.02){fly.ohno=1;d.rt=0;mm('topple','ohno',2,.95,0)}else if(d.speed>1.5)d.rt=0}
+ if(state==='aim'){MST.chT+=dt;if(MST.chT>MCFG.chEvery){MST.chT=0;if(MST.chLv!==lvKey()&&rnd()<MCFG.chP){if(mm('surprise','rchicken',1,.9,60000)){MST.chLv=lvKey();ftext(LX+120,LY-140,'BAWK?!','#fff27a')}}}}}
+function lvKey(){try{return (CUS&&CUS.on?'c':'')+(save.lv||0)+'_'+(LV&&LV.name||'')}catch(e){return 0}}
+/* test hooks: put real bodies into real situations; the normal code paths then fire */
+function mtest(n,a){var d=debris.filter(function(b){return !b.isStatic&&b!==EX.carry});
+ if(n==='head'){var g=null;Composite.allBodies(world).forEach(function(b){if(b.kind==='goat')g=b});if(!g)return false;var blk=d[0];if(!blk)blk=mkDeb(['scrap',g.position.x,g.position.y-120,70,50],0);Body.setStatic(blk,false);Body.setPosition(blk,{x:g.position.x,y:g.position.y-(g.sh||100)/2-50});Body.setVelocity(blk,{x:0,y:14});Sleeping.set(blk,false);return true}
+ if(n==='lift'&&d[0]){Body.setPosition(d[0],{x:d[0].position.x,y:a||TOP+40});Body.setVelocity(d[0],{x:0,y:0});Sleeping.set(d[0],false);return true}
+ if(n==='junk'&&d[0]){Body.setPosition(d[0],{x:BX1+12,y:HOLE.y0+10});return state}
+ if(n==='ring'){SFX.ring();return true}
+ if(n==='near'){var out=[];for(var g=-10;g<=60;g+=2)for(var q=.3;q<=1.001;q+=.05){var r=simBall(g,q,true);if(r.res===1||r.res==='win')continue;var m=1e9;(r.path||[]).forEach(function(pt){m=Math.min(m,Math.hypot(pt.x-BX0,pt.y-(HOLE.y0+HOLE.y1)/2))});if(m<80)out.push([g,+q.toFixed(2),Math.round(m)])}return out.sort(function(x,y){return x[2]-y[2]}).slice(0,8)}
+ if(n==='deb')return debris.map(function(b){return[Math.round(b.position.x),Math.round(b.position.y),+b.angle.toFixed(2),+b.angularVelocity.toFixed(3),+b.speed.toFixed(2),b.isStatic?1:0]});
+ if(n==='secret'){uvSaveFound('mtest'+Date.now());return true}
+ if(n==='topple'){var b=d[0];if(!b)return false;Body.setStatic(b,false);Body.setPosition(b,{x:b.position.x,y:FLOOR-150});Body.setVelocity(b,{x:0,y:0});Sleeping.set(b,false);b.rt=1.5;if(!fly)fly={};fly.ohno=0;if(state!=='fly'&&state!=='between')state='fly';Body.setAngularVelocity(b,.08);return true}
+ return false}
+(function(){var s0=physStep;physStep=function(){s0();try{memeStep()}catch(e){}}})();
 /* ---------- rendering ---------- */
 function wrapCanvas(b){if(b.wc&&!b.dirty&&b.wk===K)return b.wc;var w=b.ww,h=b.wh,c=mkc(w*K+2,h*K+2),g=c.getContext('2d');g.scale(K,K);
  drawBubbleSheet(g,0,0,w,h,b.pops);
@@ -2895,7 +2961,7 @@ function artFront(g){var r=rng(9);
 /* ---------- test hooks ---------- */
 function simShot(n,deg,p){SIM=true;var keep={st:state,b:ball};if(ball){Composite.remove(world,ball);ball=null}clearXB();gt=0;clearLevel(false);setupLevel(n,true);for(var i=0;i<240;i++)physStep();throwsLeft=3;roundTk=0;
  simRes=null;launch(deg,p);for(i=0;i<1600&&state==='fly';i++)physStep();var res=simRes||'timeout';if(ball){Composite.remove(world,ball);ball=null}clearXB();SIM=false;state='sim';return res}
-window.EB={ver:VER,pack:PACK,packUrl:PACK_URL,go:function(n){startGame(n);return n},step:function(n){n=n||1;for(var i=0;i<n;i++){try{toyStep._did=0}catch(e){}physStep()}return gt},uv:function(){return{on:!!(UV&&UV.on),found:UV&&UV.found,x:UV&&UV.x,y:UV&&UV.y,kid:typeof uvKid==='function'?uvKid():''}},uvOpen:function(){uvOn();return UV.on},uvClose:function(){uvOff();return !UV.on},uvAt:function(x,y){if(x!=null)UV.x=UV.px=x;if(y!=null)UV.y=UV.py=y;return{x:UV.x,y:UV.y}},
+window.EB={ver:VER,mev:function(c){var o=MEV.slice();if(c)MEV.length=0;return o},mcfg:function(o){if(o)for(var k in o)MCFG[k]=o[k];return MCFG},memeEv:function(e){return memeEv(e)},mtest:function(n,a){return mtest(n,a)},slog:function(c){var o=SLOG.slice();if(c)SLOG.length=0;return o},pack:PACK,packUrl:PACK_URL,go:function(n){startGame(n);return n},step:function(n){n=n||1;for(var i=0;i<n;i++){try{toyStep._did=0}catch(e){}physStep()}return gt},uv:function(){return{on:!!(UV&&UV.on),found:UV&&UV.found,x:UV&&UV.x,y:UV&&UV.y,kid:typeof uvKid==='function'?uvKid():''}},uvOpen:function(){uvOn();return UV.on},uvClose:function(){uvOff();return !UV.on},uvAt:function(x,y){if(x!=null)UV.x=UV.px=x;if(y!=null)UV.y=UV.py=y;return{x:UV.x,y:UV.y}},
  st:function(){return{state:state,lv:lvN,name:LV&&LV.n,throws:throwsLeft,tk:save.tk,roundTk:roundTk,wins:save.w,prizes:prizeCount(),pz:save.pz,ball:ball?{x:ball.position.x,y:ball.position.y}:null,debris:debris.length,hits:stats.hits,exBusy:exBusy(),hole:[HOLE.y0,HOLE.y1],parts:P.length,dpr:DPR,qual:qual,winOpen:$('win').classList.contains('on'),title:$('tt').textContent}},
  fps:function(){var a=FR.reduce(function(s,v){return s+v},0)/FR.length;return{avgMs:a,fps:1000/a,maxMs:Math.max.apply(null,FR)}},
  throwAt:function(d,p){if(state!=='aim')return false;LV._tried=1;launch(d,p);return true},replay:function(){return{n:RP.frames.length,rec:RP.rec,play:RP.play,btn:rpBtn.style.display!=='none',card:rpCard.style.display!=='none'&&rpCard.style.display!=='',badge:rpBadge.style.display!=='none',state:state,t:RP.t,i:RP.i,spd:RP.SPD}},doReplay:function(){rpPlay();return RP.play},rpSkip:function(){rpEnd();return state},fast:function(on){EX.speed=on?6:1},
@@ -2920,7 +2986,7 @@ setupLevel(save.lv||0,true);requestAnimationFrame(frame);
 addEventListener('pagehide',persist);document.addEventListener('visibilitychange',function(){if(document.hidden){persist();drag=null}else{last=0}});
 })();
 </script>
-<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.11.1-20261114').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){addEventListener('load',function(){navigator.serviceWorker.register('sw.js?v=1.12.0-20261114').catch(function(){})})}</script>
 <script>/*hub-home*/(function(){var own='alex',k;try{k=localStorage.kidsHub}catch(e){}if(k!=='zoe'&&k!=='alex')k=own;
 var u=k==='zoe'?'/doodle-and-zoe/':'/alex-games/',b=document.createElement('div');b.id='hubHome';b.setAttribute('role','button');b.setAttribute('aria-label','hold to go home');
 b.innerHTML='<svg width="38" height="38" viewBox="0 0 38 38" style="position:absolute;left:0;top:0;pointer-events:none"><circle cx="19" cy="19" r="16" fill="none" stroke="#ffd54a" stroke-width="4" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 19 19)"/></svg><span style="position:relative;pointer-events:none">🏠</span>';

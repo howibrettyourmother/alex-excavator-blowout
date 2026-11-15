@@ -247,3 +247,25 @@ At Brett's request, the goat's sound pool now has only scream takes; the two ble
 - `sfx/sheep_scream_hi.mp3`: about 1.5 semitones higher, same length
 - `sfx/sheep_scream_lo.mp3`: about 1.5 semitones lower, same length
 - `sfx/sheep_scream_short.mp3`: trimmed to 1.46 s, slightly faster, with a fade-out
+
+## v1.12.0: real meme clips mapped to game moments
+Brett asked for the real, widely shared originals (no remakes, nothing generated). Copyrighted clips are **Family-only, copyrighted, not for public release** (same label and approval as the v1.7.4 family-only pack); construction sounds are CC0 from freesound. Each clip was trimmed tight and loudness-matched to the existing pack (about -17.5 dBFS active RMS, peak cap -1 dBFS, mono 64 kbps). Voiced clips were transcribed with faster-whisper (small): no swears, no innuendo.
+
+Reused from the existing family-only pack (already credited above): `vine_boom` (block lands on a character's head), `airhorn` (MLG airhorn, first-throw perfect clear), `slide_whistle` (block falling from height), `bonk` (bucket grabs a block), `oh_no_no_no` (tower starts to topple), and `sad_trombone` (https://www.myinstants.com/en/instant/sad-trombone/ — **Family-only, copyrighted, not for public release**). `sfx/bruh.mp3` (throw that touches nothing) is the existing approved clip. Level fail plays the real sad trombone. The existing miss fail pool still includes `sfx/fail.mp3` (the S9LAxmDGQGw "WA WA WA" sting, about 40%) plus the seven other approved miss lines, and now also this sad trombone. The CC0 kirbydx trombone in `sfx/meme-cc0/` was not used, because Brett asked for the real clip, not a remake.
+
+New family-only clips (`sfx/family-only/`, copyrighted):
+- `sfx/family-only/crowd_ooh.mp3` (1.93 s): Sitcom crowd "OOOOH", https://www.myinstants.com/en/instant/sitcom-crowd-ooh-37763/ - near miss; transcript: crowd (whisper heard "Hello!"; no words)
+- `sfx/family-only/rubber_chicken.mp3` (1.23 s): Rubber chicken, https://www.myinstants.com/en/instant/rubber-chicken-26693/ - rare surprise; transcript: squawk (whisper: "AHHHHH!")
+- `sfx/family-only/sonic_ring.mp3` (0.89 s): Sonic ring, https://www.myinstants.com/en/instant/sonic-ring/ - ring pool
+- `sfx/family-only/zelda_item.mp3` (2.51 s): Zelda item get, https://www.myinstants.com/en/instant/zelda-item-get/ - first time a prize is won; transcript: jingle (whisper: "You", no words)
+- `sfx/family-only/zelda_secret.mp3` (1.38 s): Zelda secret (Ocarina of Time), https://www.myinstants.com/en/instant/ocarina-of-time-secret-23137/ - UV secret found
+- `sfx/family-only/mario_powerup.mp3` (1.10 s): Mario power-up, https://www.myinstants.com/en/instant/mario-power-up/ - bonus math right
+- `sfx/family-only/noice.mp3` (1.54 s): Noice (Michael Rosen), https://www.myinstants.com/en/instant/noice/ - ball threads the ring; transcript: "Nice."
+- `sfx/family-only/wilhelm.mp3` (1.04 s): Wilhelm scream, https://www.myinstants.com/en/instant/wilhelm-scream/ - junk falls out through the prize hole; transcript: scream (whisper: "No!")
+- `sfx/family-only/its_a_me.mp3` (2.69 s): It's-a me, Mario, https://www.myinstants.com/en/instant/its-a-me-mario/ - first level start of a session; transcript: "It's me, Mario!"
+
+New CC0 clips (`sfx/meme-cc0/`):
+- `sfx/meme-cc0/diesel_rev.mp3` (2.74 s): "Diesel Start-Idle-Revs MZ000004.wav" by DAVESTALKER, https://freesound.org/people/DAVESTALKER/sounds/443319/ (CC0) - excavator starts; 10.9-13.6 s rev
+- `sfx/meme-cc0/backup_beep.mp3` (1.93 s): "Truck Reverse Beeper.wav" by Disasteradio, https://freesound.org/people/Disasteradio/sounds/197166/ (CC0) - excavator backs away; first 3 beeps
+- `sfx/meme-cc0/hydraulic_hiss.mp3` (0.94 s): "Pressure Hiss" by magnuswaker, https://freesound.org/people/magnuswaker/sounds/581083/ (CC0) - bucket dumps / releases a block; 0-0.9 s
+- `sfx/meme-cc0/debris_crash.mp3` (2.35 s): "Vintage Debris Smash" by ElevatorFan2020, https://freesound.org/people/ElevatorFan2020/sounds/848472/ (CC0) - BLOWOUT! and Blow it up!; 0-2.3 s

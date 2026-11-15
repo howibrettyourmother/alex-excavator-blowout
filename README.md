@@ -164,3 +164,13 @@ Silly pieces shuffle larger sound pools (existing clips plus a verified-CC0 pack
 
 ## v1.11.1: the goat always screams
 Every goat hit now plays a scream. It rotates among the Screaming Sheep clip and three light pitch/trim variants of it, without repeating the same take twice in a row. No baas or bleats.
+
+## v1.12.0: real meme clips
+Big moments now play the real meme sounds. A throw that touches nothing gets "bruh", and a near miss gets the crowd "OOOOH". A level fail plays the real sad trombone, missed shots still mix in the WA WA WA sting, and a first-throw clear plays the MLG airhorn. A block that lands on the goat, chicken, duck or frog gets a vine boom, and a block falling from high up gets the slide whistle. The bucket bonks when it grabs, a tower that starts to tip plays "oh no, oh no, oh no no no", and once in a while a rubber chicken squawks.
+
+Extras:
+- Game sounds: "It's-a me, Mario!" when you start, Zelda item-get for a new prize, Mario power-up for bonus math, the Zelda secret jingle for UV secrets, a Sonic ring added to the ring pool, and "noice" when the ball threads the ring.
+- The Wilhelm scream plays when junk tumbles out the prize hole.
+- Real construction sounds: diesel rev, backup beeper, hydraulic hiss and a debris crash on BLOWOUT.
+
+Every clip has its own cooldown and goes through the existing one-sting-at-a-time gate, so sounds don't pile up. Mute, the Sounds slider and the audio guard all apply. Sources are in CREDITS.md.

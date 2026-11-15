@@ -409,7 +409,7 @@ function edBlowUp(){if(state!=='edit')return;aInit();if(!ED.items.length){SFX.no
  exPark(edBlowDone)}
 /* v1.6.2: EVERY piece (fixed ones too) becomes dynamic for a moment and flies; portals/gems/ring/paper piles fly as pictures; the saved layout is untouched */
 var EDF=[];
-function edBoom(){if(state!=='edblow')return;playSample('boom',1,SFX.boom);shake(14);banner('BLOWOUT!');crowdEv('blowout');chickBlow();
+function edBoom(){if(state!=='edblow')return;playSample('boom',1,SFX.boom);memeEv('crash');shake(14);banner('BLOWOUT!');crowdEv('blowout');chickBlow();
  var all=debris.concat(statics.filter(function(b){return !b.holeLedge}),movers);
  all.forEach(function(b){var p=b.position;dust(p.x,p.y,6);sparks(p.x,p.y,6,'#ffe27a');for(var k=0;k<4;k++)emit({k:'conf',x:p.x,y:p.y,vx:(rnd()-.5)*500,vy:-300-rnd()*500,m:1+rnd()*.6,c:['#8a5a2b','#c8a070','#6b4520','#e0c090'][k],s:6+rnd()*6,r:rnd()*6,vr:(rnd()-.5)*12});
   if(b.isStatic){Body.setStatic(b,false);Body.setDensity(b,.001);Body.setPosition(b,{x:p.x,y:p.y});Body.setAngle(b,b.angle||0)}b.collisionFilter={group:0,category:2,mask:0};Sleeping.set(b,false);
@@ -852,8 +852,8 @@ if(PACK)applyPack(PACK);
 /* meme clips: at most one every 1.5s; win > fail > others. Vocals play at recorded pitch (lock). */
 var MEME={t:0,pri:0};
 function memePlay(k,pri,vol){if(!aok())return false;var n=performance.now();if(n-MEME.t<1500&&pri<=(MEME.pri||0))return false;if(!playSample(k,vol==null?.95:vol,null,1,0,true))return false;MEME.t=n;MEME.pri=pri||1;return true}
-/* v1.7.3 fail pool: WA WA WA ~40%, the seven other approved miss lines share the rest; never repeat the last pick. */
-var FAILPOOL=[{k:'fail',w:.4},{k:'sad_guitar',w:.6/7},{k:'fail_aww',w:.6/7},{k:'okay',w:.6/7},{k:'what',w:.6/7},{k:'suspense',w:.6/7},{k:'omg',w:.6/7},{k:'god',w:.6/7}],FAILLAST=null;
+/* v1.7.3 fail pool: WA WA WA ~40%; v1.12.0 adds the real sad trombone and the other approved miss lines share the rest; never repeat the last pick. */
+var FAILPOOL=[{k:'fail',w:.4},{k:'sadtrombone',w:.6/8},{k:'sad_guitar',w:.6/8},{k:'fail_aww',w:.6/8},{k:'okay',w:.6/8},{k:'what',w:.6/8},{k:'suspense',w:.6/8},{k:'omg',w:.6/8},{k:'god',w:.6/8}],FAILLAST=null;
 function failPick(){var opts=FAILPOOL.filter(function(x){return x.k!==FAILLAST});if(!opts.length)opts=FAILPOOL.slice();var tw=0,i;for(i=0;i<opts.length;i++)tw+=opts[i].w;var r=rnd()*tw,acc=0;for(i=0;i<opts.length;i++){acc+=opts[i].w;if(r<=acc){FAILLAST=opts[i].k;return FAILLAST}}FAILLAST=opts[opts.length-1].k;return FAILLAST}
 function failPlay(){return memePlay(failPick(),2,.95)}
 (function(){var w=function(k,f,v,pick,lock){return function(a){var vol=typeof v==='function'?v(a):v;if(!playSample(pick?pick(a):k,vol,null,1,0,!!lock))f(a)}};
