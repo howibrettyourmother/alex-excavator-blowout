@@ -178,6 +178,7 @@ Verified-CC0 recordings from Freesound.org, trimmed, faded, loudness-normalized 
 - `sfx/meme-cc0/burp.mp3` (0.49 s): Burp by scooterfort, https://freesound.org/people/scooterfort/sounds/570266/ (CC0) — toot, verified by title only
 - `sfx/meme-cc0/squish.mp3` (0.42 s): Slime squish by qubodup, https://freesound.org/people/qubodup/sounds/442772/ (CC0) — silly, verified by title only
 - `sfx/meme-cc0/squish2.mp3` (0.40 s): Splat squish by mrickey13, https://freesound.org/people/mrickey13/sounds/515621/ (CC0) — silly, verified by title only
+  v1.14.0: both clips also play as the Slime Ball splat (with a wet synth layer).
 - `sfx/meme-cc0/bubbles.mp3` (0.68 s): Bubbles bursting by florianreichelt, https://freesound.org/people/florianreichelt/sounds/683100/ (CC0) — silly, verified by title only
 - `sfx/meme-cc0/cartoon_scream.mp3` (1.05 s): Cartoony scream by el_boss, https://freesound.org/people/el_boss/sounds/751702/ (CC0) — voice, verified by transcription — heard as “Woo! (no swear words)”
 

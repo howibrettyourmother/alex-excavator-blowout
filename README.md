@@ -177,3 +177,13 @@ Every clip has its own cooldown and goes through the existing one-sting-at-a-tim
 
 ## v1.12.1: quieter aim sound
 Pulling the sling no longer plays the rubber-band creak (`stretch.mp3`). That clip was 0.33 s and retriggered every 80 ms, so it stacked while you aimed. Aiming now plays a very short, quiet click (`click.mp3` at volume 0.12, or a soft synthesized tick if the sample is missing), at most once every 120 ms. Launch, hit, blowout and miss meme sounds are unchanged.
+
+## v1.14.0 (2026-11-22): beatable check + slime glow-up
+
+- **Level builder — Beatable / Impossible flag:** while Alex is building, a live check tells him whether the level can be beaten. It first looks for a sealed prize hole (the ball really cannot fit through), then runs the same kind of shot solver used on the hand-built levels: real physics, over a grid of angles and powers, including portals, fans, trampolines, movers, and the current bonus ball (Slime, Bowling, and the rest). The search runs in short chunks so the iPad stays smooth. It never blocks Save or ▶ Test it!.
+  - Green **Beatable!** if any throw scores.
+  - Red **Impossible** with a short reason (for example "The excavator can't reach the gold" or "Something is blocking the prize hole") and a red highlight on the blocking pieces or the hole.
+  - Yellow **Too tricky to check** if the search hits its time or throw cap before it can be sure (it will not guess).
+  - The badge sits in the builder's top bar and is tappable to re-check. **🔎 Check level** is also in the More menu. Custom levels, share codes and saved layouts are unchanged.
+- **Slime Ball:** no longer a slightly-sticky green ball. It looks glossy and oozy (highlight, bubbles, hanging drips), leaves a goo trail, squishes hard on impact, and plays a gross-funny splat (CC0 squish recordings plus a wet synth). The mechanic is actually useful for building: it can **stick to walls, ramps and the ceiling, then drip down** (so you can splat above the prize hole and drop in), and it **grabs up to 3 pieces of loose junk for a little over a second** so you can yank cups and scraps out of the way. Floor rolls stay possible, so a floor-level hole still works. The solver uses this slime physics when Slime Ball is the selected mode.
+

@@ -76,7 +76,7 @@ var last=0,acc=0,FR=[],paused=false,titleOn=true;
 function frame(ts){requestAnimationFrame(frame);var dt=Math.min(50,last?ts-last:16.7);last=ts;FR.push(dt);if(FR.length>120)FR.shift();decShk(dt/1000);
  if(titleOn){if(UV&&UV.on){uvTick(dt/1000);return}if(render.off&&(render.off[0]||render.off[1]))render(ts/1000);return}
  if(state==='replay'){rpTick(dt/1000);render(ts/1000);return}
- if(state==='edit'){var se=dt/1000;gt+=se;updTM(se);updP(se);if(RP.rec)rpSample(se);render(ts/1000);drawEdit(ctx,ts/1000);return}
+ if(state==='edit'){try{chkStep()}catch(e){}var se=dt/1000;gt+=se;updTM(se);updP(se);if(RP.rec)rpSample(se);render(ts/1000);drawEdit(ctx,ts/1000);return}
  var sd=dt/1000;updTM(sd);runQ(sd*EX.speed);if(state==='edblow')edBlowStep(sd);updP(sd);updCrowd(sd);updMouse(sd);updFart(sd);if(lim('help',250))updHelp();
  if(state==='settle'){settleT+=sd;var mv=debris.some(function(b){return !b.isSleeping&&b.speed>.5});if(settleT>.5&&(!mv||settleT>2.2))newRound()}
  if(dispTk!==save.tk){var df=save.tk-dispTk;dispTk+=df>0?Math.max(1,Math.round(df/12)):Math.min(-1,Math.round(df/12));if(lim('tkt',60))SFX.tick(dispTk);$('tk').textContent=dispTk}

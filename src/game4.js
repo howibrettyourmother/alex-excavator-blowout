@@ -117,7 +117,7 @@ function showShelf(){var h='';PRIZES.forEach(function(p){var n=save.pz[p.id]||0;
 Events.on(engine,'collisionStart',function(ev){if(SIMB)return;var ps=ev.pairs;for(var i=0;i<ps.length;i++){var pr=ps[i],A=pr.bodyA.parent,B=pr.bodyB.parent,n=pr.collision.normal;
  var va=A.isStatic?A.velocity:Body.getVelocity(A),vb=B.isStatic?B.velocity:Body.getVelocity(B),rv=Math.abs((va.x-vb.x)*n.x+(va.y-vb.y)*n.y);
  var isB=A===ball||B===ball;if(!isB&&rv<4)continue;var o=A===ball?B:A,sp=pr.collision.supports&&pr.collision.supports[0];
- if(isB&&modeHit(o,rv,sp,A===ball?A:B))continue;
+ if(isB&&modeHit(o,rv,sp,A===ball?A:B,n,A===ball))continue;
  if(isB){squashHit(ball,n,rv);if(!o.isStatic&&!o.toy)squashHit(o,n,rv*.7);if(o.isStatic&&rv>3&&fly)fly.bn=(fly.bn||0)+1;stats.hits++;if(SIM)continue;if(o.toy){toyHit(o,rv,sp);continue}if(rv>2.5)SFX.hit(o.mat||'card',rv);if(rv>9&&lim('thump',140))tone(100,.14,{to:48,type:'sine',vol:Math.min(.22,rv*.014)});if(sp&&rv>6&&lim('hdust',70))dust(sp.x,sp.y,3);if(rv>7)shake(Math.min(12,rv*.7));if(sp&&rv>5)sparks(sp.x,sp.y,Math.min(8,(rv/2)|0),o.mat==='plate'?'#fff':'#ffe27a');
   if(o.kind==='wrap'&&rv>3)popBubble(o,sp)}else if(!SIM&&(A.toy||B.toy)){toyHit(A.toy?A:B,rv,sp)}else if(!SIM){SFX.hit((A.mat==='wall'||A.mat==='table')?B.mat:A.mat,rv*.6)}}});
 function popBubble(b,sp){if(!sp)return;var c=Math.cos(-b.angle),s=Math.sin(-b.angle),lx=(sp.x-b.position.x)*c-(sp.y-b.position.y)*s+b.ww/2,ly=(sp.x-b.position.x)*s+(sp.y-b.position.y)*c+b.wh/2;
