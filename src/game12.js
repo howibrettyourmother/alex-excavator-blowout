@@ -34,7 +34,10 @@ function isPhone(){return Math.min(innerWidth,innerHeight)<=500}
  '#edPal{padding:5px;gap:5px;border-radius:14px}#edPal .shelfT{display:none}#edTabs{gap:4px}#edTabs .tab{min-height:44px;min-width:44px;padding:2px}#edTabs .tab span{display:none}#edTabs .tab b{font-size:22px}'+
  '#edPcs{gap:5px}#edPal .pc{min-height:52px;min-width:44px;padding:3px 1px}#edPal .pc img{width:36px;height:36px}#edPal .pc .pn{display:none}#edPal .pc .left{font-size:12px;height:18px;line-height:18px;min-width:18px;padding:0 4px}'+
  '#edHint{font-size:15px}#edTools{gap:5px}'+
- '#edFlag{font-size:13px;min-height:44px;padding:2px 6px;max-width:34vw;border-width:2px}#edFlag small{font-size:.78em}'+
+ '#edFlag{font-size:13px;min-height:44px;padding:2px 6px;max-width:28vw;border-width:2px}#edFlag small{font-size:.78em}'+
+ '#edWarn{max-width:min(560px,calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)));padding:10px 12px 12px;border-width:3px;border-radius:18px;gap:8px 10px}'+
+ '#edWarn .ewIcon{font-size:36px}#edWarn .ewTitle{font-size:22px}#edWarn .ewWhy{font-size:17px;margin-top:4px}'+
+ '#edWarn .ewOk{min-height:44px;min-width:120px;font-size:20px;padding:6px 20px}'+
  '#edMore #edChk{grid-column:1/4}'+
  '#edMore{grid-template-columns:1fr 1fr 1fr;width:min(560px,72vw)}#edMore .wide{grid-column:auto}#edMore #edName,#edMore #edMoreX{grid-column:1/4}'+
  '.ov{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}'+
