@@ -67,10 +67,10 @@ function dumpLevel(cb){var defs=(LV.deb||[]).slice().sort(function(a,b){return a
 /* ---------- game flow ---------- */
 var state='title',ball=null,throwsLeft=3,roundTk=0,fly=null,SIM=false,simRes=null,stats={hits:0,wins:0,throws:0},settleT=0,dispTk=save.tk,trail=[],drag=null;
 function banner(t,small){if(SIM)return;var b=$('banner');b.textContent=t;b.className='mk'+(small?' small':'');void b.offsetWidth;b.className='mk on'+(small?' small':'')}
-function hud(){$('lvl').textContent=CUS.on?'🛠️ '+LV.n:'Level '+(lvN+1)+' · '+LV.n;var bs=$('balls').children;for(var i=0;i<3;i++)bs[i].className=i<throwsLeft?'':'used';$('pc').textContent=prizeCount();updBadge()}
+function hud(){$('lvl').textContent=CUS.on?'🛠️ '+LV.n:(MESS.on?'💥 Mess '+(lvN+1)+' · '+LV.n:'Level '+(lvN+1)+' · '+LV.n);var bs=$('balls').children;for(var i=0;i<3;i++)bs[i].className=i<throwsLeft?'':'used';$('pc').textContent=prizeCount();updBadge()}
 function prizeCount(){var n=0;for(var k in save.pz)n+=save.pz[k];return n}
-function goLevel(n,first){try{rpClear()}catch(e){}state='build';lvMiss=0;lvLost=0;AS.on=false;AS.shot=null;AS.path=null;AS.q=null;MS.on=false;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];lvN=n;if(!CUS.on){save.lv=n;save.best=Math.max(save.best||0,n)}persist();
- var fresh=function(){setupLevel(n,false);hud();banner(CUS.on?'🛠️ '+LV.n:'Level '+(n+1)+': '+LV.n,1);after(.4,function(){dumpLevel(function(){state='settle';settleT=0})})};
+function goLevel(n,first){try{rpClear()}catch(e){}state='build';lvMiss=0;lvLost=0;AS.on=false;AS.shot=null;AS.path=null;AS.q=null;MS.on=false;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];lvN=n;if(!CUS.on&&!MESS.on){save.lv=n;save.best=Math.max(save.best||0,n)}persist();
+ var fresh=function(){setupLevel(n,false);hud();banner(CUS.on?'🛠️ '+LV.n:(MESS.on?'💥 '+LV.n:'Level '+(n+1)+': '+LV.n),1);after(.4,function(){dumpLevel(function(){state='settle';settleT=0})})};
  if(first){if(debris.length||statics.length){clearLevel(false)}fresh()}else blowout(fresh)}
 function newRound(){throwsLeft=3;roundTk=0;gems.forEach(function(g){g.got=false});hud();spawnAim()}
 function spawnAim(){state='aim';drag=null;if(ball){Composite.remove(world,ball);ball=null}clearXB();trail=[];hud()}
@@ -90,24 +90,24 @@ function partyHorn(k){if(playSample(k?'horn2':'horn1',.7,null,1,0,true))return;t
 function win(){if(SIM){simRes='win';state='simdone';return}state='won';rpReady();stats.wins++;var bx=BX1+30,by=(HOLE.y0+HOLE.y1)/2;
  SFX.fanfare();shake(18);confetti(bx,by,110);crowdEv('score');after(.22,function(){confetti(FX1+90,TOP+30,45);partyHorn(0)});after(.45,function(){confetti(BX0-80,TOP+30,45);partyHorn(1)});if(fly&&fly.bn>=3){ftext(bx-220,by-90,'Trick shot! '+fly.bn+' bounces 🎯','#7dff6a');confetti(bx,by,30)}sparks(bx,by,20,'#fff6a0');banner('PRIZE!');
  var allG=gems.length&&gems.every(function(g){return g.got});if(throwsLeft===2&&!AS.on&&!CUS.on)memeEv('perfect');else if((fly&&fly.bn>=3)||(fly&&fly.pt)||allG)memePlay('anime_wow',3,.95);else memePlay('win',3,.95);
- var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,tot=hp+ex+roundTk,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var firstPz=save.pz[pr.id]===1;var before=save.tk;save.tk+=tot;
+ var helped=AS.on,hp=helped?3:5,ex=throwsLeft*3,party=3,tot=hp+ex+roundTk+party,pr=PRIZES[save.w%PRIZES.length];save.w++;save.pz[pr.id]=(save.pz[pr.id]||0)+1;var firstPz=save.pz[pr.id]===1;var before=save.tk;save.tk+=tot;
  save.st=save.st||{};var newMS=MODE!=='classic'&&!save.st['m_'+MODE];if(MODE!=='classic')save.st['m_'+MODE]=(save.st['m_'+MODE]||0)+1;var newSt=helped&&!(save.st&&save.st.mouse);if(helped){save.st=save.st||{};save.st.mouse=(save.st.mouse||0)+1}lvMiss=0;lvLost=0;
  var newG=GRAND.filter(function(gp){return !save.gp[gp.id]&&save.tk>=gp.at});newG.forEach(function(gp){save.gp[gp.id]=1});persist();
- lastWin={first:firstPz,pr:pr,ex:ex,rt:roundTk,tot:tot,newG:newG,helped:helped,hp:hp,newSt:newSt,newMS:newMS,mode:MODE};after(1.5,showWin)}
+ lastWin={first:firstPz,pr:pr,ex:ex,rt:roundTk,tot:tot,party:party,newG:newG,helped:helped,hp:hp,newSt:newSt,newMS:newMS,mode:MODE,mess:MESS.on,messDone:MESS.on&&lvN>=MESS.lv.length-1};after(1.5,showWin)}
 var PRIZES=[{id:'coney',e:'🌭',n:'Detroit Coney Dog'},{id:'mitten',e:'🧤',n:'Michigan Mitten'},{id:'bridge',e:'🌉',n:'Mackinac Bridge'},{id:'car',e:'🏎️',n:'Motor City Race Car'},
  {id:'cherry',e:'🍒',n:'Traverse City Cherries'},{id:'paczki',e:'🍩',n:'Pączki Donut'},{id:'stone',e:'🪨',n:'Petoskey Stone'},{id:'boat',e:'⛵',n:'Great Lakes Sailboat'},
  {id:'deer',e:'🦌',n:'Up North Deer'},{id:'hockey',e:'🏒',n:'Hockeytown Stick'},{id:'dunes',e:'🏖️',n:'Sleeping Bear Dunes'},{id:'fish',e:'🐟',n:'Lake Michigan Trout'}];
 var GRAND=[{id:'goldex',e:'🏆',n:'Golden Excavator Trophy',at:100},{id:'crown',e:'👑',n:'Blowout Champion Crown',at:250},{id:'star',e:'🌟',n:'Super Star Digger',at:500}];
 function showWin(){var w=lastWin;$('prizeBig').textContent=w.pr.e;$('prizeName').textContent=w.pr.n;
- var rows=[w.helped?'Prize hole (with Mouse Buddy): <b>'+w.hp+'</b> 🎟️':'Prize hole: <b>5</b> 🎟️'];if(w.ex)rows.push('Extra balls: '+(w.ex/3)+' × 3 = <b>'+w.ex+'</b> 🎟️');if(w.rt)rows.push('Gems, ring &amp; junk: <b>'+w.rt+'</b> 🎟️');$('tkRows').innerHTML=rows.join('<br>');
- var terms=[w.hp];if(w.ex)terms.push(w.ex);if(w.rt)terms.push(w.rt);var q,ans;if(terms.length===1){q='Double it! '+w.hp+' + '+w.hp+' = ?';ans=w.hp*2}else{q='Count your tickets! '+terms.join(' + ')+' = ?';ans=w.tot}
- var ch=[ans],tries=0;while(ch.length<3&&tries++<50){var c=ans+((rnd()*7)|0)-3;if(c>0&&ch.indexOf(c)<0)ch.push(c)}ch.sort(function(){return rnd()-.5});
- var m=$('math');m.innerHTML='<div class="q mk">🧮 '+q+'</div>'+ch.map(function(c){return'<button class="ch mk" data-v="'+c+'">'+c+'</button>'}).join('')+'<div class="r mk">Bonus math: get it right for +3 🎟️</div>';
- var done=false;m.querySelectorAll('.ch').forEach(function(bt){bt.addEventListener('click',function(){if(done)return;done=true;var v=+bt.dataset.v;if(v===ans){bt.classList.add('ok');SFX.ok();memeEv('math');save.tk+=3;persist();m.querySelector('.r').textContent='Math whiz! +3 🎟️';confetti(W/2,H/2,30)}
-  else{bt.classList.add('no');SFX.no();m.querySelectorAll('.ch').forEach(function(b2){if(+b2.dataset.v===ans)b2.classList.add('ok')});m.querySelector('.r').textContent='Nice try! It was '+ans+'.'}})});
+ var rows=[w.helped?'Prize hole (Mouse Buddy): <b>'+w.hp+'</b> 🎟️':'Prize hole: <b>5</b> 🎟️'];if(w.ex)rows.push('Unused throws: <b>'+w.ex+'</b> 🎟️');if(w.rt)rows.push('Gems, ring &amp; junk: <b>'+w.rt+'</b> 🎟️');if(w.party)rows.push('Party bonus: <b>'+w.party+'</b> 🎟️');rows.push('<b>Total: '+w.tot+' 🎟️</b>');$('tkRows').innerHTML=rows.join('<br>');
+ var m=$('math');m.innerHTML='<div class="q mk">🎉 '+w.tot+' tickets!</div><button type="button" class="ch mk" id="partyPop">🎉 Party pop!</button><div class="r mk">'+(w.messDone?'You wrecked the Mess Hall!':'What a shot!')+'</div>';
+ var pb=$('partyPop');if(pb)pb.addEventListener('click',function(){confetti(W/2,H/2,40);SFX.ok();try{partyHorn(1)}catch(e){}});
+ if(w.messDone){save.st=save.st||{};if(!save.st.mess){save.st.mess=1;persist()}}
  $('stk').innerHTML=w.helped?'<img alt="" src="'+stickerImg()+'"> '+(w.newSt?'New sticker: Mouse Buddy! Thanks for being a hero!':'Mouse Buddy helped! Hero teamwork!'):'';if(w.newMS)$('stk').innerHTML+=(w.helped?'<br>':'')+'<img alt="" src="'+modeSticker(w.mode)+'"> New sticker: '+modeOf(w.mode).n+'!';
+ if(w.messDone)$('stk').innerHTML+=($('stk').innerHTML?'<br>':'')+'💥 Mess Hall wrecked!';
  $('grandMsg').textContent=w.newG.length?('NEW GRAND PRIZE: '+w.newG.map(function(g){return g.e+' '+g.n}).join(', ')+'!'):'';
- if(CUS.on)customWon();else{$('next').textContent='Next level ▶';wEdit.style.display='none'}
+ if(CUS.on)customWon();else if(w.messDone){$('next').textContent='🏠 Back to menu';wEdit.style.display='none'}
+ else{$('next').textContent=MESS.on?'Next mess ▶':'Next level ▶';wEdit.style.display='none'}
  $('win').classList.add('on');rpOnWinCard()}
 function showShelf(){var h='';PRIZES.forEach(function(p){var n=save.pz[p.id]||0;h+='<div class="pz'+(n?'':' no')+'">'+(n?p.e:'❔')+(n>1?'<b>×'+n+'</b>':'')+'<small>'+(n?p.n:'???')+'</small></div>'});$('shelfGrid').innerHTML=h;
  $('grand').innerHTML=GRAND.map(function(g){var got=save.gp[g.id],pc=Math.min(100,save.tk/g.at*100);return'<div class="gp'+(got?'':' no')+'"><div class="e">'+g.e+'</div><b>'+g.n+'</b><div>'+(got?'Won!':save.tk+' / '+g.at+' 🎟️')+'</div><div class="bar"><i style="width:'+pc+'%"></i></div></div>'}).join('');
@@ -127,7 +127,7 @@ function physStep(){gt+=FIXED/1000;moveMovers();Engine.update(engine,FIXED);
  try{toyStep._did=0;toyStep(ball,SIM);for(var ti=0;ti<(XB||[]).length;ti++)toyStep(XB[ti],SIM)}catch(e){}
  if(PORT.length){if(ball&&portalTP(ball,SIM)&&fly)fly.px=ball.position.x;for(var xi=0;xi<XB.length;xi++)if(portalTP(XB[xi],SIM))XB[xi].px=XB[xi].position.x}
  for(var i=flying.length-1;i>=0;i--){var f=flying[i];if(f.position.y<-140||(f.velocity.y>0&&f.position.y>TABLE)||gt-f.gone>2.5){Composite.remove(world,f);flying.splice(i,1)}}
- for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(!SIM){ftext(BX1+40,HOLE.y0-20,'+1 🎟️ junk!');SFX.tick(3);memeEv('junk')}}}}
+ for(i=debris.length-1;i>=0;i--){var d=debris[i];if(d.position.x>BX1+8&&!d.isStatic){Composite.remove(world,d);debris.splice(i,1);if(state==='fly'){roundTk++;if(fly)fly.junk=(fly.junk||0)+1;if(!SIM){var j=fly&&fly.junk||1,msg=j>=8?'BLOWOUT!!':j>=5?'WHAT A DUMP!':j>=3?'Messy!':'+1 🎟️ junk!';ftext(BX1+40,HOLE.y0-20,msg,j>=3?'#ff7ac8':'#ffde3b');SFX.tick(3);if(j===3||j===5||j===8){confetti(BX1+20,HOLE.y0,18);shake(6+j)}memeEv('junk')}}}}
  if(modeStep())return;
  if(state!=='fly'||!ball)return;var bp=ball.position;fly.t+=FIXED/1000;
  if(fly){var fd=Math.hypot(bp.x-(fly.x0||LX),bp.y-(fly.y0||LY));if(fd>(fly.maxD||0))fly.maxD=fd}

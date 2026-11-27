@@ -7,7 +7,8 @@ var MODES=[
  {id:'slime',n:'Slime Ball',e:'🟢',c:'#3ad12a',d:'Gooey splat! Sticks to walls and drips down. Grabs junk and yanks it out of the way.'},
  {id:'rocket',n:'Rocket Ball',e:'🚀',c:'#ff7a1a',d:'Tap anywhere in the air for one BOOST!'},
  {id:'moon',n:'Moon Gravity',e:'🌙',c:'#9db4ff',d:'Floaty space throws under the stars.'},
- {id:'triple',n:'Triple Ball',e:'✨',c:'#ffd21a',d:'Splits into 3 balls in the air!'}];
+ {id:'triple',n:'Triple Ball',e:'✨',c:'#ffd21a',d:'Splits into 3 balls in the air!'},
+ {id:'toot',n:'Toot Ball',e:'💨',c:'#c6e85a',d:'Every bounce lets out a TOOT and a little kick!'}];
 function modeOf(id){for(var i=0;i<MODES.length;i++)if(MODES[i].id===id)return MODES[i];return MODES[0]}
 var MODE=modeOf(save.mode).id,XB=[],STK=[],WET={};
 function ballR(){return MODE==='bowling'?29:BR}
@@ -20,6 +21,7 @@ function ballOpts(){var o={density:.004,restitution:.52,friction:.03,frictionSta
  else if(MODE==='bowling'){o.density=.03;o.restitution=.12;o.friction=.05;o.frictionAir=.002}
  else if(MODE==='slime'){o.density=.005;o.restitution=.16;o.friction=.55;o.frictionStatic=.9;o.frictionAir=.006}
  else if(MODE==='moon'){o.restitution=.3;o.frictionAir=.0015}
+ else if(MODE==='toot'){o.density=.0036;o.restitution=.78;o.friction=.02;o.frictionAir=.0035}
  return o}
 function mkBall(x,y){var b=Bodies.circle(x,y,ballR(),ballOpts());b.mat='ball';b.mode=MODE;return b}
 function clearXB(){XB.forEach(function(b){Composite.remove(world,b)});XB=[];STK.forEach(function(s){Composite.remove(world,s.c)});STK=[]}
@@ -35,10 +37,14 @@ var MSND={
  rocket:function(){noise(.9,{f:280,fto:2000,q:.6,vol:.45});tone(140,.7,{to:900,type:'sawtooth',vol:.08});tone(70,.5,{type:'triangle',vol:.25})},
  split:function(){for(var i=0;i<3;i++)tone(1300-i*150,.13,{to:420,type:'square',vol:.07,at:i*.07})},
  launch:function(){var m=MODE;if(m==='water')tone(220,.35,{to:110,vol:.18});else if(m==='bouncy')MSND.boing(14);else if(m==='bowling'){tone(90,.5,{to:55,type:'triangle',vol:.3});noise(.5,{ft:'lowpass',f:400,vol:.25})}
-  else if(m==='slime')MSND.squelch();else if(m==='moon'){tone(420,1,{to:950,vol:.12});tone(630,1,{to:1420,vol:.06,at:.05})}else if(m==='rocket')tone(600,.15,{to:900,type:'square',vol:.05})},
+  else if(m==='slime')MSND.squelch();else if(m==='moon'){tone(420,1,{to:950,vol:.12});tone(630,1,{to:1420,vol:.06,at:.05})}else if(m==='rocket')tone(600,.15,{to:900,type:'square',vol:.05});else if(m==='toot'){try{playToot(.7)}catch(e){tone(110,.25,{to:70,type:'sine',vol:.2})}}},
  pick:function(id){var k=MODE;MODE=id;MSND.launch();MODE=k}};
 /* ---- ball art ---- */
 var ART={
+ toot:function(g,R){g.beginPath();g.arc(0,0,R,0,2*PI);var gr=g.createRadialGradient(-R*.3,-R*.35,2,0,0,R);gr.addColorStop(0,'#f7ffc8');gr.addColorStop(.45,'#c6e85a');gr.addColorStop(1,'#6a9a22');g.fillStyle=gr;g.fill();
+  g.strokeStyle='#3a5a10';g.lineWidth=1.6;g.stroke();g.strokeStyle='rgba(80,110,30,.55)';g.lineWidth=2;g.beginPath();g.arc(R*.1,R*.05,R*.55,0.4,2.4);g.stroke();
+  g.fillStyle='#2a1a08';g.beginPath();g.arc(-R*.28,-R*.1,R*.11,0,2*PI);g.arc(R*.28,-R*.1,R*.11,0,2*PI);g.fill();g.beginPath();g.ellipse(0,R*.32,R*.28,R*.16,0,0,PI);g.fill();
+  g.fillStyle='rgba(160,200,80,.7)';g.beginPath();g.ellipse(-R*.7,-R*.9,R*.22,R*.16, -.4,0,2*PI);g.fill();g.beginPath();g.ellipse(-R*.95,-R*1.2,R*.16,R*.12,-.2,0,2*PI);g.fill()},
  water:function(g,R){var r=R*.92;g.beginPath();g.moveTo(0,-r);g.bezierCurveTo(r*1.1,-r,r*1.05,r*.6,0,r*.92);g.bezierCurveTo(-r*1.05,r*.6,-r*1.1,-r,0,-r);var gr=g.createRadialGradient(-r*.3,-r*.35,1,0,0,r);gr.addColorStop(0,'#e4f6ff');gr.addColorStop(.45,'#5cb8ff');gr.addColorStop(1,'#1d62c4');g.fillStyle=gr;g.globalAlpha=.93;g.fill();g.globalAlpha=1;g.strokeStyle='#123f88';g.lineWidth=1.6;g.stroke();
   g.fillStyle='#1d62c4';g.beginPath();g.moveTo(-3,r*.9);g.lineTo(3,r*.9);g.lineTo(0,R);g.fill();g.fillStyle='rgba(255,255,255,.8)';g.beginPath();g.ellipse(-r*.35,-r*.4,r*.16,r*.3,-.5,0,2*PI);g.fill()},
  bouncy:function(g,R){g.beginPath();g.arc(0,0,R,0,2*PI);var gr=g.createRadialGradient(-6,-6,2,0,0,R);gr.addColorStop(0,'#ffb3e6');gr.addColorStop(.6,'#ff3fb4');gr.addColorStop(1,'#b0127a');g.fillStyle=gr;g.fill();
@@ -89,6 +95,9 @@ function modeHit(o,rv,sp,bb,n,ballIsA){var m=bb.mode;
  if(m==='bouncy'&&rv>2)MSND.boing(rv);
  else if(m==='bowling'&&!o.isStatic&&rv>2.5){MSND.pins(rv);dust(o.position.x,o.position.y,4)}
  else if(m==='slime')slimeStick(bb,o,rv,n,ballIsA,sp);
+ else if(m==='toot'&&bb===ball&&rv>2.2&&lim('tootkick',160)){try{playToot(.55+Math.min(.4,rv/20))}catch(e){}
+  var v=ball.velocity,kick=2.2+Math.min(3,rv*.18);Body.setVelocity(ball,{x:v.x+ (v.x>=0?1:-1)*kick*.35,y:v.y-kick});
+  if(sp){sparks(sp.x,sp.y,6,'#c6e85a');emit({k:'pf',x:sp.x,y:sp.y,vx:(rnd()-.5)*80,vy:-40-rnd()*50,m:.5,c:'#c6e85a',s:10})}shake(Math.min(7,2+rv*.2))}
  return false}
 function slimeNx(n,ballIsA){if(!n)return{x:0,y:-1};return ballIsA?{x:-n.x,y:-n.y}:{x:n.x,y:n.y}}
 function slimeStick(bb,o,rv,n,ballIsA,sp){if(AS.on||!bb)return;if(STK.some(function(s){return s.o===o}))return;
@@ -120,6 +129,7 @@ function modeStep(){var dt=FIXED/1000;
 /* ---- drawing ---- */
 function drawBallM(g,x,y,a,t,b){var s=spr(ballKey()),R=ballR();g.save();g.translate(x,y);
  if(MODE==='water'){var w=Math.sin(t*15)*.09*(b?Math.min(1,Body.getSpeed(b)/8+.3):.4);g.scale(1+w,1-w)}
+ else if(MODE==='toot'){var w=Math.sin(t*18)*.07;g.scale(1+w,1-w)}
  else if(MODE==='slime'){var w2=Math.sin(t*8)*.08,w3=Math.sin(t*13)*.04;g.scale(1+w2,1-w2+w3)}
  if(MODE==='rocket'&&b&&fly&&fly.boostT>0){var v=b.velocity,an=Math.atan2(v.y,v.x);g.save();g.rotate(an);var L=30+Math.sin(t*60)*8;g.fillStyle='#ffd21a';g.beginPath();g.moveTo(-R+2,-9);g.lineTo(-R-L,0);g.lineTo(-R+2,9);g.fill();g.fillStyle='#ff5a1a';g.beginPath();g.moveTo(-R+2,-5);g.lineTo(-R-L*.6,0);g.lineTo(-R+2,5);g.fill();g.restore()}
  if(MODE==='slime')slimeXf(g,b,t);else squashXf(g,b);g.rotate(a);g.drawImage(s.c,-R-2/K,-R-2/K,s.w,s.h);

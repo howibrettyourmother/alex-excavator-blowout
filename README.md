@@ -12,13 +12,20 @@ Play: https://howibrettyourmother.github.io/alex-excavator-blowout/  (also in Al
 - Levels 1–6 are hand-built with rising difficulty (raised hole, swinging plate, moving hole, sliding paddle), then
   endless Michigan-named levels. Every hand-built level is checked by a shot solver (`EB.solve(n)`) to be winnable.
 - The excavator (maize & blue, mitten decal) dumps each level's junk, does a BLOWOUT between levels, and reshuffles the junk after a missed round.
-- Tickets: 5 for the hole + 3 per unused ball + gems, the pipe-cleaner ring and junk knocked out of the hole.
-  Optional ticket-counting bonus question (+3). Angle and power read out while aiming, with a protractor.
+- Tickets: 5 for the hole + 3 per unused ball + gems, the pipe-cleaner ring and junk knocked out of the hole, plus a party bonus of 3. Angle and power read out while aiming.
 - Prize shelf (12 Michigan prizes + 3 ticket-milestone grand prizes) saved in localStorage (`aeb_save`).
 - No ads, nothing to buy, no external links. All art drawn in code; all sound synthesized with WebAudio.
 
 Build: `python3 src/build.py` (inlines src/game1-9.js, matter.min.js and the font into index.html, injects the shared
 kids-hubs audio guard, hub-home button, SW reload and play telemetry, and bumps sw.js to VERSION).
+
+## v1.15.0: more mess, no math, better throws
+- Removed the ticket-counting math quiz. Wins still award a fun **party bonus of +3 tickets** (same reward, no question) and a "Party pop!" confetti button.
+- **💥 More Messes**: six new toy-packed bonus levels (Whoopie Hall, Jello Jungle, Goat Rodeo, Chicken Run, Portal Party, Mega Mess). Campaign save progress is unchanged.
+- **💨 Toot Ball** bonus mode: every solid bounce lets out a real toot and a little kick.
+- Throws no longer get cancelled if iPad sends `pointercancel` mid-pull (a 150 ms press still launches). Tap the screen during the excavator dump to speed it up, same as ⏩ Faster.
+- Junk combos: knock 3, 5 or 8 bits of junk out in one throw for Messy! / WHAT A DUMP! / BLOWOUT!!
+- Save data (`aeb_save`) stays compatible. New optional fields: `st.mess`, `st.m_toot`.
 
 ## v1.2 additions
 - **Cheering crowd**: 10 code-drawn cartoon kids in a school cafeteria (no names), with an "Arcade Game Day" banner. They lean in during throws, groan on near misses, and cheer, wave and throw confetti on a score. Some kids do the occasional "6-7!" gesture (with an 18-second cooldown). All crowd sounds are synthesized with WebAudio and follow the mute button.

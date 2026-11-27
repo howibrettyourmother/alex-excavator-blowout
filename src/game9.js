@@ -124,6 +124,8 @@ mkEl('div','chal','ov','<div class="card cb"><h2 class="mk">🏆 Alex\'s Challen
  '<div id="chBest" class="mk" style="font-size:24px;color:#2f8a3a"></div><div style="font-size:16px;color:#6b4520;margin-bottom:6px">3 throws a round. Take as many rounds as you need!</div><button class="btn" id="chGo">▶ I accept!</button><button class="btn alt" id="chNo">Not now</button></div>');
 var wcard=$('next').parentNode,wEdit=mkEl('button','wedit','btn alt','🛠️ Back to builder',wcard);
 var tb=mkEl('button','tbuild','btn mk','🛠️ Build a level',$('play').parentNode);tb.style.cssText='font-size:min(5vmin,36px);padding:1.2vmin 3.4vmin;background:#e8762a;box-shadow:0 5px 0 #9a4a12,0 8px 14px #0005';
+var tmess=mkEl('button','tmess','btn mk','💥 More Messes',$('tmodes').parentNode);tmess.style.cssText='font-size:min(3.6vmin,24px);padding:1vmin 2.4vmin;background:#7a4bc4;color:#fff;box-shadow:0 4px 0 #4a267a,0 6px 12px #0005';
+tmess.addEventListener('click',function(){aInit();SFX.click();startMess()});
 function toast(t){edToast.textContent=t;edToast.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){edToast.classList.remove('on')},1300)}
 /* palette icons drawn from the real game sprites */
 function icon(t){var c=mkc(104,104),g=c.getContext('2d'),s;g.translate(52,52);
@@ -177,7 +179,7 @@ function openEditor(lv){aInit();resetPlay();if(lv||(!ED.items.length&&!ED.id))ED
  if(lv){ED.items=lv.items.map(function(it){var o={t:it.t,x:it.x,y:it.y,a:it.a||0,col:it.col};if(it.t==='portal'){o.pr=it.pr|0;if(it.d!=null)o.d=it.d}return fit(o)});ED.hole={y1:lv.hole.y1,sz:lv.hole.sz,mv:!!lv.hole.mv};ED.name=lv.name;ED.id=lv.id||null}
  else if(!ED.items.length&&!ED.id){ED.items=[{t:'plate',x:760,y:836},{t:'cup',x:980,y:838,col:'g'},{t:'gem',x:900,y:620}].map(fit);ED.hole={y1:FLOOR,sz:100,mv:false};ED.name=rndName();ED.id=null}
  holeFit();ED.sel=-1;state='edit';updUndo();CUS.fromEd=true;CUS.challenge=false;edBuild();showEd(true);edHint.textContent='👈 Drag junk from the shelf into the box!  Drag the ⭐ hole up or down.';resize();MUS.on=true}
-function closeEditor(){showEd(false);state='title';CUS.on=false;titleOn=true;$('title').classList.remove('off');gt=0;clearLevel(false);setupLevel(save.lv||0,true);refreshTitle();try{placePen()}catch(e){}}
+function closeEditor(){showEd(false);state='title';CUS.on=false;if(typeof MESS!=='undefined')MESS.on=false;titleOn=true;$('title').classList.remove('off');gt=0;clearLevel(false);setupLevel(save.lv||0,true);refreshTitle();try{placePen()}catch(e){}}
 function refreshTitle(){$('play').textContent=save.lv>0?'▶ Keep playing (Level '+(save.lv+1)+')':'▶ Play!';$('lv1').style.display=save.lv>0?'':'none'}
 function edSnapshot(){return{items:ED.items.map(function(it){var o={t:it.t,x:it.x,y:it.y};if(it.a)o.a=it.a;if(it.t==='cup')o.col=it.col||'r';if(it.t==='portal'){o.pr=it.pr|0;if(it.d!=null)o.d=it.d}return o}),hole:{y1:ED.hole.y1,sz:ED.hole.sz,mv:ED.hole.mv},name:ED.name||'My Level'}}
 function edSave(quiet){var a=lvList(),s=edSnapshot(),now=Date.now();if(!ED.id)ED.id='L'+now.toString(36);s.id=ED.id;s.at=now;var i=-1;a.forEach(function(x,j){if(x.id===ED.id)i=j});
@@ -250,7 +252,7 @@ function customWon(){if(!CUS.on)return;var n=stats.throws-CUS.th0,nb=false,lv=CU
  $('next').textContent='🔁 Play again';wEdit.style.display='';wEdit.textContent=CUS.fromEd?'🛠️ Back to builder':'🏠 Menu';
  var tw=function(k){return k+' throw'+(k===1?'':'s')},bs=CUS.challenge&&lv.best;
  $('grandMsg').textContent=(CUS.challenge?(bs?(n<bs?'You beat Alex\'s score! You: '+tw(n)+', Alex: '+tw(bs)+' 🏆':n===bs?'You tied Alex: '+tw(n)+'! 🤝':'You did it in '+tw(n)+'. Alex did it in '+tw(bs)+'. Play again to beat him!'):'You beat Alex\'s level in '+tw(n)+'! 🙌'):'Your level works! Beat it in '+tw(n)+'.'+(nb?' ⭐ Your best!':''))+($('grandMsg').textContent?' '+$('grandMsg').textContent:'')}
-function toMenu(){resetPlay();closeEditor()}
+function toMenu(){if(typeof MESS!=='undefined')MESS.on=false;resetPlay();closeEditor()}
 edB.addEventListener('click',function(){SFX.click();if(CUS.fromEd)openEditor();else toMenu()});
 wEdit.addEventListener('click',function(){SFX.click();$('win').classList.remove('on');if(CUS.fromEd)openEditor();else toMenu()});
 wEdit.style.display='none';

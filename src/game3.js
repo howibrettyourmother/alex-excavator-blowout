@@ -77,7 +77,32 @@ function addSilly(L,n,r){
   else if(t==='spray')L.st.push(['spray',p[0],p[1],36,78]);
   else if(t==='whoop')L.st.push(['whoop',p[0],p[1],92,36]);
   else L.st.push([t,p[0],p[1],0,0,0])}}
-function levelDef(n){if(CUS.on&&CUS.def)return CUS.def;return n<LEVELS.length?LEVELS[n]:genLevel(n)}
+var MESS={on:false,lv:[
+ {n:'Whoopie Hall',hole:[772,FLOOR],pv:.82,shred:[[1020,1110,28]],gems:[[700,700],[940,620],[1200,690]],ring:[860,600],
+  st:[['whoop',700,FLOOR-36,92,36],['whoop',900,FLOOR-36,92,36],['whoop',1100,FLOOR-36,92,36],['whoop',1280,FLOOR-36,92,36]],
+  deb:[['plate',800,836,44],['cup',1040,838,'r'],['scrap',1220,858,70,44]]},
+ {n:'Jello Jungle',hole:[700,812],pv:.75,shred:[[600,700,24]],gems:[[820,560],[1040,600],[1240,520]],ring:[1120,580],
+  st:[['jello',880,800,0,0,0],['jello',1080,800,0,0,0],['tramp',1240,FLOOR-36,0,0,0],['ledge',1300,822,140,18]],
+  deb:[['plate',720,836,42],['cup',980,838,'g'],['scrap',1180,780,60,36]]},
+ {n:'Goat Rodeo',hole:[784,FLOOR],pv:.72,shred:[[1100,1180,24]],gems:[[760,600],[1000,560],[1220,640]],ring:[900,620],
+  st:[['goat',700,FLOOR-36,0,0,0],['goat',1180,FLOOR-36,0,0,0],['horn',900,TOP+50,0,0,0]],
+  deb:[['plate',820,836,44],['plate',940,836,42],['cup',1060,838,'b'],['edge',1280,700,0]]},
+ {n:'Chicken Run',hole:[768,FLOOR],pv:.7,shred:[[560,660,24]],gems:[[780,600],[1020,540],[1240,620]],ring:[1100,560],
+  st:[['banana',860,FLOOR-20,0,0,0],['banana',1080,FLOOR-20,0,0,0],['frog',1280,FLOOR-36,0,0,0]],
+  deb:[['chick',740,838],['chick',980,838],['cup',1160,838,'r'],['plate',640,836,40],['scrap',1220,780,64,36]]},
+ {n:'Portal Party',hole:[720,800],pv:.65,gems:[[800,560],[1040,600],[1260,540]],ring:[940,640],
+  
+  st:[['wrapS',900,820,160,80,0,'pad'],['ledge',1300,810,130,18]],
+  mov:[['pend',1100,TOP+10,400,42,2.6,.32]],
+  deb:[['plate',700,836,44],['cup',1020,838,'g'],['wrap',1180,700,120,40],['scrap',860,780,60,36]]},
+ {n:'Mega Mess',hole:[798,FLOOR],pv:.6,shred:[[600,700,26],[980,1060,24]],gems:[[700,600],[900,520],[1100,580],[1260,640]],ring:[860,640],
+  st:[['glove',980,TOP+80,0,0,0],['spin',1180,TOP+70,0,0,0],['whoop',720,FLOOR-36,92,36],['jello',1080,800,0,0,0],['ramp',780,860,180,18,-.12],['frog',840,FLOOR-36,0,0,0],['horn',1120,TOP+40,0,0,0]],
+  mov:[['slide',1185,730,28,150,90,2.6]],
+  deb:[['plate',640,836,44],['cup',900,838,'r'],['cup',1000,838,'b'],['chick',1250,838],['scrap',700,780,70,44]]}
+]};
+/* portals filled below so the literal survives minifiers / this file is plain JS */
+MESS.lv[4].portals=[null,null,null,null,null,null,null,null];MESS.lv[4].portals[0]=[720,TOP+50,0,0];MESS.lv[4].portals[1]=[1220,TOP+70,0,4];
+function levelDef(n){if(CUS.on&&CUS.def)return CUS.def;if(MESS.on)return MESS.lv[Math.min(n,MESS.lv.length-1)];return n<LEVELS.length?LEVELS[n]:genLevel(n)}
 /* ---------- level objects ---------- */
 var debris=[],statics=[],movers=[],gems=[],ring=null,shreds=[],gt=0,LV=null,lvN=0;
 function mkDeb(d,spawnDy){var t=d[0],x=d[1],y=d[2]-(spawnDy||0),b;
