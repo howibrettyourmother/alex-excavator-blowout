@@ -152,4 +152,8 @@ resize();drawTitleBox();
 if(document.fonts&&document.fonts.load){document.fonts.load('40px PM').then(function(){resize();drawTitleBox()}).catch(function(){})}
 setupLevel(save.lv||0,true);requestAnimationFrame(frame);
 addEventListener('pagehide',persist);document.addEventListener('visibilitychange',function(){if(document.hidden){persist();drag=null}else{last=0}});
+
+ /*KFX-BIND*/(function(){var K=function(n,o){return function(){try{if(aok())KFX.play(n,o)}catch(e){}}};
+ try{burpSnd=K('burp')}catch(e){}try{honkSnd=K('honk')}catch(e){}try{boingSnd=K('boing')}catch(e){}try{wheeSnd=K('whistle')}catch(e){}try{duckSnd=K('quack')}catch(e){}try{jelloSnd=K('squish')}catch(e){}try{spinSnd=K('whoosh',{rate:1.2})}catch(e){}try{powSnd=K('bonk')}catch(e){}try{popSnd=K('pop')}catch(e){}try{pasteSnd=K('splat')}catch(e){}try{pinSnd=K('tick')}catch(e){}try{goatSnd=K('goat')}catch(e){}
+ })();
 })();

@@ -1,0 +1,31 @@
+# Audio credits (sound effects)
+
+All sound effects in `audio/fx/fx.m4a` are CC0 / public-domain recordings, trimmed, filtered, loudness-matched and packed into one AAC sprite. No attribution is required; credit is given anyway.
+
+- Freesound CC0: "Baby goat bleat" by jsbarrett - https://freesound.org/people/jsbarrett/sounds/200333/  (used for: goat)
+- Freesound CC0: "Boing 2" by magnuswaker - https://freesound.org/people/magnuswaker/sounds/540790/  (used for: boing)
+- Freesound CC0: "Bonk" by reevesT - https://freesound.org/people/reevesT/sounds/857868/  (used for: bonk)
+- Freesound CC0: "Burp" by scooterfort - https://freesound.org/people/scooterfort/sounds/570266/  (used for: burp)
+- Freesound CC0: "Cartoon slide-fall" by plasterbrain - https://freesound.org/people/plasterbrain/sounds/395443/  (used for: whistle)
+- Freesound CC0: "Clown horn (single honk)" by Gimp_Revival - https://freesound.org/people/Gimp_Revival/sounds/588570/  (used for: honk)
+- Freesound CC0: "Clown too-doo horn" by FunWithSound - https://freesound.org/people/FunWithSound/sounds/608085/  (used for: honk)
+- Freesound CC0: "Funny boing" by se2001 - https://freesound.org/people/se2001/sounds/543641/  (used for: boing)
+- Freesound CC0: "Mini goat baa" by satoristudios3 - https://freesound.org/people/satoristudios3/sounds/677218/  (used for: goat)
+- Freesound CC0: "Rubber-duck squeak" by csaszi - https://freesound.org/people/csaszi/sounds/350917/  (used for: quack)
+- Freesound CC0: "Slide whistle" by SamuelGremaud - https://freesound.org/people/SamuelGremaud/sounds/517633/  (used for: whistle)
+- Freesound CC0: "Slime squish" by qubodup - https://freesound.org/people/qubodup/sounds/442772/  (used for: squish)
+- Freesound CC0: "Splat squish" by mrickey13 - https://freesound.org/people/mrickey13/sounds/515621/  (used for: squish)
+- Freesound CC0: "Toy duck quack" by martian - https://freesound.org/people/martian/sounds/547601/  (used for: quack)
+- Kenney Interface Sounds (CC0) by Kenney - https://kenney.nl/assets  (used for: tick)
+- OpenGameArt CC0: 18-random-video-game-sound-effects by bart - https://opengameart.org/content/18-random-video-game-sound-effects  (used for: boing)
+- OpenGameArt CC0: 3-pop-sounds by wubitog - https://opengameart.org/content/3-pop-sounds  (used for: pop)
+- OpenGameArt CC0: 40-cc0-water-splash-slime-sfx by rubberduck - https://opengameart.org/content/40-cc0-water-splash-slime-sfx  (used for: splat)
+- OpenGameArt CC0: air-whoosh by pyranostudios - https://opengameart.org/content/air-whoosh  (used for: whoosh)
+- OpenGameArt CC0: boing by aeva - https://opengameart.org/content/boing  (used for: boing)
+- OpenGameArt CC0: boings by ezduzziteh - https://opengameart.org/content/boings  (used for: boing)
+- OpenGameArt CC0: pop-effect-sounds by trezegames - https://opengameart.org/content/pop-effect-sounds  (used for: pop)
+- OpenGameArt CC0: squish-sounds-effects by ezduzziteh - https://opengameart.org/content/squish-sounds-effects  (used for: splat, squish)
+- OpenGameArt CC0: swishes-sound-pack by artisticdude - https://opengameart.org/content/swishes-sound-pack  (used for: whoosh)
+- OpenGameArt CC0: thwack-sounds by antumdeluge - https://opengameart.org/content/thwack-sounds  (used for: bonk)
+
+Music loops and songs are the original tracks for these games (unchanged).
